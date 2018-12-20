@@ -1,27 +1,15 @@
-// Load up the discord.js library
 const Discord = require("discord.js");
 const https = require("https");
-
-// This is your client. Some people call it `bot`, some people call it `self`, 
-// some might call it `cootchie`. Either way, when you see `client.something`, or `bot.something`,
-// this is what we're refering to. Your client.
+const fs = require("fs");
 const client = new Discord.Client();
-
-// Here we load the config.json file that contains our token and our prefix values. 
 const config = require("./config.json");
-// config.token contains the bot's token
-// config.prefix contains the message prefix.
 
 client.on("ready", () => {
-  // This event will run if the bot starts, and logs in, successfully.
-  console.log(`GainBot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
-  // Example of changing the bot's playing game to something useful. `client.user` is what the
-  // docs refer to as the "ClientUser".
-  client.user.setActivity(`Serving ${client.guilds.size} servers`);
+  console.log(`GainBot has started on ${client.guilds.size} servers.`); 
+  client.user.setActivity(`World of Setbacks`);
 });
 
 client.on("message", async message => {
-
 	// Ignore all bots
 	if(message.author.bot) return;
   
@@ -108,8 +96,14 @@ client.on("message", async message => {
 			message.channel.send('Invalid sign-up. Please sign up as "+", "-", or "m".');
 			return false;
 		}
-
-		message.channel.send("Signed up user " + user + " as '" + signValue + "' for " + raid + ".");
+		const jsonArray = [user, signValue];
+		const jsonValue = JSON.stringify(jsonArray);
+		fs.writeFile('/tmp/' + raid + '.json', jsonValue, (err) =>  {
+			if(err) {
+				return console.log(err);
+			}
+			message.channel.send("Signed up user " + user + " as '" + signValue + "' for " + raid + ".");
+		});
 	}
 	
 	// Create a raid channel based on the raid name & date
