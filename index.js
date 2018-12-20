@@ -50,7 +50,7 @@ client.on("message", async message => {
 		https.get(apiUrl, (resp) => {
 		  let data = '';
 
-		  // A chunk of data has been recieved.
+		  // A chunk of data has been received.
 		  resp.on('data', (chunk) => {
 			data += chunk;
 		  });
@@ -72,6 +72,7 @@ client.on("message", async message => {
 		  console.log("Error: " + err.message);
 		});
 	}
+
 	
 	// Allow a user to sign up in the sign-up channel
 	if(command === "signup") {
@@ -84,7 +85,9 @@ client.on("message", async message => {
 		const signup = args[0];
 		const raid = message.channel.name;
 		const user = args[1] ? args[1] : message.member.displayName;
+		const userName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();
 
+		
 		var signValue;
 		if (signup === '+') {
 			signValue = 'yes';
@@ -96,14 +99,51 @@ client.on("message", async message => {
 			message.channel.send('Invalid sign-up. Please sign up as "+", "-", or "m".');
 			return false;
 		}
-		const jsonArray = [user, signValue];
+		const jsonArray = [userName, signValue];
 		const jsonValue = JSON.stringify(jsonArray);
-		fs.writeFile('/tmp/' + raid + '.json', jsonValue, (err) =>  {
-			if(err) {
-				return console.log(err);
+		const fileName = '/tmp/' + raid + '.json';
+		let parsedLineup = {};
+		if (fs.existsSync(fileName)) {
+			currentLineup = fs.readFileSync(fileName, 'utf8');
+			parsedLineup = JSON.parse(currentLineup);
+		}
+		
+		parsedLineup[userName] = signValue;
+		fs.writeFileSync('/tmp/' + raid + '.json', JSON.stringify(parsedLineup)); 
+		message.channel.send("Signed up user " + userName + " as '" + signValue + "' for " + raid + ".");
+	}
+
+	// Display the raid line-up based on the sign-ups for the channel
+	if (command === "lineup") {
+		if (message.channel.name.indexOf('signup') == -1) {
+			message.channel.send("You can only sign up in designated sign-up channels.");
+			return false;
+		}
+
+		const raid = message.channel.name;
+		const fileName = '/tmp/' + raid + '.json';
+		let parsedLineup = {};
+		if (fs.existsSync(fileName)) {
+			currentLineup = fs.readFileSync(fileName, 'utf8');
+			parsedLineup = JSON.parse(currentLineup);
+		}
+		
+		let yesArray = [];
+		let maybeArray = [];
+		let noArray = [];
+		
+		for (player in parsedLineup) {
+			if (parsedLineup[player] === 'yes') {
+				yesArray.push(player);
+			} else if (parsedLineup[player] === 'maybe') {
+				maybeArray.push(player);
+			} else if (parsedLineup[player] === 'no') {
+				noArray.push(player);
 			}
-			message.channel.send("Signed up user " + user + " as '" + signValue + "' for " + raid + ".");
-		});
+		}
+		message.channel.send("Yes (" + yesArray.length + "): " + yesArray.join(', '));
+		message.channel.send("Maybe (" + maybeArray.length + "): " + maybeArray.join(', '));
+		message.channel.send("No (" + noArray.length + "): " + noArray.join(', '));
 	}
 	
 	// Create a raid channel based on the raid name & date
