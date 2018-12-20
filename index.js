@@ -4,25 +4,62 @@ const fs = require("fs");
 const client = new Discord.Client();
 const config = require("./config.json");
 
+const emojiFile = '/tmp/emojis.json';
+
 client.on("ready", () => {
-  console.log(`GainBot has started on ${client.guilds.size} servers.`); 
-  client.user.setActivity(`World of Setbacks`);
+	console.log('GainBot has started on ' + client.guilds.size + ' servers.'); 
+	client.user.setActivity('World of Setbacks');
 });
 
 client.on("message", async message => {
+	
+	// Determine if the player sending the message is an officer
+	let officerRole = message.guild.roles.find(role => role.name === "Officer");
+	let isOfficer = false;
+	if (message.member.roles.has(officerRole.id)) {
+		isOfficer = true;
+	}
+	
 	// Ignore all bots
 	if(message.author.bot) return;
   
+	// Auto react with emoji(s)
+	let emojis = {};
+	if (fs.existsSync(emojiFile)) {
+		emojis = JSON.parse(fs.readFileSync(emojiFile, 'utf8'));
+	}
+	for (key in emojis) {
+		if(message.content.toLowerCase().indexOf(key) !== -1) {
+			let emoji = client.emojis.find(emoji => emoji.name === emojis[key]);
+			message.react(emoji.id);
+		}
+	}
+	
 	// Use prefix from config file
 	if(message.content.indexOf(config.prefix) !== 0) return;
 	  
 	// Here we separate our "command" name, and our "arguments" for the command. 
-	// e.g. if we have the message "+say Is this the real life?" , we'll get the following:
-	// command = say
-	// args = ["Is", "this", "the", "real", "life?"]
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const command = args.shift().toLowerCase();
 
+	// Allow a keyword for an emoji response
+	if(command === "addreaction" && message.author.id == config.owner) {
+		const keyword = args[0];
+		const emoji = args[1];
+		
+		let emojis = {};
+		if (fs.existsSync(emojiFile)) {
+			fileEmojis = fs.readFileSync(emojiFile, 'utf8');
+			emojis = JSON.parse(fileEmojis);
+		}
+		
+		emojis[keyword] = emoji;
+		fs.writeFileSync(emojiFile, JSON.stringify(emojis)); 
+
+		message.delete().catch(O_o=>{}); 
+		message.channel.send("Added reaction " + emoji + " for '" + keyword + "'.");
+	}
+	
 	// Look up a player on Legacy Players
 	if(command === "lp" || command === 'legacyplayers') {
 		const classes = {
@@ -72,7 +109,6 @@ client.on("message", async message => {
 		  console.log("Error: " + err.message);
 		});
 	}
-
 	
 	// Allow a user to sign up in the sign-up channel
 	if(command === "signup") {
@@ -86,7 +122,6 @@ client.on("message", async message => {
 		const raid = message.channel.name;
 		const user = args[1] ? args[1] : message.member.displayName;
 		const userName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();
-
 		
 		var signValue;
 		if (signup === '+') {
@@ -99,8 +134,7 @@ client.on("message", async message => {
 			message.channel.send('Invalid sign-up. Please sign up as "+", "-", or "m".');
 			return false;
 		}
-		const jsonArray = [userName, signValue];
-		const jsonValue = JSON.stringify(jsonArray);
+		
 		const fileName = '/tmp/' + raid + '.json';
 		let parsedLineup = {};
 		if (fs.existsSync(fileName)) {
@@ -109,12 +143,12 @@ client.on("message", async message => {
 		}
 		
 		parsedLineup[userName] = signValue;
-		fs.writeFileSync('/tmp/' + raid + '.json', JSON.stringify(parsedLineup)); 
+		fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
 		message.channel.send("Signed up user " + userName + " as '" + signValue + "' for " + raid + ".");
 	}
 
 	// Display the raid line-up based on the sign-ups for the channel
-	if (command === "lineup") {
+	if (command === "lineup" && isOfficer) {
 		if (message.channel.name.indexOf('signup') == -1) {
 			message.channel.send("You can only sign up in designated sign-up channels.");
 			return false;
@@ -147,17 +181,34 @@ client.on("message", async message => {
 	}
 	
 	// Create a raid channel based on the raid name & date
-	if (command === "addraid") {
-		if (message.channel.name != 'officers') {
-			message.channel.send('This command can only be used from the officers channel.');
-			return false;
-		}
+	if (command === "addraid" && isOfficer) {
 		const raid = args[0];
 		const date = args[1];
 		const name = raid + '-signups-' + date;
 		var server = message.guild;
-		server.createChannel(name, "text");
+
+		let category = server.channels.find(c => c.name == "Raid Signups" && c.type == "category");
+		server.createChannel(name, 'text')
+			.then(function(channel) {
+				channel.setParent(category.id);
+				channel.send('@everyone Please let the officers know if you will be able to make this raid by signing up here. \n For Yes: +signup + \n For Maybe: +signup m \n For No: +signup -');
+				channel.send('If you are signing up under a name that does not match your discord name, please add it to the end of your signup. \n For Yes: +signup + Flameaesir \n For Maybe: +signup m Flameaesir \n For No: +signup - Flameaesir');
+
+			});
 	}
+	
+	// Remove last 20 messages from a channel
+	if (command === "clean" && isOfficer) {
+		let messageLimit = 20;
+		if (typeof(args[0] !==  'undefined')) {
+			messageLimit = parseInt(args[0]);
+		}
+		message.channel.fetchMessages({limit: messageLimit})
+		   .then(function(list){
+				message.channel.bulkDelete(list);
+			});
+	}
+	
 });
 
 client.login(config.token);
