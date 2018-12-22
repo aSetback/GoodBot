@@ -3,6 +3,7 @@ const https = require("https");
 const fs = require("fs");
 const client = new Discord.Client();
 const config = require("./config.json");
+const {Translate} = require('@google-cloud/translate');
 
 const emojiFile = '/tmp/emojis.json';
 
@@ -42,6 +43,23 @@ client.on("message", async message => {
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 	const command = args.shift().toLowerCase();
 
+	if (command === "translate") {
+		const translate = new Translate();
+
+		let language = args.shift().toLowerCase();
+		let translateText = args.join(' ');
+		
+		translate
+			.translate(translateText, language)
+			.then(results => {
+				const translation = results[0];
+				message.channel.send('Translation: ' + translation);
+			})
+			.catch(err => {
+				console.error('ERROR:', err);
+			});
+	}
+			
 	// Allow a keyword for an emoji response
 	if(command === "addreaction" && message.author.id == config.owner) {
 		const keyword = args[0];
@@ -113,7 +131,7 @@ client.on("message", async message => {
 	// Allow a user to sign up in the sign-up channel
 	if(command === "signup") {
 		if (message.channel.name.indexOf('signup') == -1) {
-			message.channel.send("You can only sign up in designated sign-up channels.");
+			message.channel.send("This command can only be used in a sign-up channel.");
 			return false;
 		}
 		message.delete().catch(O_o=>{}); 
@@ -150,7 +168,7 @@ client.on("message", async message => {
 	// Display the raid line-up based on the sign-ups for the channel
 	if (command === "lineup" && isOfficer) {
 		if (message.channel.name.indexOf('signup') == -1) {
-			message.channel.send("You can only sign up in designated sign-up channels.");
+			message.channel.send("This command can only be used in a sign-up channel.");
 			return false;
 		}
 
@@ -175,9 +193,11 @@ client.on("message", async message => {
 				noArray.push(player);
 			}
 		}
-		message.channel.send("Yes (" + yesArray.length + "): " + yesArray.join(', '));
-		message.channel.send("Maybe (" + maybeArray.length + "): " + maybeArray.join(', '));
-		message.channel.send("No (" + noArray.length + "): " + noArray.join(', '));
+		message.channel.send(
+			"Yes (" + yesArray.length + "): " + yesArray.join(', ') 
+			+ '\n' + "Maybe (" + maybeArray.length + "): " + maybeArray.join(', ')
+			+ '\n' + "No (" + noArray.length + "): " + noArray.join(', ')
+		);
 	}
 	
 	// Create a raid channel based on the raid name & date
