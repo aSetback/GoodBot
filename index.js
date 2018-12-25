@@ -15,24 +15,31 @@ client.on("ready", () => {
 client.on("message", async message => {
 	
 	// Determine if the player sending the message is an officer
-	let officerRole = message.guild.roles.find(role => role.name === "Officer");
+	let officerRole = message.guild.roles.find(role => role.name === "Officer" || role.name === "Staff");
 	let isOfficer = false;
 	if (message.member.roles.has(officerRole.id)) {
 		isOfficer = true;
+	}
+	
+	let isGain = false;
+	if (message.guild.id == '350833594236796928') {
+		isGain = true;
 	}
 	
 	// Ignore all bots
 	if(message.author.bot) return;
   
 	// Auto react with emoji(s)
-	let emojis = {};
-	if (fs.existsSync(emojiFile)) {
-		emojis = JSON.parse(fs.readFileSync(emojiFile, 'utf8'));
-	}
-	for (key in emojis) {
-		if(message.content.toLowerCase().indexOf(key) !== -1) {
-			let emoji = client.emojis.find(emoji => emoji.name === emojis[key]);
-			message.react(emoji.id);
+	if (isGain) {
+		let emojis = {};
+		if (fs.existsSync(emojiFile)) {
+			emojis = JSON.parse(fs.readFileSync(emojiFile, 'utf8'));
+		}
+		for (key in emojis) {
+			if(message.content.toLowerCase().indexOf(key) !== -1) {
+				let emoji = client.emojis.find(emoji => emoji.name === emojis[key]);
+				message.react(emoji.id);
+			}
 		}
 	}
 	
