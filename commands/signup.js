@@ -37,8 +37,8 @@ exports.run = (client, message, args) => {
 		
 	message.channel.fetchPinnedMessages()
 		.then(function(list){
-			if (!list.length) { return false; }
 			pinnedMsg = list.last();
+			if (!pinnedMsg) { return false; }
 			currentContent = pinnedMsg.content;
 			const raid = message.channel.name;
 			const fileName = '/tmp/' + raid + '.json';
