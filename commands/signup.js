@@ -1,4 +1,6 @@
 const fs = require("fs");
+const Discord = require("discord.js");
+
 
 exports.run = (client, message, args) => {
 	// Allow a user to sign up in the sign-up channel
@@ -32,6 +34,15 @@ exports.run = (client, message, args) => {
 		parsedLineup = JSON.parse(currentLineup);
 	}
 	
+	let raidArray = raid.split(/-/g);
+	let raidMonth = raidArray[2];
+	let raidDay = raidArray[3];
+	let raidDate = new Date(Date.parse(raidMonth + " " + raidDay));
+	let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
+
+	let raidName = raidArray[0];
+	raidName = raidName.charAt(0).toUpperCase() + raidName.slice(1).toLowerCase();
+
 	parsedLineup[userName] = signValue;
 	fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
 		
@@ -62,11 +73,13 @@ exports.run = (client, message, args) => {
 				}
 			}
 			
-			pinnedMsg.edit(
-				'Please let the officers know if you will be able to make this raid by signing up here with a "+", "-" or "m"\n'
-				+ '\n' + "Yes (" + yesArray.length + "): " + yesArray.join(', ') 
-				+ '\n' + "Maybe (" + maybeArray.length + "): " + maybeArray.join(', ')
-				+ '\n' + "No (" + noArray.length + "): " + noArray.join(', ')
-			);
-		});		
+		const embed = new Discord.RichEmbed()
+			.setTitle("Raid Signups for " + raidName + ", " + dateString)
+			.setColor(0x02a64f)
+			.addField('Yes (' + yesArray.length + ')', yesArray.join(', '))
+			.addField('Maybe (' + maybeArray.length + ')', maybeArray.join(', '))
+			.addField('No (' + noArray.length + ')', noArray.join(', '));
+		
+		pinnedMsg.edit(embed);
+	});		
 };
