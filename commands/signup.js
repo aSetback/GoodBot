@@ -34,52 +34,9 @@ exports.run = (client, message, args) => {
 		parsedLineup = JSON.parse(currentLineup);
 	}
 	
-	let raidArray = raid.split(/-/g);
-	let raidMonth = raidArray[2];
-	let raidDay = raidArray[3];
-	let raidDate = new Date(Date.parse(raidMonth + " " + raidDay));
-	let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
-
-	let raidName = raidArray[0];
-	raidName = raidName.charAt(0).toUpperCase() + raidName.slice(1).toLowerCase();
-
 	parsedLineup[userName] = signValue;
 	fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
-		
-	message.channel.fetchPinnedMessages()
-		.then(function(list){
-			pinnedMsg = list.last();
-			if (!pinnedMsg) { return false; }
-			currentContent = pinnedMsg.content;
-			const raid = message.channel.name;
-			const fileName = '/tmp/' + raid + '.json';
-			let parsedLineup = {};
-			if (fs.existsSync(fileName)) {
-				currentLineup = fs.readFileSync(fileName, 'utf8');
-				parsedLineup = JSON.parse(currentLineup);
-			}
-			
-			let yesArray = [];
-			let maybeArray = [];
-			let noArray = [];
-			
-			for (player in parsedLineup) {
-				if (parsedLineup[player] === 'yes') {
-					yesArray.push(player);
-				} else if (parsedLineup[player] === 'maybe') {
-					maybeArray.push(player);
-				} else if (parsedLineup[player] === 'no') {
-					noArray.push(player);
-				}
-			}
-			
-		const embed = new Discord.RichEmbed()
-			.setTitle("Raid Signups for " + raidName + ", " + dateString)
-			.setColor(0x02a64f)
-			.addField('Yes (' + yesArray.length + ')', yesArray.join(', '))
-			.addField('Maybe (' + maybeArray.length + ')', maybeArray.join(', '))
-			.addField('No (' + noArray.length + ')', noArray.join(', '));
-		
-		pinnedMsg.edit(embed);
-	});		
+
+	client.updateEmbed(message, raid);
+
 };
