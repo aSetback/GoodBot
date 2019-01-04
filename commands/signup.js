@@ -37,6 +37,6 @@ exports.run = (client, message, args) => {
 	parsedLineup[userName] = signValue;
 	fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
 
-	client.updateEmbed(message, raid);
+	client.embed.update(message, raid);
 
 };

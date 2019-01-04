@@ -29,7 +29,7 @@ exports.run = (client, message, args) => {
 			channel.setParent(category.id);
 			channel.send(signupMessage).then((botMsg) => {
 				botMsg.pin();
-				client.updateEmbed(botMsg, raidName);
+				client.embed.update(botMsg, raidName);
 			});
 		});
 }

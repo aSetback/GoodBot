@@ -23,5 +23,5 @@ exports.run = (client, message, args) => {
 	delete parsedLineup[userName];
 	fs.writeFileSync(fileName, JSON.stringify(parsedLineup));
 	
-	client.updateEmbed(message, raid);
+	client.embed.update(message, raid);
 }

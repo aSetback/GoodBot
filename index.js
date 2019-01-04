@@ -5,18 +5,24 @@ const client = new Discord.Client();
 const config = require("./config.json");
 const https = require("https");
 const emojiFile = '/tmp/emojis.json';
-const embed = require("./functions/embed.js");
-const reaction = require("./functions/reaction.js");
 
 client.embedTitles = [];
-
 client.config = config;
-client.updateEmbed = embed.update;
-client.reaction = reaction;
 
 client.on('raw', packet => {
 	client.reaction.rawEvent(client, packet);
 });
+
+fs.readdir("./functions/", (err, files) => {
+  if (err) return console.error(err);
+  files.forEach(file => {
+    const loadedFunction = require(`./functions/${file}`);
+    let functionName = file.split(".")[0];
+    console.log('Loading function: ' + functionName);
+    client[functionName] = loadedFunction;
+  });
+	
+})
 
 fs.readdir("./events/", (err, files) => {
   if (err) return console.error(err);
