@@ -20,6 +20,11 @@ module.exports = (client, message) => {
 		if (message.content.indexOf(client.config.prefix) !== 0) return;
 	}
 
+	message.isAdmin = 0;
+    if (message.member && message.member.hasPermission("ADMINISTRATOR")) {
+		message.isAdmin = 1;
+	}
+	
 	const cmd = client.commands.get(command);
 	// If that command doesn't exist, silently exit and do nothing
 	if (!cmd) return;

@@ -1,7 +1,12 @@
 const fs = require("fs");
 
 exports.run = (client, message, args) => {
-	// Allow a user to sign up in the sign-up channel
+
+
+	if (!message.isAdmin) {
+		return false;
+	}
+
 	if (message.channel.name.indexOf('signup') == -1) {
 		message.channel.send("This command can only be used in a sign-up channel.");
 		return false;
