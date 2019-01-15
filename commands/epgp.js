@@ -12,6 +12,9 @@ exports.run = (client, message, args) => {
 		return false;
 	}
 
+	message.delete().catch(O_o=>{}); 
+
+	
 	let player = args.shift();
 	if (!player) { 
 		message.channel.send("EPGP: Please give a player name to look up.");
@@ -62,10 +65,10 @@ exports.run = (client, message, args) => {
 			player = standing[0];
 			ep = standing[1];
 			gp = standing[2];
-			message.channel.send("EPGP for " + player + ": " + ep + " EP, " + gp + " GP (" + (ep/gp).toFixed(2) + " priority)");
+			message.author.send("EPGP for " + player + ": " + ep + " EP, " + gp + " GP (" + (ep/gp).toFixed(2) + " priority)");
 			return true;
 		}
 	}
 
-	message.channel.send("EPGP: Could not find player in standings.");
+	message.author.send("EPGP: Could not find player in standings.");
 }
