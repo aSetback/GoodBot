@@ -1,0 +1,7 @@
+const fs = require("fs");
+const text2png = require('text2png');
+const Discord = require("discord.js");
+
+exports.run = (client, message, args) => {
+   client.user.setActivity(args.join(' '));
+}
