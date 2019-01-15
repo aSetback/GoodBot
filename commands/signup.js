@@ -5,7 +5,6 @@ const Discord = require("discord.js");
 exports.run = (client, message, args) => {
 	// Allow a user to sign up in the sign-up channel
 	if (message.channel.name.indexOf('signup') == -1) {
-		message.channel.send("This command can only be used in a sign-up channel.");
 		return false;
 	}
 	message.delete().catch(O_o=>{}); 
