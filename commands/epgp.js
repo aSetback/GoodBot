@@ -50,7 +50,8 @@ exports.run = (client, message, args) => {
 			}
 		}
 		message.author.send("```\n" + epgpMessage + "\n```");
-		message.channel.send("EPGP: Standings have been sent to you via direct message.");
+		message.channel.send("EPGP: Standings have been sent to you via direct message.")
+		               .then(thismessage => { thismessage.delete(5000); });
 		return false;	
 	}
 	
