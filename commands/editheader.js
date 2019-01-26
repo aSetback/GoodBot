@@ -4,9 +4,9 @@ exports.run = (client, message, args) => {
 		return false;
 	}
  
-  message.channel.fetchPinnedMessages()
-		             .then(function(list){
-			pinnedMsg = list.last();
-      pinnedMsg.edit(args.join(''));
+        message.channel.fetchPinnedMessages()
+		       .then(function(list){
+		          pinnedMsg = list.last();
+                          pinnedMsg.edit(args.join(''));
     });
 }
