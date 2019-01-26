@@ -1,3 +1,8 @@
 exports.run = (client, message, args) => {
-   client.user.setActivity(args.join(' '));
+
+	if (!message.isAdmin) {
+		return false;
+	}
+
+	client.user.setActivity(args.join(' '));
 }
