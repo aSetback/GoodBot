@@ -20,8 +20,10 @@ module.exports = (client, message) => {
 		if (message.content.indexOf(client.config.prefix) !== 0) return;
 	}
 
+	let trustrole = message.guild.roles.find(role => role.name === "Developer");
+	
 	message.isAdmin = 0;
-    if (message.member && message.member.hasPermission("ADMINISTRATOR")) {
+    if (message.member && (message.member.hasPermission("ADMINISTRATOR")) || message.member.roles.has(trustrole.id)) {
 		message.isAdmin = 1;
 	}
 	
