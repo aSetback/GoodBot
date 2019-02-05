@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const Enmap = require("enmap");
 const fs = require("fs");
 const client = new Discord.Client();
+const trustList = require("./trusted.json");
+const trustPath = "./trusted.json";
 
 // Make our config available throughout all the files.
 const config = require("./config.json");
