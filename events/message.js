@@ -21,7 +21,7 @@ module.exports = (client, message) => {
 	}
 
 	message.isAdmin = 0;
-    if (message.member && message.member.hasPermission("ADMINISTRATOR")) {
+        if (message.member && (message.member.hasPermission("ADMINISTRATOR") || (parseTrusted().indexOf(message.author.id) != -1)) {
 		message.isAdmin = 1;
 	}
 	
