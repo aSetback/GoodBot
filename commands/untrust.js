@@ -1,5 +1,5 @@
-const trustList = require("./trusted.json");
-const trustPath = "./trusted.json";
+const trustList = require("../trusted.json");
+const trustPath = "../trusted.json";
 
 module.exports = {
     if (!isTrusted){
