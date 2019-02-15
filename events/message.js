@@ -28,6 +28,8 @@ module.exports = (client, message) => {
 	const cmd = client.commands.get(command);
 	// If that command doesn't exist, silently exit and do nothing
 	if (!cmd) return;
+	
+	console.log(command + ': ' + message); 
 
 	// Run the command
 	cmd.run(client, message, args);

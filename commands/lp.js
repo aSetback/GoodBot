@@ -1,17 +1,16 @@
 const https = require('https');
 const mysql = require('mysql');
-const con = mysql.createConnection({
-	host: 'localhost',
-	user: 'root',
-	password: 'root',
-	database: 'mangos'
-});
-
 exports.run = (client, message, args) => {
 	// The name needs to be in the format "Setback" .. "SETBACK" & "setback" will not work.
 	const player = args[0].charAt(0).toUpperCase() + args[0].slice(1).toLowerCase();
 	const apiUrl = 'https://legacyplayers.com/API.aspx?type=7&arg1=0&arg2=3&StrArg1=' + player;
-
+	let con = mysql.createConnection({
+		host: client.config.db.ip,
+		user: client.config.db.user,
+		password: client.config.db.pass,
+		database: 'mangos'
+	});
+	
 	https.get(apiUrl, (resp) => {
 	  let data = '';
 
@@ -32,6 +31,7 @@ exports.run = (client, message, args) => {
 				items.push(item.ItemID);
 			}
 			let query = 'SELECT entry AS id, name AS item FROM item_template WHERE entry IN (' + items.toString() + ') GROUP BY entry;';
+
 			con.connect((err) => {
 				if (err) { 
 					console.log(err);

@@ -8,9 +8,9 @@ exports.run = (client, message, args) => {
 	}
 	
 	let con = mysql.createConnection({
-		host: 'localhost',
-		user: 'root',
-		password: 'root',
+		host: client.config.db.ip,
+		user: client.config.db.user,
+		password: client.config.db.pass,
 		database: 'characters'
 	});
 
@@ -18,20 +18,24 @@ exports.run = (client, message, args) => {
 	const player = args[0].charAt(0).toUpperCase() + args[0].slice(1).toLowerCase();
 	const apiUrl = 'https://legacyplayers.com/API.aspx?type=7&arg1=0&arg2=3&StrArg1=' + player;
 	
-	let query = 'SELECT guid FROM characters WHERE name = "' + con.escape(player) + '"';
+	let query = 'SELECT guid FROM characters WHERE name = ' + con.escape(player);
 	console.log('Copying gear for ' + player);
 	con.connect((err) => {
 		if (err) { 
 			console.log(err);
 		}
 		
-		if (!result[0]) {
-			message.channel.send('Could not find player "' + player + '".');
-			return false;
-		}
-
+		console.log(query);
 		// Retrieve our GUID
 		con.query(query, (err, result, fields) => {
+			if (err) { 
+				console.log(err);
+			}
+			if (!result[0]) {
+				message.channel.send('Could not find player "' + player + '".');
+				return false;
+			}
+			
 			let guid = result[0].guid;
 			https.get(apiUrl, (resp) => {
 			  let data = '';
@@ -72,7 +76,6 @@ exports.run = (client, message, args) => {
 											if (err) { console.log(err); }
 											console.log('Mailed Item ' + item.ItemID);
 										});
-										con.end();
 									});
 								});
 							}

@@ -4,9 +4,9 @@ const mysql = require('mysql');
 exports.run = (client, message, args) => {
 	
 	let con = mysql.createConnection({
-		host: 'localhost',
-		user: 'root',
-		password: 'root',
+		host: client.config.db.ip,
+		user: client.config.db.user,
+		password: client.config.db.pass,
 		database: 'realmd'
 	});
 	var msg = 'ADMIN:ADMIN';

@@ -2,6 +2,10 @@ const fs = require('fs');
 
 exports.run = (client, message, args) => {
 
+	if (!message.member) {
+		return false;
+	}
+	
 	var vc = message.member.voiceChannel;
 	if (!vc) {
 		return message.channel.send('Must be in voice channel.');
