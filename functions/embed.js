@@ -59,7 +59,7 @@ module.exports = {
 				embed.addField('No', '-');
 			}
 
-			pinnedMsg.edit(embed);
+			pinnedMsg.edit(currentContent, embed);
 		});		
 	}
 }
