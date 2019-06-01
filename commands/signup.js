@@ -13,7 +13,11 @@ exports.run = (client, message, args) => {
 	const raid = message.channel.name;
 	const user = args[1] ? args[1] : message.member.displayName;
 	const userName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();
-	
+	if (userName.indexOf('/') !== -1 || userName.indexOf("'") !== -1 || userName.indexOf(' ') !== -1) {
+		message.channel.send("We're sorry, but " + userName + " is not a valid character name.  Please sign up with your actual character name, and refrain from using slashes, spaces or apostrophes in your sign-up name.");
+		return false;
+	}
+
 	var signValue;
 	if (signup === '+') {
 		signValue = 'yes';
@@ -26,7 +30,7 @@ exports.run = (client, message, args) => {
 		return false;
 	}
 	
-	const fileName = '/tmp/' + raid + '.json';
+	const fileName = './signups/' + raid + '.json';
 	let parsedLineup = {};
 	if (fs.existsSync(fileName)) {
 		currentLineup = fs.readFileSync(fileName, 'utf8');
@@ -37,5 +41,4 @@ exports.run = (client, message, args) => {
 	fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
 
 	client.embed.update(message, raid);
-
 };

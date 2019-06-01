@@ -16,7 +16,7 @@ module.exports = {
 			if (!pinnedMsg) { return false; }
 			currentContent = pinnedMsg.content;
 			const raid = message.channel.name;
-			const fileName = '/tmp/' + raid + '.json';
+			const fileName = './signups/' + raid + '.json';
 			let parsedLineup = {};
 			if (fs.existsSync(fileName)) {
 				currentLineup = fs.readFileSync(fileName, 'utf8');

@@ -18,7 +18,7 @@ exports.run = (client, message, args) => {
 	const userName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();
 
 	
-	const fileName = '/tmp/' + raid + '.json';
+	const fileName = './signups/' + raid + '.json';
 	let parsedLineup = {};
 	if (fs.existsSync(fileName)) {
 		currentLineup = fs.readFileSync(fileName, 'utf8');

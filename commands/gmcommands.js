@@ -31,7 +31,11 @@ exports.run = (client, message, args) => {
 			for (key in commandLines) {
 				let commandLine = commandLines[key];
 				setTimeout(() => {
-					message.member.send(commandLine);
+					if (message.member) {
+						message.member.send(commandLine);
+					} else {
+						message.channel.send(commandLine);
+					}
 				}, key * 2000);
 			}
 			con.end();

@@ -21,15 +21,18 @@ module.exports = (client, message) => {
 	}
 
 	message.isAdmin = 0;
-    if (message.member && message.member.hasPermission("ADMINISTRATOR")) {
+    if (message.member && message.member.hasPermission("MANAGE_CHANNELS")) {
 		message.isAdmin = 1;
 	}
+
+	
 	
 	const cmd = client.commands.get(command);
 	// If that command doesn't exist, silently exit and do nothing
 	if (!cmd) return;
-	
-	console.log(command + ': ' + message); 
+
+	var username = message.member !== null ? message.member.displayName : message.author.username;
+	console.log('[' + client.timestamp() + '] (ID#: ' + message.author.id + ') ' + username + ': ' + message);
 
 	// Run the command
 	cmd.run(client, message, args);

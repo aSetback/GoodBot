@@ -9,9 +9,19 @@ exports.run = (client, message, args) => {
 		password: client.config.db.pass,
 		database: 'realmd'
 	});
-	var msg = 'ADMIN:ADMIN';
-	username =	args.shift().toUpperCase();
-	password = args.shift().toUpperCase();
+
+	username = args.shift();
+	password = args.shift();
+	
+	if (!username) {
+		return message.channel.send('Account name is required.');
+	}
+	if (!password) {
+		return message.channel.send('Password is required.');
+	}
+	username = username.toUpperCase();
+	password = password.toUpperCase();
+	
 	hash = crypto.createHash('sha1').update(username + ':' + password).digest('hex');
 	query = 'INSERT INTO account (username, sha_pass_hash) VALUES ("' + username + '", "'+ hash.toUpperCase() +'")';
 	con.connect((err) => {
@@ -22,9 +32,9 @@ exports.run = (client, message, args) => {
 		con.query(query, (err, result, fields) => {
 			if (err) { 
 				console.log(err);
-				message.channel.send('Account Create Failed.');
+				message.channel.send('Username is not available.  Please try again with a different username.');
 			} else {
-				message.channel.send('Account Created');
+				message.channel.send('Account created.');
 			}
 			con.end();
 		});

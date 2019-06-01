@@ -5,6 +5,8 @@ exports.run = (client, message, args) => {
 	if (!message.member) {
 		return false;
 	}
+
+	message.delete().catch(O_o=>{}); 
 	
 	var vc = message.member.voiceChannel;
 	if (!vc) {
