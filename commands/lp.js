@@ -10,7 +10,7 @@ exports.run = (client, message, args) => {
 		password: client.config.db.pass,
 		database: 'mangos'
 	});
-	
+
 	https.get(apiUrl, (resp) => {
 	  let data = '';
 
@@ -22,7 +22,6 @@ exports.run = (client, message, args) => {
 	  // The whole response has been received. Print out the result.
 	  resp.on('end', () => {
 		parsedData = JSON.parse(data);
-
 		if (parsedData.CharId) {
 			let gear = parsedData.RefGear.Slots;
 			let items = [];
@@ -34,10 +33,11 @@ exports.run = (client, message, args) => {
 
 			con.connect((err) => {
 				if (err) { 
+					console.log('LP Error:');
 					console.log(err);
 				}
 				con.query(query, (err, result, fields) => {
-					let itemMessage = '';
+					let itemMessage = '-\n__' + player + '__\n';
 					for (key in result) {
 						let row = result[key];
 						if (row.id != 0 && row.item.length > 0) {
@@ -48,7 +48,8 @@ exports.run = (client, message, args) => {
 					con.end();
 				});
 			});
-		
+		} else {
+			message.channel.send('Unable to find player "' + player + '" on LegacyPlayers API.');
 		}
 	  });
 	}).on("error", (err) => {

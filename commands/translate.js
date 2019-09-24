@@ -1,7 +1,8 @@
 const {Translate} = require('@google-cloud/translate');
 
 exports.run = (client, message, args) => {
-	const translate = new Translate();
+	let token = client.config.googleProjectId;
+	const translate = new Translate({token});
 	let language = args.shift().toLowerCase();
 	let translateText = args.join(' ');
 

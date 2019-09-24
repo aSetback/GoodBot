@@ -6,12 +6,13 @@ exports.run = (client, message, args) => {
 
 	message.delete().catch(O_o=>{}); 
 
-	const wowClass = args[0];
-	const className = wowClass.charAt(0).toUpperCase() + wowClass.slice(1).toLowerCase();
-	const user = args[1] ? args[1] : message.member.displayName;
+	const user = args[0];
 	const playerName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();
 
-	const fileName = 'data/' + message.guild.id + '-class.json';
+	const role = args[1];
+	const roleName = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+
+	const fileName = 'data/roles.json';
 	
 	let parsedList = {};
 	if (fs.existsSync(fileName)) {
@@ -19,9 +20,9 @@ exports.run = (client, message, args) => {
 		parsedList = JSON.parse(currentList);
 	}
 	
-	parsedList[playerName] = className;
+	parsedList[playerName] = roleName;
 	fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
 
-	message.channel.send('Updated ' +  playerName + ' as ' + className + '.');
+	message.channel.send('Updated ' +  playerName + ' as ' + roleName + '.');
 
 };

@@ -10,7 +10,7 @@ module.exports = (client, message) => {
 		command = 'signup'
 	} else if (args[0] == '-') {
 		command = 'signup'
-	} else if (args[0] == 'm') {
+	} else if (args[0].toLowerCase() == 'm') {
 		command = 'signup' 
 	} else {
 		args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
@@ -32,7 +32,15 @@ module.exports = (client, message) => {
 	if (!cmd) return;
 
 	var username = message.member !== null ? message.member.displayName : message.author.username;
-	console.log('[' + client.timestamp() + '] (ID#: ' + message.author.id + ') ' + username + ': ' + message);
+	// Log to screen
+	let channelName = message.channel.name ? message.channel.name : 'via DM';
+	let logMessage = username + '/' + channelName + ': ' + message + ' [#' + message.author.id + ']';
+	console.log('[' + client.timestamp() + '] ' + logMessage);
+
+	let channel = message.guild ? message.guild.channels.find(c => c.name == "server-logs") : null;
+	if (channel) {
+		channel.send(logMessage);
+	}
 
 	// Run the command
 	cmd.run(client, message, args);

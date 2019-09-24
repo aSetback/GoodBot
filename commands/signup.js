@@ -23,14 +23,14 @@ exports.run = (client, message, args) => {
 		signValue = 'yes';
 	} else if (signup === '-') {
 		signValue = 'no';
-	} else if (signup === 'm') {
+	} else if (signup.toLowerCase() === 'm') {
 		signValue = 'maybe';
 	} else {
 		message.channel.send('Invalid sign-up. Please sign up as "+", "-", or "m".');
 		return false;
 	}
 	
-	const fileName = './signups/' + raid + '.json';
+	const fileName = './signups/' + message.guild.id + '-' + raid + '.json';
 	let parsedLineup = {};
 	if (fs.existsSync(fileName)) {
 		currentLineup = fs.readFileSync(fileName, 'utf8');

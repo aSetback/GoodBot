@@ -25,7 +25,9 @@ exports.run = (client, message, args) => {
 
 				channel.send({embed}).then((message) => {
 					message.react(main.id).then(() => {
-						message.react(alt.id);
+						setTimeout(function() {
+							message.react(alt.id);
+						}, 60000);
 					});
 				});
 			}

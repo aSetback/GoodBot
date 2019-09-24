@@ -9,7 +9,7 @@ exports.run = (client, message, args) => {
 	const user = args[0] ? args[0] : message.member.displayName;
 	const playerName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();
 
-	const fileName = 'data/class.json';
+	const fileName = 'data/' + message.guild.id + '-class.json';
 	
 	let parsedList = {};
 	if (fs.existsSync(fileName)) {

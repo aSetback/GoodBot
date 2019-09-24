@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 
 exports.run = (client, message, args) => {
+	return message.channel.send('The PTR is currently disabled.');
 	// The name needs to be in the format "Setback" .. "SETBACK" & "setback" will not work.
 	let con = mysql.createConnection({
 		host: client.config.db.ip,

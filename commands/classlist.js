@@ -5,14 +5,14 @@ exports.run = (client, message, args) => {
 	message.delete().catch(O_o=>{}); 
 
 	const raid = message.channel.name;
-	const fileName = './signups/' + raid + '.json';
+	const fileName = './signups/' + message.guild.id + '-' + raid + '.json';
 	let parsedLineup = {};
 	if (fs.existsSync(fileName)) {
 		currentLineup = fs.readFileSync(fileName, 'utf8');
 		parsedLineup = JSON.parse(currentLineup);
 	}
 
-	const classFile = 'data/class.json';
+	const classFile = 'data/' + message.guild.id + '-class.json';
 	let classList = {};
 	if (fs.existsSync(fileName)) {
 		currentList = fs.readFileSync(classFile, 'utf8');

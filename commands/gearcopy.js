@@ -2,6 +2,7 @@ const https = require('https');
 const mysql = require('mysql');
 
 exports.run = (client, message, args) => {
+	return message.channel.send('The PTR is currently disabled.');
 
 	if (!message.isAdmin) {
 		return false;
