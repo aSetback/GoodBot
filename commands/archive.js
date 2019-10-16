@@ -5,7 +5,11 @@ exports.run = (client, message, args) => {
 	}
 	
 	let category = message.guild.channels.find(c => c.name == "Archives" && c.type == "category");
-	message.channel.setParent(category.id).then((channel) => {
-		channel.lockPermissions();
-	});
+	if (category) {
+		message.channel.setParent(category.id).then((channel) => {
+			channel.lockPermissions();
+		});
+	} else {
+		message.channel.send('Failed to archive this channel.  Please add a channel category called "Archives".')
+	}
 }

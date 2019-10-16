@@ -68,10 +68,16 @@ fs.readdir("./commands/", (err, files) => {
 });
 
 // Watch the epgp file and automatically update epgp channel on update.
-fs.watchFile(config.epgpFile, {interval: 6000}, (curr, prev) => {
-	let guild = client.guilds.get("350833594236796928");
-	let channel = guild.channels.find(channel => channel.name === "epgp");
-	client.epgp.update(client, channel);
+fs.watchFile(config.bankFile, {interval: 500}, (curr, prev) => {
+  let guild = client.guilds.get("581817176915181568");
+  client.bank.update(client, guild);
+});
+
+// Watch the epgp file and automatically update epgp channel on update.
+fs.watchFile(config.epgpFile, {interval: 5000}, (curr, prev) => {
+  let guild = client.guilds.get("581817176915181568");
+  client.epgp.update(client, guild);
+  client.epgp.backup(client, guild);
 });
 
 client.login(config.token);

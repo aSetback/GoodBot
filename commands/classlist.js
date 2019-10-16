@@ -55,7 +55,9 @@ exports.run = (client, message, args) => {
 		classMessage += "**" + className + " (" + classLineup[className].length + "):** " + classLineup[className].join(", ") + "\n";
 	}
 
-	classMessage += "**Unsigned (" + unsigned.length + "):** " + unsigned.join(", ") + "\n";
+	if (classLineup.length < 50) {
+		classMessage += "**Unsigned (" + unsigned.length + "):** " + unsigned.join(", ") + "\n";
+	}
 	
 	message.author.send(classMessage);
 	

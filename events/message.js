@@ -25,6 +25,11 @@ module.exports = (client, message) => {
 		message.isAdmin = 1;
 	}
 
+	message.serverAdmin = 0;
+	if (message.member && message.member.hasPermission("ADMINISTRATOR")) {
+		message.serverAdmin = 1;
+	}	
+
 	
 	
 	const cmd = client.commands.get(command);
@@ -34,9 +39,9 @@ module.exports = (client, message) => {
 	var username = message.member !== null ? message.member.displayName : message.author.username;
 	// Log to screen
 	let channelName = message.channel.name ? message.channel.name : 'via DM';
-	let logMessage = username + '/' + channelName + ': ' + message + ' [#' + message.author.id + ']';
+	let guildId = message.guild ? message.guild.id : '-';
+	let logMessage = username + '/' + channelName + ': ' + message + ' [#' + message.author.id + ', ' + guildId + ']';
 	console.log('[' + client.timestamp() + '] ' + logMessage);
-
 	let channel = message.guild ? message.guild.channels.find(c => c.name == "server-logs") : null;
 	if (channel) {
 		channel.send(logMessage);

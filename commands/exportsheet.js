@@ -3,6 +3,7 @@ exports.run = (client, message, args) => {
 		return false;
 	}
 
+	var sheetID = '1If9a5QKgrvRS0Qfps2WnXg49dqqMIIxe-VZSDU3Ojmk';
 	var async = require('async');
 	var fs = require('fs');
 
@@ -20,11 +21,12 @@ exports.run = (client, message, args) => {
 		'druid-healer': 10,
 		'druid-caster': 11,
 		'druid-dps': 12,
-		'priest-caster': 13
+		'priest-caster': 13,
+		'paladin-dps': 14,
 	};
 	
 	const raid = message.channel.name;
-	const fileName = './signups/' + raid + '.json';
+	const fileName = './signups/' + message.guild.id + '-' + raid + '.json';
 	let parsedLineup = {};
 	if (fs.existsSync(fileName)) {
 		currentLineup = fs.readFileSync(fileName, 'utf8');
@@ -55,9 +57,10 @@ exports.run = (client, message, args) => {
 		}
 	}
 	setCells(cellData);
+	message.channel.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
 
 	function getRole(player) {
-		const roleFile = 'data/roles.json';
+		const roleFile = 'data/' + message.guild.id + '-roles.json';
 		roleList = JSON.parse(fs.readFileSync(roleFile));
 		for (rolePlayer in roleList) {
 			if (player == rolePlayer) {
@@ -68,7 +71,7 @@ exports.run = (client, message, args) => {
 	}
 
 	function getClass(player) {
-		const classFile = 'data/class.json';
+		const classFile = 'data/' + message.guild.id + '-class.json';
 		classList = JSON.parse(fs.readFileSync(classFile));
 		for (classPlayer in classList) {
 			if (player == classPlayer) {
@@ -80,8 +83,7 @@ exports.run = (client, message, args) => {
 
 	async function setCells(cellData) {
 		var GoogleSpreadsheet = require('google-spreadsheet');
-		var ssid = '1D4KpNDiOlZku-F0Mi50QB-YIZ9da7fss0oHqNuSpgoA';
-		var doc = new GoogleSpreadsheet(ssid);
+		var doc = new GoogleSpreadsheet(sheetID);
 		var sheet;
 		var cells;
 
@@ -100,9 +102,9 @@ exports.run = (client, message, args) => {
 			function getCells(step) {
 				sheet.getCells({
 					'min-row': 2,
-					'max-row': 13,
+					'max-row': 23,
 					'min-col': 2,
-					'max-col': 13,
+					'max-col': 14,
 					'return-empty': true
 				}, async function(err, data) {
 					cells = data;
@@ -117,10 +119,16 @@ exports.run = (client, message, args) => {
 					if (newValue !== null) {
 						cell.value = newValue;
 						saveCells.push(cell);
+					} else {
+						cell.value = '';
 					}
 				}
-				console.log(saveCells.length);
 				sheet.bulkUpdateCells(saveCells);
+				step();
+			},
+			function getLuaData(step) {
+
+
 				step();
 			}
 		]);

@@ -12,7 +12,7 @@ exports.run = (client, message, args) => {
 	const role = args[1];
 	const roleName = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
 
-	const fileName = 'data/roles.json';
+	const fileName = 'data/' + message.guild.id + '-roles.json';
 	
 	let parsedList = {};
 	if (fs.existsSync(fileName)) {

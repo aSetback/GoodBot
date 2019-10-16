@@ -14,6 +14,10 @@ exports.run = (client, message, args) => {
 	}
 
 	let category = server.channels.find(c => c.name == "Raid Signups" && c.type == "category");
+	if (!category) {
+		channel.message.send('Unable to create raid.  Please create a channel category called "Raid Signups" to use this command.');
+		return false
+	}
 	server.createChannel(raidName, 'text')
 		.then((channel) => {
 			let signupMessage = '-';
