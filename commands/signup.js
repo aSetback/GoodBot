@@ -1,7 +1,6 @@
 const fs = require("fs");
 const Discord = require("discord.js");
 
-
 exports.run = (client, message, args) => {
 	// Allow a user to sign up in the sign-up channel
 	if (message.channel.name.indexOf('signup') == -1) {
