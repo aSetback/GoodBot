@@ -3,7 +3,8 @@ exports.run = (client, message, args) => {
 		return false;
 	}
 
-	var sheetID = '1If9a5QKgrvRS0Qfps2WnXg49dqqMIIxe-VZSDU3Ojmk';
+	var sheetID = client.customOptions.get(message.guild, 'sheet').trim();
+	console.log('>' + sheetID + '<');
 	var async = require('async');
 	var fs = require('fs');
 
@@ -41,7 +42,7 @@ exports.run = (client, message, args) => {
 			playerType = getClass(player) + '-' + getRole(player);
 			col = sheetCols[playerType];			
 			if (col === undefined) {
-				message.channel.send('Could not find a column assignment for ' + player + '.');
+				message.author.send('Could not find a column assignment for ' + player + '.');
 			} else {
 				if (rowCounter[col] === undefined) {
 					rowCounter[col] = 3;
@@ -57,7 +58,6 @@ exports.run = (client, message, args) => {
 		}
 	}
 	setCells(cellData);
-	message.channel.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
 
 	function getRole(player) {
 		const roleFile = 'data/' + message.guild.id + '-roles.json';
@@ -95,8 +95,13 @@ exports.run = (client, message, args) => {
 			},
 			function getInfoAndWorksheets(step) {
 				doc.getInfo(function(err, info) {
-					sheet = info.worksheets[0];
-					step();
+					try {
+						sheet = info.worksheets[0];
+						step();
+					} catch(e) {
+						console.error(e);
+						return message.author.send('Unable to write to specified sheet!  Please give the bot\'s user access to edit spreadsheet.  \n Bot User: discord@api-project-483394155093.iam.gserviceaccount.com');
+					}
 				});
 			},
 			function getCells(step) {
@@ -124,11 +129,10 @@ exports.run = (client, message, args) => {
 					}
 				}
 				sheet.bulkUpdateCells(saveCells);
+				message.author.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
 				step();
 			},
 			function getLuaData(step) {
-
-
 				step();
 			}
 		]);
