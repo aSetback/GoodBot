@@ -8,8 +8,20 @@ module.exports = {
 	let raidDay = raidArray[3];
 	let raidDate = new Date(Date.parse(raidMonth + " " + raidDay));
 	let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
-	let raidName = raidArray[0];
-	raidName = raidName.charAt(0).toUpperCase() + raidName.slice(1).toLowerCase();
+	let raidName = raidArray[0].replace(/_/g, ' ');
+	let raidParts = raidName.toLowerCase().split(' ');
+	if (raidParts[0] == 'mc') {
+		raidName = 'Molten Core';
+	} else if (raidParts[0] == 'ony') {
+		raidName = 'Onyxia';
+	} else {
+		raidName = raidName.charAt(0).toUpperCase() + raidName.slice(1).toLowerCase();
+	}
+	if (raidParts[1]) {
+		let groupName = raidParts[1];
+		groupName = groupName.charAt(0).toUpperCase() + groupName.slice(1).toLowerCase();
+		raidName += ' (' + groupName + ')';
+	}
 	message.channel.fetchPinnedMessages()
 		.then(function(list){
 			pinnedMsg = list.last();

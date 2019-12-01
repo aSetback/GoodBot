@@ -76,8 +76,31 @@ fs.watchFile(config.bankFile, {interval: 500}, (curr, prev) => {
 // Watch the epgp file and automatically update epgp channel on update.
 fs.watchFile(config.epgpFile, {interval: 5000}, (curr, prev) => {
   let guild = client.guilds.get("581817176915181568");
-  client.epgp.update(client, guild);
-  client.epgp.backup(client, guild);
+  client.epgp.update(client, guild, client.config.epgpFile);
+  client.epgp.backup(client, guild, client.config.epgpFile);
 });
+
+// client.on('voiceStateUpdate', (oldMember, newMember) => {
+//   let vc = newMember.voiceChannel
+//   if (vc !== undefined && vc.name === "Music") {
+//     var filename = './wav/blasting.wav';
+//     fs.exists(filename, function(exists) {
+//       if (exists) {
+//         vc.join()
+//           .then(connection => {
+//             const dispatcher = connection.playFile(filename);
+//             dispatcher.on('end', end => {
+//               setTimeout(function() {
+//                 vc.leave()
+//               }, 60000);
+//             });
+//           })
+//           .catch(console.error);
+//       } else {
+//         return message.channel.send('Wav file does not exist');
+//       }
+//     })
+//     }
+// });
 
 client.login(config.token);

@@ -4,7 +4,9 @@ exports.run = (client, message, args) => {
 	}
 
 	var sheetID = client.customOptions.get(message.guild, 'sheet').trim();
-	console.log('>' + sheetID + '<');
+	if (args[0]) {
+		sheetID = args[0];
+	}
 	var async = require('async');
 	var fs = require('fs');
 

@@ -2,18 +2,16 @@ const fs = require("fs");
 const Discord = require("discord.js");
 
 module.exports = {
-	update: (client, guild) => {
-		console.log('update')
-
+	update: (client, guild, file) => {
 		// Read our SavedVariables file
-		epgpData = fs.readFileSync(client.config.epgpFile, 'utf8');
+		epgpData = fs.readFileSync(file, 'utf8');
 
 		// Split the lua file up into lines
 		epgpLines = epgpData.split('\n');
 
 		let channel = guild.channels.find(channel => channel.name === "standings");
 		if (!channel) {
-			console.log('EPGP channel does not exist.');
+			console.log('EPGP channel does not exist for ' + guild.name);
 			return false;
 		}
 		
@@ -60,9 +58,9 @@ module.exports = {
 				channel.send(embed);				
 			});
 	},
-	backup: (client, guild) => {
+	backup: (client, guild, file) => {
 		// Read our SavedVariables file
-		epgpData = fs.readFileSync(client.config.epgpFile, 'utf8');
+		epgpData = fs.readFileSync(file, 'utf8');
 
 		// Split the lua file up into lines
 		epgpLines = epgpData.split('\n');
@@ -86,7 +84,7 @@ module.exports = {
 
 		let channel = guild.channels.find(channel => channel.name === "backups");
 		if (!channel) {
-			console.log('EPGP channel does not exist.');
+			console.log('EPGP channel does not exist for ' + guild.name);
 			return false;
 		}
 

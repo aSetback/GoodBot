@@ -4,6 +4,10 @@ const Discord = require("discord.js");
 
 exports.run = (client, message, args) => {
 
+	if (!message.guild) {
+		return false;
+	}
+	
 	message.delete().catch(O_o=>{}); 
 	if (!args[1] || !args[2]) {
 		return false;

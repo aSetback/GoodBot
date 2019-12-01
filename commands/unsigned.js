@@ -3,18 +3,23 @@ const fs = require("fs");
 exports.run = (client, message, args) => {
 	message.delete().catch(O_o=>{}); 
 
+	var daysAgo = args[0] ? args[0] : 7;
+
 	const raid = message.channel.name;
 
 	// Attempt to parse out raid name & date
 	const nameParts = raid.split('-');
 
-	const raidName = nameParts[0];
+	let raidName = nameParts[0];
 	const raidMonth = nameParts[2];
 	const raidDay = nameParts[3];
+	if (args[1]) {
+		raidName = args[1];
+	}
 
 	var currentDay = new Date('2019/' + raidMonth + '/' + raidDay);
-	var lastWeek = new Date(currentDay.getTime() - 7 * 24 * 60 * 60 * 1000);
-	var lastRaidDay = ("0" + lastWeek.getDate()).slice(-2)
+	var lastWeek = new Date(currentDay.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+	var lastRaidDay = lastWeek.getDate().toString().slice(-2)
 	var lastRaidMonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][lastWeek.getMonth()].toLowerCase();
 	var lastRaidChannel = raidName + '-signups-' + lastRaidMonth + '-' + lastRaidDay;
 
@@ -38,9 +43,13 @@ exports.run = (client, message, args) => {
 
 	// Check if a player is found in both line-ups.
 	for (player in parsedLastLineup) {
-		for (currentPlayer in parsedLineup) {
-			if (player == currentPlayer) {
-				delete parsedLastLineup[player];
+		if (parsedLastLineup[player] == "no") {
+			delete parsedLastLineup[player];
+		} else {
+			for (currentPlayer in parsedLineup) {
+				if (player == currentPlayer) {
+					delete parsedLastLineup[player];
+				}
 			}
 		}
 	}

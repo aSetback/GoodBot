@@ -1,11 +1,21 @@
 exports.run = (client, message, args) => {
 
-	if (!message.isAdmin) {
-		return false;
-	}
-	
+	// Delete channel
+	message.delete().catch(O_o=>{}); 
+
+	// Retrieve our category
 	var raidCategory = client.customOptions.get(message.guild, 'raidcategory').trim();
-	console.log(raidCategory);
+	let category = message.guild.channels.find(c => c.name == raidCategory && c.type == "category");
+	if (!category) {
+		return message.channel.send('Unable to create raid.  Please create a channel category called "Raid Signups" to use this command, or use +setoption to set a "raidcateory" value. ' + raidCategory);
+	}
+
+	// Retrieve this user's permission for the raid category
+    let permissions = category.permissionsFor(message.author);
+	if (!permissions.has("MANAGE_CHANNELS")) {
+		return message.channel.send('You do not have the manage channels permission for "' + raidCategory + '".  Unable to complete command.');
+	}
+
 	const raid = args[0]
 	const date = args[1];
 	if (!raid || !date) {
@@ -13,14 +23,7 @@ exports.run = (client, message, args) => {
 	}
 
 	const raidName = raid + '-signups-' + date;
-	var server = message.guild;
-
-	let category = server.channels.find(c => c.name == raidCategory && c.type == "category");
-	if (!category) {
-		return message.channel.send('Unable to create raid.  Please create a channel category called "Raid Signups" to use this command, or use +setoption to set a "raidcateory" value. ' + raidCategory);
-	}
-
-	server.createChannel(raidName, 'text')
+	message.guild.createChannel(raidName, 'text')
 		.then((channel) => {
 			let signupMessage = '-';
 			channel.setParent(category.id);

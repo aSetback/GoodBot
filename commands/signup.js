@@ -39,5 +39,13 @@ exports.run = (client, message, args) => {
 	parsedLineup[userName] = signValue;
 	fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
 
+	let logMessage = message.member.displayName + '/' + raid + ': Sign Up - ' + user + ', ' + signValue + ' [#' + message.author.id + ', ' + guildId + ']';
+	console.log('[' + client.timestamp() + '] ' + logMessage);
+	let channel = message.guild ? message.guild.channels.find(c => c.name == "server-logs") : null;
+	if (channel) {
+		channel.send(logMessage);
+	}
+
+	
 	client.embed.update(message, raid);
 };

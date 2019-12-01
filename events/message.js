@@ -6,12 +6,20 @@ module.exports = (client, message) => {
 	var args = message.content.trim().split(/ +/g);
 	
 	var command = '';
+	let signupName = message.member.displayName;
+	if (args[1]) {
+		signupName = args[1];
+	}
+
 	if (args[0] == '+') {
-		command = 'signup'
+		client.signups.set('+', signupName, message.channel.name, message, client);
+		message.delete();
 	} else if (args[0] == '-') {
-		command = 'signup'
+		client.signups.set('-', signupName, message.channel.name, message, client);
+		message.delete();
 	} else if (args[0].toLowerCase() == 'm') {
-		command = 'signup' 
+		client.signups.set('m', signupName, message.channel.name, message, client);
+		message.delete();
 	} else {
 		args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
 		command = args.shift().toLowerCase();
