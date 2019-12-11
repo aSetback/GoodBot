@@ -6,7 +6,10 @@ module.exports = (client, message) => {
 	var args = message.content.trim().split(/ +/g);
 	
 	var command = '';
-	let signupName = message.member.displayName;
+	let signupName = '';
+	if (message.member) {
+		signupName = message.member.displayName;
+	}
 	if (args[1]) {
 		signupName = args[1];
 	}
@@ -54,6 +57,8 @@ module.exports = (client, message) => {
 	if (channel) {
 		channel.send(logMessage);
 	}
+
+	message.client = client;
 
 	// Run the command
 	cmd.run(client, message, args);
