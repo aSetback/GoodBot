@@ -165,6 +165,43 @@ module.exports = {
 
 		channel.send('New epgp export: ' + filename);
 
-	}	
+	},
+	itemLog: (client, guild, file) => {
+		let itemLog = false;
+		let logLines = [];
+		for (key in epgpLines) {
+			let epgpLine = epgpLines[key];
+			if (itemLog) {
+				let cleanLine = epgpLine.split('"')
+				if (cleanLine[1]) {
+					logLines.push(cleanLine[1]);
+				}
+			}
+			if (epgpLine.indexOf('GoodEPGPLoot = ') >= 0) {
+				itemLog = true;
+			}
+			if (epgpLine.indexOf('}') >= 0) {
+				itemLog = false;
+			}
+		}
 
+		let channel = guild.channels.find(channel => channel.name === "item-log");
+		if (!channel) {
+			console.log('Item log channel does not exist for ' + guild.name);
+			return false;
+		}
+		
+		channel.fetchMessages({limit: 100})
+		   .then(function(list){
+				channel.bulkDelete(list);
+				let message = '';
+				for (key in logLines) {
+					let logLine = logLines[key];
+					let logSplit = logLine.split("|"); 
+
+					let message = "[" + logSplit[0] + "]: " + logSplit[1] + " looted " + logSplit[2] + ".";
+					channel.send(message);				
+				}
+			});
+		}
 }

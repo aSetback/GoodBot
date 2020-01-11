@@ -25,7 +25,12 @@ exports.run = (client, message, args) => {
 	message.guild.fetchMembers().then((guild) => {
 		mentionText = '';
 		for (player in parsedLineup) {
-			var member = guild.members.find(member => member.nickname == player ||  member.user.username == player);
+			// Try to find by nickname first
+			var member = guild.members.find(member => member.nickname == player);
+			// if you can't find by nickname, check username
+			if (!member) {
+				member = guild.members.find(member => member.user.username == player);
+			}
 
 			let playerId = player;
 			if (member) {

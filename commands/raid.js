@@ -4,8 +4,12 @@ exports.run = (client, message, args) => {
 	message.delete().catch(O_o=>{}); 
 
 	// Retrieve our category
-	var raidCategory = client.customOptions.get(message.guild, 'raidcategory').trim();
-	let category = message.guild.channels.find(c => c.name == raidCategory && c.type == "category");
+	var raidCategory = client.customOptions.get(message.guild, 'raidcategory');
+	if (!raidCategory) {
+		return message.channel.send('Unable to create raid.  Please create a channel category called "Raid Signups" to use this command, or use +setoption to set a "raidcateory" value. ' + raidCategory);
+	}
+	
+	let category = message.guild.channels.find(c => c.name == raidCategory.trim() && c.type == "category");
 	if (!category) {
 		return message.channel.send('Unable to create raid.  Please create a channel category called "Raid Signups" to use this command, or use +setoption to set a "raidcateory" value. ' + raidCategory);
 	}
@@ -23,10 +27,19 @@ exports.run = (client, message, args) => {
 	}
 
 	const raidName = raid + '-signups-' + date;
-	message.guild.createChannel(raidName, 'text')
+	message.guild.createChannel(raidName, {
+			type: 'text'
+		})
 		.then((channel) => {
 			let signupMessage = '-';
-			channel.setParent(category.id);
+			channel.setParent(category.id)
+				.then((channel) => {
+					channel.lockPermissions()
+						.then(() => console.log('Successfully synchronized permissions with parent channel'))
+						.catch(console.error);
+				});
+
+			
 			channel.send(signupMessage).then((botMsg) => {
 				botMsg.pin();
 				reactEmoji(botMsg);				

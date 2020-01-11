@@ -62,10 +62,22 @@ function createEmbed(title, fileName, message) {
 	let signups = [];
 	let noList = [];
 	let maybeList = [];
+	let data = {
+		'title': title,
+		'color': "#02a64f",
+		'description': 'To sign up for this raid, please click on one of the emojis directly below this post.',
+		'confirm': 0
+	}
 	Object.keys(parsedLineup).forEach(function(key) {
 		let signup = parsedLineup[key];
+		if (key == 'Goodbot' || key == 'confirmed') {
 
-		if (signup != 'yes') {
+		} else if (key == 'data') {
+			savedData = parsedLineup['data'];	
+			Object.keys(savedData).forEach(function(key) {
+				data[key] = savedData[key];
+			});
+		} else if (signup != 'yes') {
 			if (signup == 'maybe') {
 				maybeList.push(key);
 			}
@@ -99,69 +111,108 @@ function createEmbed(title, fileName, message) {
 		"mage": client.emojis.find(emoji => emoji.name === "mage"),
 		"warlock": client.emojis.find(emoji => emoji.name === "warlock"),
 		"rogue": client.emojis.find(emoji => emoji.name === "rogue"),
-		"hunter": client.emojis.find(emoji => emoji.name === "hunter")
+		"hunter": client.emojis.find(emoji => emoji.name === "hunter"),
+		"shaman": client.emojis.find(emoji => emoji.name === "shaman"),
+		"dk": client.emojis.find(emoji => emoji.name === "DK")
 	}
 
 	let embed = new Discord.RichEmbed()
-	.setTitle(title)
-	.setColor(0x02a64f);
-
+	.setTitle(data.title)
+	.setColor(data.color);
 	const roles = {
 		'tank': [
 			'warrior',
 			'druid',
-			'paladin'
+			'paladin',
+			'dk'
 		],
 		'healer': [
 			'priest', 
 			'paladin',
-			'druid'
+			'druid',
+			'shaman'
 		],
 		'dps': [
 			'rogue',
 			'warrior',
 			'druid',
 			'paladin',
-			'hunter'
+			'hunter',
+			'shaman',
+			'dk'
 		],
 		'caster': [
 			'mage',
 			'warlock',
 			'priest',
-			'druid'
+			'druid',
+			'shaman'
 		]
 	}
 
-	embed.setDescription('To sign up for this raid, please click on one of the emojis directly below this post.');
-	let fieldCount = 0;
+	embed.setDescription(data.description);
+	let roleCount = {
+		'tank': 0,
+		'healer': 0,
+		'dps': 0,
+		'caster': 0
+	};
+
+	let confirmCount = 0;
+	let confirmationList = [];
+	if (parsedLineup['confirmed']) {
+		confirmationList = parsedLineup['confirmed'];
+	}
 	Object.keys(roles).forEach(function(key) {
-		fieldCount++;
-		let roleCount = 0;
 		let classes = roles[key];
-		let classList = "";
 		Object.keys(classes).forEach(function(classKey) {
+			let classList = "";
+			let playerClass = classes[classKey];
+			let classCount = 0;
 			Object.keys(signups).forEach(function(signupKey) {
 				let signup = signups[signupKey];
-				let playerClass = classes[classKey];
 				if (signup.role == key && signup.class == playerClass) {
-					roleCount++;
-					classList += emojis[playerClass].toString() + ' **' + signup.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
+					if (data['confirm']) {
+						if (confirmationList.indexOf(signup.name.toLowerCase()) >= 0) {
+							roleCount[key]++;
+							classCount++;
+							confirmCount++;
+							classList += emojis[playerClass].toString() + ' **' + signup.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
+						} else {
+							classList += emojis[playerClass].toString() + ' *' + signup.name + '* [' + (parseInt(signupKey) + 1) + ']\n';
+						}
+					} else {
+						roleCount[key]++;
+						classCount++;
+						classList += emojis[playerClass].toString() + ' **' + signup.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
+					}
 				}
 			});
+			if (classList.length) {
+				playerClass = playerClass.charAt(0).toUpperCase() + playerClass.slice(1).toLowerCase();
+				embed.addField('**' + playerClass + ' (' + key + ')**', classList, true);
+			}
 		});
-		if (!classList.length) {
-			classList = '-';
-		}
-		embed.addField('**' + key + '** [' + roleCount + ']', classList, true);
-		if (fieldCount % 2 == 0) {
-			embed.addBlankField();
-		}
 	});
+	roleField = '';
+	for (key in roleCount) {
+		roleName = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
+		roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
+	} 
+	embed.addField('**Total Sign-ups**', signups.length);
+	if (data['confirm']) {
+		embed.addField('**Confirmed Sign-ups**', confirmCount);
+	}
+	embed.addField('**Group Composition**', roleField, false);
+
 	if (maybeList.length) {
-		embed.addField('**maybe**', maybeList.join(', '));
+		embed.addField('**Maybe**', maybeList.join(', '));
 	}
 	if (noList.length) {
-		embed.addField('**no**', noList.join(', '));
+		// embed.addField('**no**', noList.join(', '));
+	}
+	if (data['confirm']) {
+		embed.addField('**Please Note:**', "Confirmation mode has been enabled.  The players with **bold** names are currently confirmed for the raid.  *Italicized* names may or may not be brought to this raid.");
 	}
 	embed.setTimestamp();
 

@@ -26,6 +26,11 @@ exports.run = (client, message, args) => {
 		'druid-dps': 12,
 		'priest-caster': 13,
 		'paladin-dps': 14,
+		'shaman-dps': 15,
+		'shaman-caster': 16,
+		'shaman-healer': 17,
+		'dk-dps': 18,
+		'dk-tank': 19
 	};
 	
 	const raid = message.channel.name;
@@ -125,15 +130,30 @@ exports.run = (client, message, args) => {
 					newValue = findCellValue(cell);
 					if (newValue !== null) {
 						cell.value = newValue;
-						saveCells.push(cell);
 					} else {
 						cell.value = '';
 					}
+					saveCells.push(cell);
+
 				}
 				sheet.bulkUpdateCells(saveCells);
 				message.author.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
 				step();
 			},
+			function clearStandbys(step) {
+				sheet.getCells({
+					'min-row': 26,
+					'max-row': 35,
+					'min-col': 2,
+					'max-col': 14,
+					'return-empty': true
+				}, async function(err, data) {
+					for (key in data) {
+						data[key].value = '';
+					}
+					sheet.bulkUpdateCells(data);
+					step();
+				});			},
 			function getLuaData(step) {
 				step();
 			}

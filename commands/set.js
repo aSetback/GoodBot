@@ -20,7 +20,7 @@ exports.run = (client, message, args) => {
 	const user = args[0] ? args[0] : message.member.displayName;
 	const playerName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();
 
-	const validClasses = ['priest', 'paladin', 'druid', 'warrior', 'rogue', 'hunter', 'mage', 'warlock'];
+	const validClasses = ['priest', 'paladin', 'druid', 'warrior', 'rogue', 'hunter', 'mage', 'warlock', 'shaman', 'dk'];
 	const validRoles = ['tank', 'healer', 'dps', 'caster'];
 
 	if (validClasses.indexOf(className.toLowerCase()) < 0) {
