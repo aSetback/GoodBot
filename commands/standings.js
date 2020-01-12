@@ -4,7 +4,7 @@ exports.run = (client, message, args) => {
 	message.delete();
 	const specs = ['Protection', 'Fury', 'Arms', 'Feral', 'Restoration', 'Balance', 'Protection', 'Holy', 'Retribution', 'Shadow', 'Discipline', 'Holy', 'Destruction', 'Affliction', 'Demonology', 'Marksmanship', 'Beast Mastery', 'Survival', 'Subtlety', 'Assassination', 'Combat', 'Frost', 'Fire', 'Arcane'];
 
-	const epgpPath = "f:/epgp/";
+	const epgpPath = "./data/epgp/";
 	if (!args[0]) {
 		return message.channel.send('Please provide one or more classes for a standings look-up.');
 	}
