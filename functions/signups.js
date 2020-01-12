@@ -28,7 +28,11 @@ module.exports = {
 
         var reg = /^[a-zàâäåªæÆçÇœŒÐéèêëËƒíìîïÏñÑóòôöºúùûÜýÿ]+$/i;
         if (!reg.test(userName)) {
-            return message.channel.send('<@' + member.user.id.toString() + '> Unable to sign "' + userName + '" for this raid.  Please set your in-game name using +nick first.');
+            let playerMessage = 'Unable to sign "' + userName + '" for this raid.  Please set your in-game name using +nick first.';
+            if (playerId) {
+                playerMessage = '<@' + playerId + '> ' + playerMessage;
+            }
+            return playerMessage;
         }
 
         // Check to make sure role is set
