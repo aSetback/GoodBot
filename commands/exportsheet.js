@@ -96,7 +96,7 @@ exports.run = (client, message, args) => {
 
 		async.series([
 			function setAuth(step) {
-				var creds = ("C:\\API Project-5e42a3b136ca.json");
+				var creds = ("~/google.json");
 				doc.useServiceAccountAuth(creds, step);
 				
 			},
