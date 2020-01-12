@@ -2,7 +2,7 @@ const fs = require("fs");
 
 exports.run = (client, message, args) => {
 
-	const epgpPath = "f:/epgp/";
+	const epgpPath = client.config.epgpBackupFolder;
 	let player = args[0];
 	message.delete();
 	message.author.send('__EPGP History for "' + player + '"__');
