@@ -1,6 +1,7 @@
 config.json
 node_modules/*
 data/*.json
+google.json
 wav/*
 signups/*
 package-lock.json
