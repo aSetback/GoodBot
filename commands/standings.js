@@ -17,10 +17,12 @@ exports.run = (client, message, args) => {
 	files.forEach((file) => {
 		let stats = fs.statSync(epgpPath + file);
 		let mtime = stats.mtime;
-		fileList.push({
-			'file': file, 
-			'modified': mtime
-		});
+		if (file.indexOf('.json')) {
+			fileList.push({
+				'file': file, 
+				'modified': mtime
+			});
+		}
 	});
 
 	fileList.sort(function(a, b) {
