@@ -10,7 +10,7 @@ exports.run = (client, message, args) => {
 	fs.readdir(epgpPath, (err, files) => {
 		files.sort();
 		files.forEach(file => {
-			if (!file.isDirectory()) {
+			if (file.indexOf('.json') >= 0) {
 				let standings 	= fs.readFileSync(epgpPath + file, 'utf8');
 				try {
 					let parsed 		= JSON.parse(standings);
