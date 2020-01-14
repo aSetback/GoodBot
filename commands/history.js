@@ -10,21 +10,23 @@ exports.run = (client, message, args) => {
 	fs.readdir(epgpPath, (err, files) => {
 		files.sort();
 		files.forEach(file => {
-            let standings 	= fs.readFileSync(epgpPath + file, 'utf8');
-			try {
-				let parsed 		= JSON.parse(standings);
-				parsed.forEach(point => {
-					if (point.player == player) {
-						let noext = file.split('.');
-						let fileparts = noext[0].split('-');
-						point.date = fileparts[4] + '/' + fileparts[2].padStart(2, '0') + '/' + fileparts[3].padStart(2, '0'); 
-						point.time = fileparts[5].padStart(2, '0') + ':' + fileparts[6].padStart(2, '0') + ':' + fileparts[7].padStart(2, '0');
-						point.dateTime = point.date + ' ' + point.time;
-						history.push(point);
-					}
-				});
-			} catch (e) {
-				// console.log(e);
+			if (!file.isDirectory()) {
+				let standings 	= fs.readFileSync(epgpPath + file, 'utf8');
+				try {
+					let parsed 		= JSON.parse(standings);
+					parsed.forEach(point => {
+						if (point.player == player) {
+							let noext = file.split('.');
+							let fileparts = noext[0].split('-');
+							point.date = fileparts[4] + '/' + fileparts[2].padStart(2, '0') + '/' + fileparts[3].padStart(2, '0'); 
+							point.time = fileparts[5].padStart(2, '0') + ':' + fileparts[6].padStart(2, '0') + ':' + fileparts[7].padStart(2, '0');
+							point.dateTime = point.date + ' ' + point.time;
+							history.push(point);
+						}
+					});
+				} catch (e) {
+					// console.log(e);
+				}
 			}
 		});
 		returnMsg = '```';
