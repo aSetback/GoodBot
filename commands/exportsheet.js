@@ -26,11 +26,12 @@ exports.run = (client, message, args) => {
 		'druid-dps': 12,
 		'priest-caster': 13,
 		'paladin-dps': 14,
-		'shaman-dps': 15,
-		'shaman-caster': 16,
-		'shaman-healer': 17,
-		'dk-dps': 18,
-		'dk-tank': 19
+		'paladin-tank': 15,
+		'shaman-dps': 16,
+		'shaman-caster': 17,
+		'shaman-healer': 18,
+		'dk-dps': 19,
+		'dk-tank': 20
 	};
 	
 	const raid = message.channel.name;
@@ -116,7 +117,7 @@ exports.run = (client, message, args) => {
 					'min-row': 2,
 					'max-row': 23,
 					'min-col': 2,
-					'max-col': 14,
+					'max-col': 20,
 					'return-empty': true
 				}, async function(err, data) {
 					cells = data;
