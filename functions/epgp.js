@@ -101,8 +101,8 @@ module.exports = {
 			d.getSeconds()
 		].join('-');
 
-		let filename = client.config.epgpBackupFolder + 'epgp-standings-' + timestamp + '.json';
-		let baseFilename = 'epgp-standings-' + timestamp + '.json';
+		let baseFilename = 'epgp-standings-' + timestamp + '-' + guild.id + '.json';
+		let filename = client.config.epgpBackupFolder + baseFilename;
 		fs.writeFileSync(filename, JSON.stringify(standings));
 
 		async function uploadFile(bucketName, filename) {
