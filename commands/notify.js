@@ -1,8 +1,6 @@
 const Twilio = require('twilio');
 const fs = require("fs");
 
-const TwilioSID = 'ACde7e5bf940aad8f4c8989d4840d9bf8f';
-const TwilioToken = 'f91ea5aeb1e28ad686ca98d8372bc118';
 exports.run = (client, message, args) => {
     let text = args.join(' ');
     message.delete();
@@ -17,9 +15,9 @@ exports.run = (client, message, args) => {
     
     for (key in parsedList) {
         let notifyNumber = parsedList[key];
-        twilio = new Twilio(TwilioSID, TwilioToken);
+        twilio = new Twilio(client.config.twilioSID, client.config.twilioToken);
         twilio.messages.create({
-            from: '+12056512229',
+            from: client.config.twilioNumber,
             to: notifyNumber,
             body: text
         }, function(err, result) {
