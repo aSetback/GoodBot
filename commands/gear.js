@@ -12,7 +12,6 @@ exports.run = (client, message, args) => {
       string = string.replace('-h', '');
       args = string.split(' ');
     }
-    console.log(args);
   
     let player = args[0];
     let server = 'Mankrik';

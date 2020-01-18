@@ -23,11 +23,12 @@ exports.run = (client, message, args) => {
         }
         let returnRaids = '-\n';
         logs = JSON.parse(resp.body);
-        console.log(logs);
-        for (i = 0; i < 10; i++) {
-            returnRaids += (i + 1).toString() + ': **' + logs[i].title + '**: https://classic.warcraftlogs.com/reports/' + logs[i].id + ' (' + logs[i].id + ')\n';
-        }
+        if (logs[0]) {
+          for (i = 0; i < 10; i++) {
+              returnRaids += (i + 1).toString() + ': **' + logs[i].title + '**: https://classic.warcraftlogs.com/reports/' + logs[i].id + ' (' + logs[i].id + ')\n';
+          }
 
-        return message.channel.send(returnRaids);
+          return message.channel.send(returnRaids);
+        }
     });
 };
