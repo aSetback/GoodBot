@@ -15,7 +15,7 @@ module.exports = (client, message) => {
 	}
 
 	// If a message starts with +, - or m, and we're in a sign-up channel, treat it as a sign-up.
-	if (message.channel.name.indexOf('signup') == -1) {
+	if (message.channel.name.indexOf('signup') > -1) {
 		if (args[0] == '+') {
 			client.signups.set('+', signupName, message.channel.name, message, client);
 			message.delete();
