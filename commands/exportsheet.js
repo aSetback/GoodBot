@@ -127,7 +127,7 @@ exports.run = (client, message, args) => {
 			},
 			function getCells(step) {
 				sheet.getCells({
-					'min-row': 2,
+					'min-row': 3,
 					'max-row': 23,
 					'min-col': 2,
 					'max-col': 20,
