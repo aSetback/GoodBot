@@ -42,12 +42,25 @@ exports.run = (client, message, args) => {
 		parsedLineup = JSON.parse(currentLineup);
 	}
 
+	// Look for druid-dps, and move them to the bottom of the line-up so the druid tanks will be on top of the feral list.
+	for (player in parsedLineup) {
+		let playerType = getClass(player) + '-' + getRole(player);
+		let result = parsedLineup[player];
+		if (playerType == 'druid-dps') {
+			delete parsedLineup[player];
+			parsedLineup[player] = result;
+		}	
+	}
+
 	cellData = [];
 	rowCounter = [];
 	for (player in parsedLineup) {
 		result = parsedLineup[player];
 		if (result == 'yes') {
-			playerType = getClass(player) + '-' + getRole(player);
+			let playerType = getClass(player) + '-' + getRole(player);
+			if (playerType == 'druid-tank') {
+				playerType = 'druid-dps';
+			}
 			col = sheetCols[playerType];			
 			if (col === undefined) {
 				message.author.send('Could not find a column assignment for ' + player + '.');
