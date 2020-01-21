@@ -45,7 +45,6 @@ exports.run = (client, message, args) => {
           if (!logs || !logs.length) {
             return message.channel.send('Could not find gear information for ' + player);
           }
-          if (!logs)
 
           logs.sort(function(a, b) {
             if (a.startTime < b.startTime) { return 1; }
