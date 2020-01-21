@@ -14,21 +14,24 @@ module.exports = (client, message) => {
 		signupName = args[1];
 	}
 
-	if (args[0] == '+') {
-		client.signups.set('+', signupName, message.channel.name, message, client);
-		message.delete();
-	} else if (args[0] == '-') {
-		client.signups.set('-', signupName, message.channel.name, message, client);
-		message.delete();
-	} else if (args[0].toLowerCase() == 'm') {
-		client.signups.set('m', signupName, message.channel.name, message, client);
-		message.delete();
-	} else {
-		args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
-		command = args.shift().toLowerCase();
+	// If a message starts with +, - or m, and we're in a sign-up channel, treat it as a sign-up.
+	if (message.channel.name.indexOf('signup') == -1) {
+		if (args[0] == '+') {
+			client.signups.set('+', signupName, message.channel.name, message, client);
+			message.delete();
+		} else if (args[0] == '-') {
+			client.signups.set('-', signupName, message.channel.name, message, client);
+			message.delete();
+		} else if (args[0].toLowerCase() == 'm') {
+			client.signups.set('m', signupName, message.channel.name, message, client);
+			message.delete();
+		} else {
+			args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
+			command = args.shift().toLowerCase();
 
-		// Ignore messages not starting with the prefix (in config.json) not in the sign-up check
-		if (message.content.indexOf(client.config.prefix) !== 0) return;
+			// Ignore messages not starting with the prefix (in config.json) not in the sign-up check
+			if (message.content.indexOf(client.config.prefix) !== 0) return;
+		}
 	}
 
 	message.isAdmin = 0;
