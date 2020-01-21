@@ -5,7 +5,6 @@ const Discord = require("discord.js");
 exports.run = (client, message, args) => {
     message.delete();
     let string = args.join(' ');
-    console.log(string);
     let hidden = false;
     if (string.indexOf('-h') > -1) {
       hidden = true;
