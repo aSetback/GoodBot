@@ -42,9 +42,10 @@ exports.run = (client, message, args) => {
           if (logs.error) {
             return message.channel.send(logs.error);
           }
-          if (!logs) {
+          if (!logs || !logs[0] || logs[0].indexOf('reportID') == -1!) {
             return message.channel.send('Could not find gear information for ' + player);
           }
+          if (!logs)
 
           logs.sort(function(a, b) {
             if (a.startTime < b.startTime) { return 1; }
