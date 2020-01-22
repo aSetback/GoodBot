@@ -11,7 +11,7 @@ module.exports = (client, message) => {
 	}
 
 	// If a message starts with +, - or m, and we're in a sign-up channel, treat it as a sign-up.
-	if (message.channel && message.channel.name.indexOf('signup') > -1) {
+	if (message.channel && message.channel.name && message.channel.name.indexOf('signup') > -1) {
 		let signupName = '';
 		if (message.member) {
 			signupName = message.member.displayName;
