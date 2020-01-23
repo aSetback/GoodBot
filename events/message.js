@@ -10,6 +10,10 @@ module.exports = (client, message) => {
 		return message.channel.send('Current trigger: ' + client.config.prefix);
 	}
 
+	if (message.channel && message.channel.name && message.channel.name == 'set-your-name') {
+		client.setup.nick(client, message.member, message.channel, message);
+	}
+
 	// If a message starts with +, - or m, and we're in a sign-up channel, treat it as a sign-up.
 	if (message.channel && message.channel.name && message.channel.name.indexOf('signup') > -1) {
 		let signupName = '';
@@ -23,13 +27,13 @@ module.exports = (client, message) => {
 	
 		if (args[0] == '+') {
 			client.signups.set('+', signupName, message.channel.name, message, client);
-			message.delete();
+			message.delete().catch(O_o=>{}); 
 		} else if (args[0] == '-') {
 			client.signups.set('-', signupName, message.channel.name, message, client);
-			message.delete();
+			message.delete().catch(O_o=>{}); 
 		} else if (args[0].toLowerCase() == 'm') {
 			client.signups.set('m', signupName, message.channel.name, message, client);
-			message.delete();
+			message.delete().catch(O_o=>{}); 
 		}
 	}
 
@@ -55,21 +59,11 @@ module.exports = (client, message) => {
 	if (message.member && message.member.hasPermission("ADMINISTRATOR")) {
 		message.serverAdmin = 1;
 	}	
-	
-	// Get logging information 
-	var username = message.member !== null ? message.member.displayName : message.author.username;
-	let channelName = message.channel.name ? message.channel.name : 'via DM';
-	let guildId = message.guild ? message.guild.id : '-';
-	let logMessage = username + '/' + channelName + ': ' + message + ' [#' + message.author.id + ', ' + guildId + ']';
 
-	// Log to console
-	console.log('[' + client.timestamp() + '] ' + logMessage);
+	member = message.member ?  message.member : message.author;
 
-	// Attempt to log to a server-logs channel
-	let channel = message.guild ? message.guild.channels.find(c => c.name == "server-logs") : null;
-	if (channel) {
-		channel.send(logMessage);
-	}
+	// Log the command
+	client.log.write(client, member, message.channel, 'Command: ' + message.content)
 
 	// Send the client object along with the message
 	message.client = client;

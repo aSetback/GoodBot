@@ -4,8 +4,7 @@ const fs = require("fs");
 const client = new Discord.Client();
 
 // Make our config available throughout all the files.
-const config = require("./config.json");
-client.config = config;
+client.config = require("./config.json");
 
 // Create an empty array of embedTitles, used for the class assignment reactions.
 client.embedTitles = [];
@@ -19,12 +18,9 @@ client.timestamp = function() {
   return dateTime;
 }
 
-console.clear();
+console.log('============================================================================')
 console.log('[' + client.timestamp() + '] ' + client.config.botname + ' is starting.');
-// Add a listener
-client.on('raw', packet => {
-	client.reaction.rawEvent(client, packet);
-});
+console.log('============================================================================')
 
 // Add the functions from the /events folder
 var functions = [];
@@ -67,18 +63,15 @@ fs.readdir("./commands/", (err, files) => {
   console.log('[' + client.timestamp() + '] Loaded ' + commands.length + ' commands. (' + commands.join(', ') + ')');
 });
 
-// Watch the epgp file and automatically update epgp channel on update.
-// fs.watchFile(config.bankFile, {interval: 500}, (curr, prev) => {
-//   let guild = client.guilds.get("581817176915181568");
-//   client.bank.update(client, guild);
-// });
+// Add a reaction listener for sign-ups
+client.on('raw', packet => {
+  client.reaction.rawEvent(client, packet);
+});
 
-// // Watch the epgp file and automatically update epgp channel on update.
-// fs.watchFile(config.epgpFile, {interval: 5000}, (curr, prev) => {
-//   let guild = client.guilds.get("581817176915181568");
-//   client.epgp.update(client, guild, client.config.epgpFile);
-//   client.epgp.backup(client, guild, client.config.epgpFile);
-//   client.epgp.itemLog(client, guild, client.config.epgpFile);
-// });
 
-client.login(config.token);
+client.on('ready', () => {
+  // Add listener for set-up channels
+  client.setup.run(client);
+});
+
+client.login(client.config.token);

@@ -97,16 +97,9 @@ module.exports = {
         parsedLineup[userName] = signValue;
         fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
         client.embed.update(message, channel);
-        let author = 'Manual - ' + message.member.displayName;
-        if (message.member.displayName == 'GoodBot') {
-            author = 'Emoji';
-        }
-        let logMessage = 'Sign Up: ' + userName + ', ' + channel + ', ' + signValue + ' (' + author + ') [#' + message.author.id + ', ' + message.guild.id + ']';
-        console.log('[' + client.timestamp() + '] ' + logMessage);
-        let logChannel = message.guild ? message.guild.channels.find(c => c.name == "server-logs") : null;
-        if (logChannel) {
-            logChannel.send(logMessage);
-        }
+        
+        let logMessage = 'Sign Up: ' + userName + ' => ' + signValue;
+        client.log.write(client, member, message.channel, logMessage);
 
         function getRole(player) {
             const roleFile = 'data/' + message.guild.id + '-roles.json';
