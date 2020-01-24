@@ -88,10 +88,10 @@ exports.run = (client, message, args) => {
 
 	async function reactRoles(msg) {
 		let emojis = [
-            client.emojis.find(emoji => emoji.name === "tank"),
-            client.emojis.find(emoji => emoji.name === "healer"),
-            client.emojis.find(emoji => emoji.name === "dps"),
-            client.emojis.find(emoji => emoji.name === "caster"),
+            client.emojis.find(emoji => emoji.name === "TANK"),
+            client.emojis.find(emoji => emoji.name === "HEALER"),
+            client.emojis.find(emoji => emoji.name === "DPS"),
+            client.emojis.find(emoji => emoji.name === "CASTER"),
         ];
 		for (key in emojis) {
 			await msg.react(emojis[key]);

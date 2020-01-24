@@ -6,8 +6,10 @@ module.exports = {
             // Only parse emoji adds
             if (!['MESSAGE_REACTION_ADD'].includes(packet.t)) return;
 
-            // Ignore the bot emojies
+            // Ignore the bot emojis
     		if (!packet.d.user_id == client.config.userId) return;
+
+            console.log(packet.d.user_id + ' = ' + client.config.userId);
 
             let channel = client.channels.get(packet.d.channel_id);
             let emoji = packet.d.emoji;
