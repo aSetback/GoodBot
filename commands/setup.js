@@ -48,10 +48,10 @@ exports.run = (client, message, args) => {
         .then((channel) => {
             let signupMessage = 'Please select your role. \n';
             let emojis = {
-                'tank': client.emojis.find(emoji => emoji.name === "tank"),
-                'healer': client.emojis.find(emoji => emoji.name === "healer"),
-                'dps': client.emojis.find(emoji => emoji.name === "dps"),
-                'caster': client.emojis.find(emoji => emoji.name === "caster"),
+                'tank': client.emojis.find(emoji => emoji.name === "TANK"),
+                'healer': client.emojis.find(emoji => emoji.name === "HEALER"),
+                'dps': client.emojis.find(emoji => emoji.name === "DPS"),
+                'caster': client.emojis.find(emoji => emoji.name === "CASTER"),
             }
             for (role in emojis) {
                 signupMessage += emojis[role] + ' for ' + role + '\n';
