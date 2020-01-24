@@ -7,9 +7,7 @@ module.exports = {
             if (!['MESSAGE_REACTION_ADD'].includes(packet.t)) return;
 
             // Ignore the bot emojis
-    		if (!packet.d.user_id == client.config.userId) return;
-
-            console.log(packet.d.user_id + ' = ' + client.config.userId);
+    		if (packet.d.user_id.toString() == client.config.userId) return;
 
             let channel = client.channels.get(packet.d.channel_id);
             let emoji = packet.d.emoji;
