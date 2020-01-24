@@ -11,7 +11,7 @@ module.exports = (client, message) => {
 	}
 
 	if (message.channel && message.channel.name && message.channel.name == 'set-your-name') {
-		client.setup.nick(client, message.member, message.channel, message);
+		client.setup.nick(client, message);
 	}
 
 	// If a message starts with +, - or m, and we're in a sign-up channel, treat it as a sign-up.
