@@ -18,7 +18,7 @@ module.exports = {
                 }
 
                 // No point of writing what guild it is to the server logs channel.
-                logMessage += ' / Guild: ' +  member.guild.name  + ' (' + member.guild.id + ')';
+                logMessage += ' / Guild: ' +  channel.guild.name  + ' (' + channel.guild.id + ')';
             } else {
                 // This is a direct message, only write it to console
                 logMessage += ' / DM From: ' + member.username + ' (' + member.id + ')';
