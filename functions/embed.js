@@ -209,7 +209,7 @@ function createEmbed(title, fileName, message) {
 		embed.addField('**Maybe**', maybeList.join(', '));
 	}
 	if (noList.length) {
-		// embed.addField('**no**', noList.join(', '));
+		embed.addField('**No**', noList.join(', '));
 	}
 	if (data['confirm']) {
 		embed.addField('**Please Note:**', "Confirmation mode has been enabled.  The players with **bold** names are currently confirmed for the raid.  *Italicized* names may or may not be brought to this raid.");
