@@ -9,8 +9,8 @@ client.config = require("./config.json");
 const Sequelize = require('sequelize');
 
 // Initialize DB
-client.sequelize = new Sequelize('Goodbot', 'root', 'Welcome1!', {
-    host: 'localhost',
+client.sequelize = new Sequelize(client.config.db.name, client.config.db.user, client.config.db.pass, {
+    host: client.config.db.ip,
     dialect: 'mariadb'
 });
 
