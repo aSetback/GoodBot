@@ -12,6 +12,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    // Profession.sync({'force': true});
+    Profession.sync();
     return Profession;
 }
