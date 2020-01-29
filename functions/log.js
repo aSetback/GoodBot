@@ -25,7 +25,7 @@ module.exports = {
             }
 
             // Write to console
-            console.log('[' + client.timestamp() + '] ' + logMessage);
+            console.log('[' + client.timestamp.get() + '] ' + logMessage);
         } catch (e) {
             console.error(e);
         }
