@@ -12,13 +12,7 @@ module.exports = {
         } else if (type.toLowerCase() === 'm') {
             signValue = 'maybe';
         }
-        
-        const fileName = './signups/' + message.guild.id + '-' + channel + '.json';
-        let parsedLineup = {};
-        if (fs.existsSync(fileName)) {
-            currentLineup = fs.readFileSync(fileName, 'utf8');
-            parsedLineup = JSON.parse(currentLineup);
-        }
+
         const userName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
         let member = message.guild.members.find(member => member.nickname == userName ||  member.user.username == userName);
         let playerId = null;
@@ -72,7 +66,7 @@ module.exports = {
             if (playerRole == 'Heal') {
                 playerRole = 'Healer';
             }
-            
+
             // Write to class json file
             let fileName = 'data/' + message.guild.id + '-class.json';
             let parsedList = {};
@@ -80,7 +74,7 @@ module.exports = {
                 currentList = fs.readFileSync(fileName, 'utf8');
                 parsedList = JSON.parse(currentList);
             }
-                parsedList[userName] = playerClass;
+            parsedList[userName] = playerClass;
             fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
 
             // Write to roles json file
@@ -94,12 +88,36 @@ module.exports = {
             fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
         }
 
+        const fileName = './signups/' + message.guild.id + '-' + channel + '.json';
+        let parsedLineup = {};
+        if (fs.existsSync(fileName)) {
+            currentLineup = fs.readFileSync(fileName, 'utf8');
+            parsedLineup = JSON.parse(currentLineup);
+        }
+
         parsedLineup[userName] = signValue;
         fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
+
+        // Save our sign-up to the db
+        client.models.raid.findOne({'where': {'guildID': message.guild.id, 'channelID': message.channel.id}}).then((raid) => {
+            if (raid) {
+                let record = {
+                    'player': userName,
+                    'signup': signValue,
+                    'raidID': raid.id,
+                    'channelID': raid.channelID,
+                    'guildID': raid.guildID,
+                    'memberID': message.author.id
+                };
+                client.models.signup.create(record);
+            }
+        });
+
+        // Update embed
         client.embed.update(message, channel);
-        
+
         let logMessage = 'Sign Up: ' + userName + ' => ' + signValue;
-        client.log.write(client, member, message.channel, logMessage);
+        client.log.write(client, message.author, message.channel, logMessage);
 
         function getRole(player) {
             const roleFile = 'data/' + message.guild.id + '-roles.json';
@@ -111,7 +129,7 @@ module.exports = {
             }
             return 'unknown';
         }
-    
+   
         function getClass(player) {
             const classFile = 'data/' + message.guild.id + '-class.json';
             classList = JSON.parse(fs.readFileSync(classFile));
@@ -144,6 +162,5 @@ module.exports = {
             }
             return 'unknown';
         }
-        
     }
 }
