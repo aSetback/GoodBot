@@ -11,7 +11,11 @@ const Sequelize = require('sequelize');
 // Initialize DB
 client.sequelize = new Sequelize(client.config.db.name, client.config.db.user, client.config.db.pass, {
     host: client.config.db.ip,
-    dialect: 'mariadb'
+    dialect: 'mariadb',
+    dialectOptions: {
+      timezone: "Etc/GMT-5"
+    },
+    logging: false
 });
 
 // Add the functions from the /functions folder
