@@ -1,6 +1,3 @@
-const fs = require("fs");
-const Discord = require("discord.js");
-
 exports.run = (client, message, args) => {
     let subCommand = args.shift().toLowerCase();
     let profession = args.join(' ');
