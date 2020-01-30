@@ -7,7 +7,7 @@ module.exports = {
             // Check if this is being sent via DM
             if (channel.type != 'dm') {
                 if (member) {
-                    logMessage += ' / Member: ' + member.displayName + ' (' + member.id + ')';
+                    logMessage += ' / Member: ' + member.nickName + ' (' + member.id + ')';
                 }
                 logMessage += ' / Channel: ' + channel.name;
 

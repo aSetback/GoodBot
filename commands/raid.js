@@ -16,7 +16,7 @@ exports.run = (client, message, args) => {
 	};
 
 	// Delete channel
-	message.delete().catch(O_o=>{}); 
+	message.delete().catch(O_o => {});
 
 	// Retrieve our category
 	var raidCategory = client.customOptions.get(message.guild, 'raidcategory');
@@ -29,7 +29,9 @@ exports.run = (client, message, args) => {
 		createRaidChannel(category);
 	} else {
 		// Create Category
-		message.guild.createChannel(raidCategory, {'type': 'category'}).then((category) => {
+		message.guild.createChannel(raidCategory, {
+			'type': 'category'
+		}).then((category) => {
 			createRaidChannel(category);
 		});
 	}
