@@ -81,7 +81,6 @@ exports.run = (client, message, args) => {
           logs.forEach(function(log) {
             log.gear.forEach(function(gear, key) {
               if (gear.id && log.reportID == reportID) {
-                console.log(gear);
                 let gearLink = '[' + gear.name + '](' + 'https://classic.wowhead.com/item=' + gear.id + ')';
                 let slotName = slots[key];
 
