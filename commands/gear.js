@@ -51,7 +51,7 @@ exports.run = (client, message, args) => {
             else if (a.startTime > b.startTime) { return -1; }
             else { return 0; }
           });
-            
+
           let embed = new Discord.RichEmbed()
             .setTitle(player)
             .setColor(0x02a64f);

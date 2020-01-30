@@ -6,7 +6,7 @@ exports.run = (client, message, args) => {
     // Create Category
     message.guild.createChannel('Get Started', {'type': 'category'})
         .then((category) => {
-        
+
         // Set your nickname
         let nickChannel = 'set-your-name';
         message.guild.createChannel(nickChannel, {
