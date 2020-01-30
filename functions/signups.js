@@ -96,10 +96,7 @@ module.exports = {
         }
 
         parsedLineup[userName] = signValue;
-        if (fs.existsSync(fileName)) {
-            fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
-            client.embed.update(message, channel);
-        }
+        fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
 
         // Save our sign-up to the db
         client.models.raid.findOne({'where': {'guildID': message.guild.id, 'channelID': message.channel.id}}).then((raid) => {
@@ -116,6 +113,9 @@ module.exports = {
             }
         });
 
+        // Update embed
+        client.embed.update(message, channel);
+
         let logMessage = 'Sign Up: ' + userName + ' => ' + signValue;
         client.log.write(client, message.author, message.channel, logMessage);
 
@@ -129,7 +129,7 @@ module.exports = {
             }
             return 'unknown';
         }
-    
+   
         function getClass(player) {
             const classFile = 'data/' + message.guild.id + '-class.json';
             classList = JSON.parse(fs.readFileSync(classFile));
@@ -162,6 +162,5 @@ module.exports = {
             }
             return 'unknown';
         }
-        
     }
 }
