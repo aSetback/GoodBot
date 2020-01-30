@@ -93,4 +93,15 @@ fs.readdir(commandDir, (err, files) => {
   console.log('Loaded ' + commands.length + ' commands. (' + commands.join(', ') + ')');
 });
 
+// Add a reaction listener for sign-ups
+client.on('raw', packet => {
+  client.reaction.rawEvent(client, packet);
+});
+
+
+client.on('ready', () => {
+  // Add listener for set-up channels
+  client.setup.run(client);
+});
+
 client.login(client.config.token);
