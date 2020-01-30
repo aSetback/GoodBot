@@ -4,8 +4,13 @@ exports.run = (client, message, args) => {
 	message.delete().catch(O_o=>{}); 
 
     let command = args.shift();
+    let guildID = message.guild.id;
+    if (!guildID) {
+        return;
+    }
+
     if (!command || command == 'random') {
-        randomQuote();
+        randomQuote(guildID);
     }
 
     if (!message.isAdmin) {
@@ -13,7 +18,7 @@ exports.run = (client, message, args) => {
     }
 
     if (command == 'list') {
-        listQuotes();
+        listQuotes(guildID);
     } else if (command == 'add') {
         let record = {
             quote: args.join(' '),
@@ -22,7 +27,7 @@ exports.run = (client, message, args) => {
         };
         addQuote(record);
     } else if (command == 'remove') {
-        removeQuote(args[0]);
+        removeQuote(args[0], guildID);
     }
 
     function addQuote(record) {
@@ -31,24 +36,24 @@ exports.run = (client, message, args) => {
         });
     }
 
-    function removeQuote(id) {
-        client.models.quote.destroy({ where: {'id': id}}).then(() => {
+    function removeQuote(id, guildID) {
+        client.models.quote.destroy({ where: {'id': id, 'guildID': guildID}}).then(() => {
             message.channel.send('Deleted quote (ID: ' + id + ')');
         });
     }
 
-    function randomQuote() {
-        client.models.quote.findAll().then((quotes) => {
+    function randomQuote(guildID) {
+        client.models.quote.findAll({ where: {'guildID': guildID}}).then((quotes) => {
             let randomNumber = Math.floor(Math.random() * quotes.length);
             let quote = quotes[randomNumber];
             message.channel.send(quote.quote);
         });
     }
 
-    function listQuotes() {
+    function listQuotes(guildID) {
         let quoteMessage = '**Saved Quotes**\n';
         let quoteCount = 0;
-        client.models.quote.findAll().then((quotes) => {
+        client.models.quote.findAll({ where: {'guildID': guildID}}).then((quotes) => {
             quotes.forEach((quote) => {
                 quoteCount++;
                 quoteMessage += quote.id + ' - ' + quote.quote + '\n';
