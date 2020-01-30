@@ -1,4 +1,4 @@
-# GainBot
+# GoodBot
 
 ## Getting Started
 * Invite GoodBot to your server using the following link: [Invite Link](https://discordapp.com/oauth2/authorize?client_id=525115228686516244&permissions=8&scope=bot)
