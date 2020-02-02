@@ -7,8 +7,16 @@ module.exports = {
             // Check if this is being sent via DM
             if (channel.type != 'dm') {
                 if (member) {
-                    let nickname = member.nickname ? member.nickname : member.user.username;
-                    logMessage += ' / Member: ' + nickname + ' (' + member.user.id + ')';
+                    if (!member.user) {
+                        member.user = member;
+                    }
+                    nickname = member.nickname ? member.nickname : member.user.username;
+
+                    if (client.config.userId == member.user.id) {
+                        logMessage += ' / Sign up via emoji';
+                    } else {
+                        logMessage += ' / Member: ' + nickname + ' (' + member.user.id + ')';
+                    }
                 }
                 logMessage += ' / Channel: ' + channel.name;
 
