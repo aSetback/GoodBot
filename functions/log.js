@@ -1,5 +1,5 @@
 module.exports = {
-	write: (client, member, channel, data) => {
+        write: (client, member, channel, data) => {
 
         // Base message of timestamp, and the data to be logged
         let logMessage = data;
@@ -7,7 +7,8 @@ module.exports = {
             // Check if this is being sent via DM
             if (channel.type != 'dm') {
                 if (member) {
-                    logMessage += ' / Member: ' + member.nickName + ' (' + member.id + ')';
+                    let nickname = member.nickname ? member.nickname : member.user.username;
+                    logMessage += ' / Member: ' + nickname + ' (' + member.user.id + ')';
                 }
                 logMessage += ' / Channel: ' + channel.name;
 
