@@ -12,22 +12,28 @@
 * Create a channel called 'server-logs' -- the bot will automatically all commands & sign-ups to this channel.
 
 ## Common Commands
-* +clean X
-  *deletes the previous X messages in chat.  This does not work on mesages older than 20 days.*
-* +raid RaidName Mar-21
-  *creates a new raid channel under the raid category called RaidName-signups-mar-21*
-* +quote
-  This command has several sub-commands:
-  * +quote
-    *displays a random quote*
-  * +quote add Quote Goes Here
-    *adds the specified quote*
-  * +quote list
-    *lists all queotes*
-  * +quote remove ID
-    *removes the quote with the specified ID*
-* +archive
+`+archive`
   *moves the channel to the 'Archives' category, and syncs the permissions with the category*
+
+`+clean X`
+ deletes the previous X messages in chat.  This does not work on mesages older than 20 days.*
+
+`+confirm Player`
+confirms player for the raid
+
+`+raid RaidName Mar-21`
+*creates a new raid channel under the raid category called RaidName-signups-mar-21*
+
+`+quote`
+This command has several sub-commands:
+`+quote`
+*displays a random quote*
+`+quote add Quote Goes Here`
+*adds the specified quote*
+`+quote list`
+*lists all queotes*
+`+quote remove ID`
+*removes the quote with the specified ID*
 
 ## Warcraft Logs Commands
 * +logs GuildName
