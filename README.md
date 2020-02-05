@@ -31,20 +31,20 @@
 
 ## Warcraft Logs Commands
 * +logs GuildName
- * *This will display a list of the last 10 raids uploaded to WarcraftLogs for the guild*
+  * *This will display a list of the last 10 raids uploaded to WarcraftLogs for the guild*
 * +rankings Taunt ?role ?server ?region
- * *This will display the players best rankings for the specified role.  Roles is defaulted to DPS, Server is defaulted to Mankrik, and region is defaulted to US.  Other role options are HPS or Tank.*
+  * *This will display the players best rankings for the specified role.  Roles is defaulted to DPS, Server is defaulted to Mankrik, and region is defaulted to US.  Other role options are HPS or Tank.*
 * +compare raid1id raid2id
- * *This will do a side by side comparison of two raids for boss kills, time between bosses, and overall time elasped after each boss.*
+  * *This will do a side by side comparison of two raids for boss kills, time between bosses, and overall time elasped after each boss.*
 
 ## Raid Signups
 * All players need to have a class and role set up to be able to sign up for raids.  Once that's done, the player can use the :thumbsup: :thumbsdown: or :shrug: emojis directly under the sign-up list to sign up for the raid.
 * A player's class and role can be manually set using the +set command:
   * +set Taunt warrior tank
 * A player can sign up an alt, or another player by using +, - or m, followed by the player's name
- * + Tagalong
- * m Tagalong
- * - Tagalong
+  * + Tagalong
+  * m Tagalong
+  * - Tagalong
 
 ## Spreadsheets
 *To be added*
