@@ -12,7 +12,9 @@
 * Create a channel called 'server-logs' -- the bot will automatically all commands & sign-ups to this channel.
 
 ## Common Commands
-```+archive```
+```
+  +archive
+```
   *moves the channel to the 'Archives' category, and syncs the permissions with the category*
 
 ```+clean X```
