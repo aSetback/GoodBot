@@ -12,11 +12,12 @@
 * Create a channel called 'server-logs' -- the bot will automatically all commands & sign-ups to this channel.
 
 ## General Commands
+```
+  +clean X
+```
+*Deletes the previous X messages in chat.  This does not work on mesages older than 20 days.*
 
-```
-  +quote
-```
-This command has several sub-commands:
+
 ```
 +quote
 ```
@@ -43,12 +44,6 @@ This command has several sub-commands:
 
 
 ```
-  +clean X
-```
-*Deletes the previous X messages in chat.  This does not work on mesages older than 20 days.*
-
-
-```
   +confirm Player
 ```
 *confirms player for the raid*
@@ -71,7 +66,7 @@ This command has several sub-commands:
 ## Raid Signups
 * All players need to have a class and role set up to be able to sign up for raids.  Once that's done, the player can use the :thumbsup: :thumbsdown: or :shrug: emojis directly under the sign-up list to sign up for the raid.
 * A player's class and role can be manually set using the +set command:
-  * +set Taunt warrior tank
+  * `+set Taunt warrior tank`
 * A player can sign up an alt, or another player by using +, - or m, followed by the player's name
 ```  
   + Tagalong
