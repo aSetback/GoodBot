@@ -42,9 +42,11 @@
 * A player's class and role can be manually set using the +set command:
   * +set Taunt warrior tank
 * A player can sign up an alt, or another player by using +, - or m, followed by the player's name
-  * + Tagalong
-  * m Tagalong
-  * - Tagalong
+`  
+  + Tagalong
+  m Tagalong
+  - Tagalong
+`
 
 ## Spreadsheets
 *To be added*
