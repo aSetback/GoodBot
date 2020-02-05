@@ -13,55 +13,45 @@
 
 ## General Commands
 ```
-  +clean X
-```
-*Deletes the previous X messages in chat.  This does not work on mesages older than 20 days.*
++clean X
+  Delete the previous X messages in chat.  This does not work on mesages older than 20 days.
 
-
-```
 +quote
-```
-*displays a random quote*
-```
-+quote add Your quote goes here
-```
-*adds the specified quote*
-```
-+quote list
-```
-*lists all quotes*
-```
-+quote remove ID
-```
-*removes the quote with the specified ID*
+  Display a random quote
 
++quote add Your quote goes here
+  Add the specified quote
+
++quote list
+  List all quotes
+
++quote remove ID
+  Remove the quote with the specified ID
+```
 
 ## Raid Sign-up Commands
 ```
-  +archive
-```
-  *moves the channel to the 'Archives' category, and syncs the permissions with the category*
++archive
+  Move the channel to the 'Archives' category, and syncs the permissions with the category
 
++confirm Player
+  Confirms player for the raid
 
++raid RaidName Mar-21
+  Creates a new raid channel under the raid category called RaidName-signups-mar-21
 ```
-  +confirm Player
-```
-*confirms player for the raid*
-
-
-```
-  +raid RaidName Mar-21
-```
-*creates a new raid channel under the raid category called RaidName-signups-mar-21*
-
 
 ## Warcraft Logs Commands
-* +logs GuildName
-  * *This will display a list of the last 10 raids uploaded to WarcraftLogs for the guild*
-* +rankings Taunt ?role ?server ?region
-  * *This will display the players best rankings for the specified role.  Roles is defaulted to DPS, Server is defaulted to Mankrik, and region is defaulted to US.  Other role options are HPS or Tank.*
-* +compare raid1id raid2id
-  * *This will do a side by side comparison of two raids for boss kills, time between bosses, and overall time elasped after each boss.*
+```
++logs GuildName
+  Display a list of the last 10 raids uploaded to WarcraftLogs for the guild
+
++rankings Taunt ?role ?server ?region
+  Display a player'ss best rankings for the specified role.  Roles is defaulted to DPS, Server is defaulted to Mankrik, and region is defaulted to US.  Other role options are HPS or Tank.
+  
++compare raid1id raid2id
+  Generate a side by side comparison of two raids for boss kills, time between bosses, and overall time elasped after each boss.
+```
 
 ## Raid Signups
 * All players need to have a class and role set up to be able to sign up for raids.  Once that's done, the player can use the :thumbsup: :thumbsdown: or :shrug: emojis directly under the sign-up list to sign up for the raid.
