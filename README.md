@@ -11,31 +11,54 @@
 * Set your spreadsheet ID: +setoption sheet GoogleSheetID // This is covered further in the "Spreadsheet" section.
 * Create a channel called 'server-logs' -- the bot will automatically all commands & sign-ups to this channel.
 
-## Common Commands
+## General Commands
+
+```
+  +quote
+```
+This command has several sub-commands:
+```
++quote
+```
+*displays a random quote*
+```
++quote add Your quote goes here
+```
+*adds the specified quote*
+```
++quote list
+```
+*lists all quotes*
+```
++quote remove ID
+```
+*removes the quote with the specified ID*
+
+
+## Raid Sign-up Commands
 ```
   +archive
 ```
   *moves the channel to the 'Archives' category, and syncs the permissions with the category*
 
-```+clean X```
- deletes the previous X messages in chat.  This does not work on mesages older than 20 days.*
 
-`+confirm Player`
-confirms player for the raid
+```
+  +clean X
+```
+*Deletes the previous X messages in chat.  This does not work on mesages older than 20 days.*
 
-`+raid RaidName Mar-21`
+
+```
+  +confirm Player
+```
+*confirms player for the raid*
+
+
+```
+  +raid RaidName Mar-21
+```
 *creates a new raid channel under the raid category called RaidName-signups-mar-21*
 
-`+quote`
-This command has several sub-commands:
-```+quote```
-*displays a random quote*
-`+quote add Quote Goes Here`
-*adds the specified quote*
-`+quote list`
-*lists all queotes*
-`+quote remove ID`
-*removes the quote with the specified ID*
 
 ## Warcraft Logs Commands
 * +logs GuildName
