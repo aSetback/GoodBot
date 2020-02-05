@@ -12,10 +12,10 @@
 * Create a channel called 'server-logs' -- the bot will automatically all commands & sign-ups to this channel.
 
 ## Common Commands
-`+archive`
+```+archive```
   *moves the channel to the 'Archives' category, and syncs the permissions with the category*
 
-`+clean X`
+```+clean X```
  deletes the previous X messages in chat.  This does not work on mesages older than 20 days.*
 
 `+confirm Player`
@@ -26,7 +26,7 @@ confirms player for the raid
 
 `+quote`
 This command has several sub-commands:
-`+quote`
+```+quote```
 *displays a random quote*
 `+quote add Quote Goes Here`
 *adds the specified quote*
