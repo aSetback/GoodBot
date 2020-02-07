@@ -102,6 +102,9 @@ client.on('raw', packet => {
 client.on('ready', () => {
   // Add listener for set-up channels
   client.setup.run(client);
+
+  // Add EPGP watcher
+  client.watch.run(client);
 });
 
 client.login(client.config.token);
