@@ -8,7 +8,7 @@ module.exports = {
 			let guild = guildList[index];
 			console.log(guild.id + ' => ' + guild.name);
 
-			let fileName = "/home/ubuntu/GoodBot/data/epgp/upload/" + guild.id + '-gep.lua';
+			let fileName = client.config.epgpBackupFolder + '/upload/' + guild.id + '-gep.lua';
 			// Watch the epgp file and automatically update epgp channel on update.
 			fs.watchFile(fileName, {interval: 5000}, (curr, prev) => {
 				if (!fs.existsSync(fileName)) {

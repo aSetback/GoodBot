@@ -75,6 +75,7 @@ module.exports = {
 		}
 
 		standings = standings.substr(21, standings.length - 23);
+		console.log(standings);
 		try {
 			standings = JSON.parse(standings);
 		} catch (e) {
@@ -102,7 +103,7 @@ module.exports = {
 		].join('-');
 
 		let baseFilename = 'epgp-standings-' + timestamp + '-' + guild.id + '.json';
-		let filename = client.config.epgpBackupFolder + baseFilename;
+		let filename = client.config.epgpBackupFolder + '/' + baseFilename;
 		fs.writeFileSync(filename, JSON.stringify(standings));
 
 		async function uploadFile(bucketName, filename) {
@@ -163,7 +164,7 @@ module.exports = {
 		  }
 
 
-		channel.send('New epgp export: ' + filename);
+		channel.send('New epgp export: ' + baseFilename);
 
 	},
 	itemLog: (client, guild, file) => {
