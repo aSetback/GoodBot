@@ -8,7 +8,7 @@ exports.run = (client, message, args) => {
 		files.sort();
 		files.forEach(file => {
             if (file.indexOf('.json') >= 0) {
-                client.epgp.parseFile(client, file);
+                client.epgp.parseFile(client, epgpPath + '\\' + file);
 			}
 		});
 	});
