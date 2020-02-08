@@ -85,7 +85,21 @@ module.exports = {
 		fileTime.setMinutes(fileParts[6]);
 		fileTime.setSeconds(fileParts[7]);
 
-		let guildID = parseInt(fileParts[8].split('.')[0]);
+		let guildID = 0;
+		if (!fileParts[8]) {
+			if (standings.indexOf('Taunt')) {
+				guildID = 581817176915181568;
+			}
+			if (standings.indexOf('Memerlord')) {
+				guildID = 379733719952654337;
+			}
+		} else {
+			let guildID = parseInt(fileParts[8].split('.')[0]);
+		}
+		if (!guildID) {
+			console.log('Unable to import file: ' + file);
+			return false;
+		}
 
 		jsonParse.forEach((player) => {
 			let record = {
