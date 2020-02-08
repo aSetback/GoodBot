@@ -87,14 +87,14 @@ module.exports = {
 
 		let guildID = 0;
 		if (!fileParts[8]) {
-			if (standings.indexOf('Taunt')) {
+			if (standings.indexOf('Taunt') != -1) {
 				guildID = 581817176915181568;
 			}
-			if (standings.indexOf('Memerlord')) {
+			if (standings.indexOf('Memerlord') != -1) {
 				guildID = 379733719952654337;
 			}
 		} else {
-			let guildID = parseInt(fileParts[8].split('.')[0]);
+			guildID = parseInt(fileParts[8].split('.')[0]);
 		}
 		if (!guildID) {
 			console.log('Unable to import file: ' + file);
