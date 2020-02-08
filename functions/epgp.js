@@ -76,7 +76,12 @@ module.exports = {
 		let fileParts = file.split('-');
 		let fileTime = new Date();
 		let standings = fs.readFileSync(file, 'utf8');
-		let jsonParse = JSON.parse(standings);
+		try {
+			let jsonParse = JSON.parse(standings);
+		} catch (e) {
+			console.log('Invalid json content.');
+			return false;
+		}
 
 		fileTime.setMonth(parseInt(fileParts[2]) - 1);
 		fileTime.setDate(fileParts[3]);
