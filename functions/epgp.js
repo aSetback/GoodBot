@@ -32,33 +32,76 @@ module.exports = {
 			return false;
 		}
 
-
 		channel.fetchMessages({limit: 20})
 		   .then(function(list){
 				channel.bulkDelete(list);
 
-				let fieldCount = 0;
-				let embed = new Discord.RichEmbed()
-					.setTitle("EPGP Standings")
-					.setColor(0x02a64f);
+				let returnMsg = '';
 
 				for (key in standings) {
-					let standing = standings[key];
-					let spec = standing.spec ? standing.spec + " " : "";
-					embed.addField(standing.player + ', Level ' + standing.level + ' ' + spec + standing.class, (standing.ep + " EP, " + standing.gp + " GP, ") + standing.pr + " PR");
-					fieldCount++;
-					if (fieldCount > 24) {
-						channel.send(embed);
-						fieldCount = 0;
-						embed = new Discord.RichEmbed()
-							.setColor(0x02a64f);					
+					if (returnMsg.length > 1700) {
+						returnMsg += '```';
+						channel.send(returnMsg);
+						returnMsg = '';
 					}
-				}
 
-				channel.send(embed);				
+					if (!returnMsg) {
+						returnMsg = '```md\n';
+						returnMsg += '__Player__'.padEnd(25);
+						returnMsg += '__Level/Class__'.padEnd(30);
+						returnMsg += '__EP__'.padEnd(20);
+						returnMsg += '__GP__'.padEnd(20);
+						returnMsg += '__PR__'.padEnd(20) + '\n';	
+					}
+
+					let standing = standings[key];
+					let spec = standing.spec;
+					if (client.config.validSpecs.indexOf(spec) < 0) {
+						spec = '';
+					} else {
+						spec += ' ';
+					}
+					
+					returnMsg += standing.player.padEnd(25);
+					returnMsg += ('Level ' + standing.level + ' ' + spec + standing.class).padEnd(30);
+					returnMsg += standing.ep.toString().padEnd(20);
+					returnMsg += standing.gp.toString().padEnd(20);
+					returnMsg += standing.pr.toString().padEnd(20) + '\n';
+				}
+				returnMsg += '```';
+				channel.send(returnMsg);
 			});
 	},
+	parseFile: (client, file) => {
+		let fileParts = file.split('-');
+		let fileTime = new Date();
+		let standings = fs.readFileSync(file, 'utf8');
+		let jsonParse = JSON.parse(standings);
+
+		fileTime.setMonth(parseInt(fileParts[2]) - 1);
+		fileTime.setDate(fileParts[3]);
+		fileTime.setFullYear(fileParts[4]);
+		fileTime.setHours(fileParts[5]);
+		fileTime.setMinutes(fileParts[6]);
+		fileTime.setSeconds(fileParts[7]);
+
+		let guildID = parseInt(fileParts[8].split('.')[0]);
+
+		jsonParse.forEach((player) => {
+			let record = {
+				'player': player.player,
+				'ep': parseFloat(player.ep),
+				'gp': parseFloat(player.gp),
+				'pr': parseFloat(player.pr),
+				'class': player.class,
+				'guildID': guildID,
+				'createdAt': fileTime
+			};
+			client.models.epgp.create(record);
+		});
+	},
 	backup: (client, guild, file) => {
+
 		// Read our SavedVariables file
 		epgpData = fs.readFileSync(file, 'utf8');
 
@@ -75,7 +118,7 @@ module.exports = {
 		}
 
 		standings = standings.substr(21, standings.length - 23);
-		console.log(standings);
+
 		try {
 			standings = JSON.parse(standings);
 		} catch (e) {
@@ -105,6 +148,10 @@ module.exports = {
 		let baseFilename = 'epgp-standings-' + timestamp + '-' + guild.id + '.json';
 		let filename = client.config.epgpBackupFolder + '/' + baseFilename;
 		fs.writeFileSync(filename, JSON.stringify(standings));
+
+		// Write it to the db
+		client.epgp.parseFile(client, filename);
+
 
 		async function uploadFile(bucketName, filename) {
 			// [START storage_upload_file]
@@ -163,9 +210,7 @@ module.exports = {
 			// [END storage_generate_signed_url]
 		  }
 
-
 		channel.send('New epgp export: ' + baseFilename);
-
 	},
 	itemLog: (client, guild, file) => {
 		let itemLog = false;
