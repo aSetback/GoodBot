@@ -4,7 +4,7 @@ exports.run = (client, message, args) => {
 
 	const epgpPath = client.config.epgpBackupFolder;
 	message.delete();
-    client.epgp.sync({force: true});
+    client.models.epgp.sync({force: true});
     fs.readdir(epgpPath, (err, files) => {
 		files.sort();
 		files.forEach(file => {
