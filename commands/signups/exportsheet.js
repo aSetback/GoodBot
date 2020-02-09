@@ -113,8 +113,11 @@ exports.run = (client, message, args) => {
 			function setAuth(step) {
 				console.log('set auth');
 				var creds = require("../../google.json");
-				doc.useServiceAccountAuth(creds, step);
-				step();
+				doc.useServiceAccountAuth(creds, async function(err, data) {
+					console.log(error);
+					console.log(data);
+					step();
+				});
 			},
 			function getInfoAndWorksheets(step) {
 				doc.getInfo(function(err, info) {
