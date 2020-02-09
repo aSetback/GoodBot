@@ -105,11 +105,13 @@ exports.run = (client, message, args) => {
 	async function setCells(cellData) {
 		var{ GoogleSpreadsheet } = require('google-spreadsheet');
 		var doc = new GoogleSpreadsheet(sheetID);
+		console.log('sheet opened');
 		var sheet;
 		var cells;
 
 		async.series([
 			function setAuth(step) {
+				console.log('set auth');
 				var creds = require("../../google.json");
 				doc.useServiceAccountAuth(creds, step);
 				step();
