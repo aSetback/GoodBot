@@ -110,7 +110,7 @@ exports.run = (client, message, args) => {
 
 		async.series([
 			function setAuth(step) {
-				var creds = require("../google.json");
+				var creds = require("../../google.json");
 				doc.useServiceAccountAuth(creds, step);
 				
 			},
