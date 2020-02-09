@@ -103,7 +103,7 @@ exports.run = (client, message, args) => {
 	}
 
 	async function setCells(cellData) {
-		var GoogleSpreadsheet = require('google-spreadsheet');
+		var{ GoogleSpreadsheet } = require('google-spreadsheet');
 		var doc = new GoogleSpreadsheet(sheetID);
 		var sheet;
 		var cells;
