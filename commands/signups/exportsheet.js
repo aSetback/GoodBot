@@ -113,7 +113,7 @@ exports.run = (client, message, args) => {
 		await doc.loadInfo();
 		sheet = doc.sheetsByIndex[0];
 		await sheet.loadCells('B3:V35');
-		for (row = 2; row < 24; row++) {
+		for (row = 2; row < 23; row++) {
 			for (col = 1; col <  22; col++) {
 				sheet.getCell(row, col).value = '';
 			}
@@ -131,6 +131,9 @@ exports.run = (client, message, args) => {
 			console.log(cell);
 		});
 		await sheet.saveUpdatedCells();
+
+		message.author.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
+
 	}
 
 }
