@@ -13,25 +13,25 @@ exports.run = (client, message, args) => {
 	message.delete();
 
 	const sheetCols = {
-		'warrior-tank': 2,
-		'warrior-dps': 3,
-		'hunter-dps': 4,
-		'rogue-dps': 5,
-		'mage-caster': 6,
-		'warlock-caster': 7,
-		'priest-healer': 8,
-		'paladin-healer': 9,
-		'druid-healer': 10,
-		'druid-caster': 11,
-		'druid-dps': 12,
-		'priest-caster': 13,
-		'paladin-dps': 14,
-		'paladin-tank': 15,
-		'shaman-dps': 16,
-		'shaman-caster': 17,
-		'shaman-healer': 18,
-		'dk-dps': 19,
-		'dk-tank': 20
+		'warrior-tank': 1,
+		'warrior-dps': 2,
+		'hunter-dps': 3,
+		'rogue-dps': 4,
+		'mage-caster': 5,
+		'warlock-caster': 6,
+		'priest-healer': 7,
+		'paladin-healer': 8,
+		'druid-healer': 9,
+		'druid-caster': 10,
+		'druid-dps': 11,
+		'priest-caster': 12,
+		'paladin-dps': 13,
+		'paladin-tank': 14,
+		'shaman-dps': 15,
+		'shaman-caster': 16,
+		'shaman-healer': 17,
+		'dk-dps': 18,
+		'dk-tank': 19
 	};
 	
 	const raid = message.channel.name;
@@ -66,7 +66,7 @@ exports.run = (client, message, args) => {
 				message.author.send('Could not find a column assignment for ' + player + '.');
 			} else {
 				if (rowCounter[col] === undefined) {
-					rowCounter[col] = 3;
+					rowCounter[col] = 2;
 				}
 				cellData.push({
 					row: rowCounter[col], 
@@ -103,92 +103,34 @@ exports.run = (client, message, args) => {
 	}
 
 	async function setCells(cellData) {
-		var{ GoogleSpreadsheet } = require('google-spreadsheet');
+		var { GoogleSpreadsheet } = require('google-spreadsheet');
 		var doc = new GoogleSpreadsheet(sheetID);
-		console.log('sheet opened');
 		var sheet;
 		var cells;
 
-		async.series([
-			function setAuth(step) {
-				console.log('set auth');
-				var creds = require("../../google.json");
-				doc.useServiceAccountAuth(creds, async function(err, data) {
-					console.log(error);
-					console.log(data);
-					step();
-				});
-			},
-			function getInfoAndWorksheets(step) {
-				doc.getInfo(function(err, info) {
-					try {
-						sheet = info.worksheets[0];
-						console.log('Sheet Opened');
-						step();
-					} catch(e) {
-						console.error(e);
-						return message.author.send('Unable to write to specified sheet!  Please give the bot\'s user access to edit spreadsheet.  \n Bot User: discord@api-project-483394155093.iam.gserviceaccount.com');
-					}
-				});
-			},
-			function getCells(step) {
-				sheet.getCells({
-					'min-row': 3,
-					'max-row': 23,
-					'min-col': 2,
-					'max-col': 20,
-					'return-empty': true
-				}, async function(err, data) {
-					cells = data;
-					console.log('Cells Received');
-					step();
-				});
-			},
-			function setCellData(step) {
-				saveCells = [];
-				for (key in cells) {
-					cell = cells[key];
-					newValue = findCellValue(cell);
-					if (newValue !== null) {
-						cell.value = newValue;
-					} else {
-						cell.value = '';
-					}
-					saveCells.push(cell);
-				}
-				sheet.bulkUpdateCells(saveCells);
-				console.log('Cells Updated');
-				message.author.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
-				step();
-			},
-			function clearStandbys(step) {
-				sheet.getCells({
-					'min-row': 26,
-					'max-row': 35,
-					'min-col': 2,
-					'max-col': 14,
-					'return-empty': true
-				}, async function(err, data) {
-					for (key in data) {
-						data[key].value = '';
-					}
-					sheet.bulkUpdateCells(data);
-					step();
-				});			},
-			function getLuaData(step) {
-				step();
-			}
-		]);
-	}
-	
-	function findCellValue(cell) {
-		for (key in cellData) {
-			var tempCell = cellData[key];
-			if (tempCell.row == cell.row && tempCell.col == cell.col) {
-				return tempCell.value;
+		var creds = require("../../google.json");
+		await doc.useServiceAccountAuth(creds);
+		await doc.loadInfo();
+		sheet = doc.sheetsByIndex[0];
+		await sheet.loadCells('B3:V35');
+		for (row = 2; row < 24; row++) {
+			for (col = 1; col <  22; col++) {
+				sheet.getCell(row, col).value = '';
 			}
 		}
-		return null;
+
+		for (row = 25; row < 35; row++) {
+			for (col = 1; col <  22; col++) {
+				sheet.getCell(row, col).value = '';
+			}
+		}
+
+		cellData.forEach((cellInfo) => {
+			let cell = sheet.getCell(cellInfo.row, cellInfo.col);
+			cell.value = cellInfo.value;
+			console.log(cell);
+		});
+		await sheet.saveUpdatedCells();
 	}
 
 }
