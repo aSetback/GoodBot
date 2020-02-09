@@ -118,6 +118,7 @@ exports.run = (client, message, args) => {
 				doc.getInfo(function(err, info) {
 					try {
 						sheet = info.worksheets[0];
+						console.log('Sheet Opened');
 						step();
 					} catch(e) {
 						console.error(e);
@@ -134,6 +135,7 @@ exports.run = (client, message, args) => {
 					'return-empty': true
 				}, async function(err, data) {
 					cells = data;
+					console.log('Cells Received');
 					step();
 				});
 			},
@@ -148,9 +150,9 @@ exports.run = (client, message, args) => {
 						cell.value = '';
 					}
 					saveCells.push(cell);
-
 				}
 				sheet.bulkUpdateCells(saveCells);
+				console.log('Cells Updated');
 				message.author.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
 				step();
 			},
