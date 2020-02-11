@@ -9,6 +9,7 @@ exports.run = (client, message, args) => {
 		files.sort();
 		files.forEach(file => {
             if (file.indexOf('.json') >= 0) {
+				console.log('Importing ' + file);
                 client.epgp.parseFile(client, epgpPath + '/' + file);
 			}
 		});
