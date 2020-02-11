@@ -6,7 +6,7 @@ exports.run = (client, message, args) => {
 	message.delete();
 	message.author.send('__EPGP History for "' + player + '"__');
 	console.log(message.guild.id);
-	client.models.epgp.findAll({'where': {'player': player, 'guildID': parseInt(message.guild.id)}}).then((history) => {
+	client.models.epgp.findAll({'where': {'player': player, 'guildID': parseInt(message.guild.id)}, 'order': [['createdAt', 'ASC']]}).then((history) => {
 
 		let lastEP = 0;
 		let lastGP = 0;
