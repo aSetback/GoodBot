@@ -90,7 +90,8 @@ module.exports = {
 		fileTime.setHours(fileParts[5]);
 		fileTime.setMinutes(fileParts[6]);
 		fileTime.setSeconds(fileParts[7]);
-
+		let createdAt = fileTime.toISOString().slice(0, 19).replace('T', ' ');
+		console.log(createdAt);
 		let guildID = 0;
 		if (!fileParts[8]) {
 			if (standings.indexOf('Taunt') != -1) {
@@ -115,7 +116,7 @@ module.exports = {
 				'pr': parseFloat(player.pr),
 				'class': player.class,
 				'guildID': guildID,
-				'createdAt': fileTime.toISOString().slice(0, 19).replace('T', ' ')
+				'createdAt': createdAt
 			};
 			client.models.epgp.create(record);
 		});

@@ -15,7 +15,7 @@ exports.run = (client, message, args) => {
 				console.log('Importing ' + file);
                 client.epgp.parseFile(client, epgpPath + '/' + file);
 			}
-			}, 5000 * timeout);
+			}, 3000 * timeout);
 		});
 	});
 }
