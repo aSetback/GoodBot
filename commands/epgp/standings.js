@@ -29,6 +29,7 @@ exports.run = (client, message, args) => {
 			let spec = client.config.validSpecs.indexOf(classStanding.spec) >= 0 ? classStanding.spec + " " : "";
 			let pr = classStanding.pr.toString().padEnd(15);
 			pr = Math.round(pr * 100) / 100;
+			pr = pr.toString();
 
 			returnMessage += classStanding.player.padEnd(20) + (spec + classStanding.class).padEnd(25) + classStanding.ep.toString().padEnd(15) + classStanding.gp.toString().padEnd(15) + pr + "\n";
 			if (returnMessage.length > 1500) {
