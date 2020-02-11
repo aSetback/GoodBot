@@ -83,15 +83,17 @@ module.exports = {
 			console.log('Invalid json content.');
 			return false;
 		}
-
+		let month = parseInt(fileParts[2]) - 1;
 		fileTime.setMonth(parseInt(fileParts[2]) - 1);
 		fileTime.setDate(fileParts[3]);
 		fileTime.setFullYear(fileParts[4]);
 		fileTime.setHours(fileParts[5]);
 		fileTime.setMinutes(fileParts[6]);
-		fileTime.setSeconds(fileParts[7]);
+		fileTime.setSeconds(fileParts[7].replace('.json', ''));
+
+		// Convert to mysql time
 		let createdAt = fileTime.toISOString().slice(0, 19).replace('T', ' ');
-		console.log(createdAt);
+
 		let guildID = 0;
 		if (!fileParts[8]) {
 			if (standings.indexOf('Taunt') != -1) {

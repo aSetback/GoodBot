@@ -9,13 +9,13 @@ exports.run = (client, message, args) => {
 		files.sort();
 		timeout = 0;
 		files.forEach(file => {
-			timeout++;
-			setTimeout(() => {
             if (file.indexOf('.json') >= 0) {
-				console.log('Importing ' + file);
-                client.epgp.parseFile(client, epgpPath + '/' + file);
+				setTimeout(() => {
+					console.log('Importing ' + file);
+					client.epgp.parseFile(client, epgpPath + '/' + file);
+				}, 3000 * timeout);
+				timeout++;
 			}
-			}, 3000 * timeout);
 		});
 	});
 }
