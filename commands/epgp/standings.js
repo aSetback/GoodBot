@@ -13,7 +13,6 @@ exports.run = (client, message, args) => {
 
 	let oneMonthAgo = new Date();
 	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-	// oneMonthAgo = oneMonthAgo.toISOString().slice(0, 19).replace('T', ' ');
 
 	client.models.epgp.findAll({'where': {'class': args[0], 'guildID': parseInt(message.guild.id), 'createdAt': {[Op.gte]: oneMonthAgo}}}).then((classStandings) => {
 		let standings = [];
@@ -32,6 +31,12 @@ exports.run = (client, message, args) => {
 		for (key in standings) {
 			arrayStandings.push(standings[key]);
 		}
+
+		arrayStandings.sort((a, b) => {
+			if (a.pr > b.pr) { return -1; }
+			if (b.pr > a.pr) { return 1; }
+			return 0;
+		});
 		
 		let returnMessage = "";
 		arrayStandings.forEach((classStanding) => {
