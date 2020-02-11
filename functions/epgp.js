@@ -115,7 +115,7 @@ module.exports = {
 				'pr': parseFloat(player.pr),
 				'class': player.class,
 				'guildID': guildID,
-				'createdAt': fileTime
+				'createdAt': fileTime.toISOString().slice(0, 19).replace('T', ' ')
 			};
 			client.models.epgp.create(record);
 		});
