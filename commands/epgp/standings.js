@@ -10,7 +10,11 @@ exports.run = (client, message, args) => {
 		args[key] = argClass.charAt(0).toUpperCase() + argClass.slice(1).toLowerCase();
 	});
 
-	client.models.epgp.findAll({'where': {'class': args[0], 'guildID': parseInt(message.guild.id)}, 'group': ['guildID', 'player'], 'order': [['pr', 'DESC']]}).then((classStandings) => {
+	let oneMonthAgo = new Date();
+	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+	oneMonthAgo = oneMonthAgo.toISOString().slice(0, 19).replace('T', ' ');
+
+	client.models.epgp.findAll({'where': {'class': args[0], 'guildID': parseInt(message.guild.id), createdAt: {$gte: oneMonthAgo}}, 'group': ['guildID', 'player'], 'order': [['createdAt', 'DESC']]}).then((classStandings) => {
 		let returnMessage = "";
 		classStandings.sort((a, b) => {
 			if (a.pr > b.pr) { return -1; }
@@ -23,7 +27,10 @@ exports.run = (client, message, args) => {
 				returnMessage += "Name".padEnd(20) + "Class/Spec".padEnd(25) + "EP".padEnd(15) + "GP".padEnd(15) + "PR".padEnd(15) + "\n";
 			}
 			let spec = client.config.validSpecs.indexOf(classStanding.spec) >= 0 ? classStanding.spec + " " : "";
-			returnMessage += classStanding.player.padEnd(20) + (spec + classStanding.class).padEnd(25) + classStanding.ep.toString().padEnd(15) + classStanding.gp.toString().padEnd(15) + classStanding.pr.toString().padEnd(15) + "\n";
+			let pr = classStanding.pr.toString().padEnd(15);
+			pr = Math.round(pr * 100) / 100;
+
+			returnMessage += classStanding.player.padEnd(20) + (spec + classStanding.class).padEnd(25) + classStanding.ep.toString().padEnd(15) + classStanding.gp.toString().padEnd(15) + pr + "\n";
 			if (returnMessage.length > 1500) {
 				returnMessage += '```';
 				message.author.send(returnMessage);
