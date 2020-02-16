@@ -59,7 +59,6 @@ exports.run = (client, message, args) => {
 	let endWindow = timeAdd(time, 75);
 
 	let seconds = difference / 1000;
-	message.channel.send(seconds / 60);
 
 	message.channel.send('Black Lotus was looted in ' + validZones[zone] + ' by ' + message.author + ' at ' + time[0] + ':' + time[1] + '.  Next window is ' + startWindow + ' => ' + endWindow + '.');
 	setTimeout(function() {
