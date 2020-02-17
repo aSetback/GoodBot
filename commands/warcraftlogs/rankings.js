@@ -12,7 +12,7 @@ exports.run = (client, message, args) => {
       region = args[3];
     }
 
-    zones = [1000, 1001];
+    zones = [1000, 1001, 1002];
     zones.forEach(function(zone) {
       getParses(player, server, region, zone);
     })
@@ -34,6 +34,7 @@ exports.run = (client, message, args) => {
       }
       searchUrl += '&metric=' + metric;
       searchUrl += '&zone=' + zone;
+      searchUrl += '&timeframe=historical';
       reqOpts = {
           url: searchUrl
         };
