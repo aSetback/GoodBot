@@ -21,7 +21,7 @@ exports.run = (client, message, args) => {
     } else {
         let dateTime = new Date(args.join(' '));
         client.models.epgp.findAll({'where': {'guildID': parseInt(message.guild.id), 'createdAt': dateTime}}).then((players) => {
-            returnMsg = '[';
+            returnMsg = '{';
             players.forEach((player) => {
                 returnMsg += '{["player"]="' + player.player + '", ["ep"]="' + player.ep + '", ["gp"]="' + player.gp + '"},';
                 if (returnMsg.length > 1500) {
@@ -31,7 +31,7 @@ exports.run = (client, message, args) => {
 
             });
             returnMsg = returnMsg.slice(0, -1);
-            returnMsg += ']';
+            returnMsg += '}';
             message.channel.send('```\n' + returnMsg + '```');
         });
     }

@@ -28,6 +28,16 @@ exports.run = (client, message, args) => {
         addQuote(record);
     } else if (command == 'remove') {
         removeQuote(args[0], guildID);
+    } else if (command == 'get') {
+        getQuote(args[0], guildID);
+    }
+
+    function getQuote(id, guildID) {
+        client.models.quote.findOne({ where: {'guildID': guildID, 'id': id})}.then((quote) => {
+            if (quote) {
+                message.channel.send(quote.quote);
+            }
+        });
     }
 
     function addQuote(record) {
