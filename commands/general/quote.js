@@ -33,7 +33,7 @@ exports.run = (client, message, args) => {
     }
 
     function getQuote(id, guildID) {
-        client.models.quote.findOne({ where: {'guildID': guildID, 'id': id})}.then((quote) => {
+        client.models.quote.findOne({ where: {'guildID': guildID, 'id': id}}).then((quote) => {
             if (quote) {
                 message.channel.send(quote.quote);
             }
