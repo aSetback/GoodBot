@@ -13,6 +13,7 @@ exports.run = (client, message, args) => {
                 returnMsg += uploadCount.toString().padEnd(4) + ' ' + listing.createdAt.toISOString() + '\n';
                 if (returnMsg.length > 1500) {
                     message.channel.send('```\n' + returnMsg + '```');
+                    returnMsg = '';
                 }
             });
             message.channel.send('```\n' + returnMsg + '```');
