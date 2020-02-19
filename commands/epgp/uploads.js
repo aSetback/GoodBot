@@ -23,7 +23,7 @@ exports.run = (client, message, args) => {
         client.models.epgp.findAll({'where': {'guildID': parseInt(message.guild.id), 'createdAt': dateTime}}).then((players) => {
             returnMsg = '[';
             players.forEach((player) => {
-                returnMsg += '{"player":"' + player.player + '", "ep":"' + player.ep + '", "gp":"' + player.gp + '"},';
+                returnMsg += '{["player"]="' + player.player + '", ["ep"]="' + player.ep + '", ["gp"]="' + player.gp + '"},';
                 if (returnMsg.length > 1500) {
                     message.channel.send('```\n' + returnMsg + '```');
                     returnMsg = '';
