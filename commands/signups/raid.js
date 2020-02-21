@@ -87,6 +87,9 @@ exports.run = (client, message, args) => {
 				channel.send(signupMessage).then((botMsg) => {
 					botMsg.pin();
 					reactEmoji(botMsg);
+					if (raid.indexOf('raid293') > -1) {
+						botMsg.react("🍌");
+					}
 					client.embed.update(botMsg, raidName);
 				});
 			});
