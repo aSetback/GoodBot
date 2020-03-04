@@ -30,7 +30,6 @@ exports.run = (client, message, args) => {
       });
       returnString += ''.padEnd(100, '-') + '\n';
       if (type == 'Overall Time') {
-        console.log(raid1);
         let modifier = raid1.total > raid2.total ? '-' : '+';
         returnString += modifier + ' Total'.padEnd(36);      
         returnString += friendlyTime(raid1.total).padEnd(20);
@@ -72,7 +71,7 @@ exports.run = (client, message, args) => {
 
     let searchUrl = "https://classic.warcraftlogs.com:443/v1/report/fights/" + reportID + "?api_key=" + client.config.warcraftlogs;
     let reqOpts = {
-      url: searchUrl
+      url: encodeURI(searchUrl)
     };
 
     return new Promise((resolve, reject) => {
@@ -83,7 +82,6 @@ exports.run = (client, message, args) => {
 
           let logs = JSON.parse(resp.body);
           let startTime = '';
-          let lastFight = '';
           let lastBossFight = {};
           fightInfo = [];
           logs.fights.forEach(function(fight) { 

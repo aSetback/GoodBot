@@ -19,7 +19,6 @@ exports.run = (client, message, args) => {
 
     function getParses(player, server, region, zone) {
       let searchUrl = "https://classic.warcraftlogs.com:443/v1/rankings/character/" + player + "/" + server + "/" + region + "?api_key=" + client.config.warcraftlogs;
-      console.log(searchUrl);
       let metric = args[1];
       if (!player) {
         return message.channel.send('Please add a valid player name, eg "+rankings Taunt"');
@@ -35,8 +34,10 @@ exports.run = (client, message, args) => {
       searchUrl += '&metric=' + metric;
       searchUrl += '&zone=' + zone;
       searchUrl += '&timeframe=historical';
+      console.log(searchUrl);
+
       reqOpts = {
-          url: searchUrl
+          url: encodeURI(searchUrl)
         };
       try {
         request(reqOpts, function(err, resp, html) {
@@ -46,7 +47,8 @@ exports.run = (client, message, args) => {
             try {
               logs = JSON.parse(resp.body);
             } catch (e) {
-              console.log(e);
+              console.log(resp.body)
+              // console.log(e);
               return false;
             }
             if (logs.error) {

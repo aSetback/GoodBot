@@ -30,8 +30,8 @@ exports.run = (client, message, args) => {
         return message.channel.send('Please add a valid player name, eg "+gear Taunt"');
       }
       reqOpts = {
-          url: searchUrl
-        };
+        url: encodeURI(searchUrl)
+      };
 
       request(reqOpts, function(err, resp, html) {
           if (err) {

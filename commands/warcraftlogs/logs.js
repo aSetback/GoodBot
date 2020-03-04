@@ -14,8 +14,8 @@ exports.run = (client, message, args) => {
 
     let searchUrl = "https://classic.warcraftlogs.com:443/v1/reports/guild/" + guild + '/' + server + '/' + region + '?api_key=' + client.config.warcraftlogs;
     reqOpts = {
-        url: searchUrl
-      };
+      url: encodeURI(searchUrl)
+    };
 
     request(reqOpts, function(err, resp, html) {
         if (err) {
