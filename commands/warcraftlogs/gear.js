@@ -12,9 +12,16 @@ exports.run = (client, message, args) => {
       args = string.split(' ');
     }
   
+    let server = client.customOptions.get(message.guild, 'server');
+    let region = client.customOptions.get(message.guild, 'region');
+    if (!server) {
+      server = 'Mankrik';
+    }
+    if (!region) {
+      region = 'US';
+    }
+
     let player = args[0];
-    let server = 'Mankrik';
-    let region = 'US';
     if (args[1]) {
       server = args[1];
     }

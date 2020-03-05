@@ -2,100 +2,148 @@ var request = require('request');
 var moment = require('moment');
 
 exports.run = (client, message, args) => {
-    let player = args[0];
-    let server = 'Mankrik';
-    let region = 'US';
-    if (args[2]) {
-      server = args[2]; //.replace('-', ' ');
+
+  message.delete();
+
+  // Retrieve our server/region.
+  let server = client.customOptions.get(message.guild, 'server');
+  let region = client.customOptions.get(message.guild, 'region');
+  if (!server) {
+    server = 'Mankrik';
+  }
+  if (!region) {
+    region = 'US';
+  }
+
+  server = server.charAt(0).toUpperCase() + server.slice(1).toLowerCase();
+  region = region.toUpperCase()
+
+  // Set our player
+  let player = args[0];
+  player = player.charAt(0).toUpperCase() + player.slice(1).toLowerCase();
+
+  // Set our metric
+  let metric = args[1];
+  if (!metric) {
+    metric = 'dps';
+  }
+
+  // Set our partition -- Phase 3 is current default.
+  let partition = 2;
+
+  // Allow the user to overwrite
+  if (args[2]) {
+    partition = args[2];
+  }
+
+  if (metric == "tank") {
+    metricDisplay = "Tanking";
+  } else if (metric == "hps") {
+    metricDisplay = "Healing";
+  } else {
+    metricDisplay = "DPS"
+  }
+
+  let returnTitle = "Best " + metricDisplay + " Parses: **" + player + "** (" + server + " " + region + ")\n";
+
+  let zones = [1000, 1001, 1002];
+  getParses(zones, 0);
+
+  function getParses(parseZones, returnParses) {
+    let searchUrl = "https://classic.warcraftlogs.com:443/v1/rankings/character/" + player + "/" + server + "/" + region + "?api_key=" + client.config.warcraftlogs;
+    if (!player) {
+      return message.channel.send('Please add a valid player name, eg "+rankings Taunt"');
     }
-    if (args[3]) {
-      region = args[3];
+
+    let isTank = false;
+    if (metric.toLowerCase() == 'tank') {
+      searchMetric = 'dps';
+      isTank = true;
+    } else {
+      searchMetric = metric;
     }
 
-    zones = [1000, 1001, 1002];
-    zones.forEach(function(zone) {
-      getParses(player, server, region, zone);
-    })
+    // Include partition, metric, zone & timeframe
+    searchUrl += '&partition=' + partition;
+    searchUrl += '&metric=' + searchMetric;
+    searchUrl += '&zone=' + parseZones.shift();
+    searchUrl += '&timeframe=historical';
 
-    function getParses(player, server, region, zone) {
-      let searchUrl = "https://classic.warcraftlogs.com:443/v1/rankings/character/" + player + "/" + server + "/" + region + "?api_key=" + client.config.warcraftlogs;
-      let metric = args[1];
-      if (!player) {
-        return message.channel.send('Please add a valid player name, eg "+rankings Taunt"');
-      }
-      if (!metric) { 
-        metric = 'dps'; 
-      }
-      let isTank = false;
-      if (metric.toLowerCase() == 'tank') {
-        metric = 'dps';
-        isTank = true;
-      }
-      searchUrl += '&metric=' + metric;
-      searchUrl += '&zone=' + zone;
-      searchUrl += '&timeframe=historical';
-      console.log(searchUrl);
+    // Set our encoded URL
+    reqOpts = {
+      url: encodeURI(searchUrl)
+    };
+    try {
+      request(reqOpts, function (err, resp, html) {
+        if (err) {
+          return;
+        }
+        try {
+          logs = JSON.parse(resp.body);
+        } catch (e) {
+          console.log(e);
+          return false;
+        }
+        if (!logs.length) {
+          return false
+        }
+        returnData = '```\n';
+        returnData += ''.padEnd(98, '-') + '\n';
+        returnData += 'boss'.padEnd(35);
+        returnData += searchMetric.padEnd(11);
+        returnData += '%'.padEnd(8);
+        returnData += 'ilvl'.padEnd(6);
+        returnData += 'rank'.padEnd(20);
+        returnData += 'date'.padEnd(10);
+        returnData += '\n';
+        returnData += ''.padEnd(98, '-') + '\n';
 
-      reqOpts = {
-          url: encodeURI(searchUrl)
-        };
-      try {
-        request(reqOpts, function(err, resp, html) {
-            if (err) {
-              return;
-            }
-            try {
-              logs = JSON.parse(resp.body);
-            } catch (e) {
-              console.log(resp.body)
-              // console.log(e);
-              return false;
-            }
-            if (logs.error) {
-              return message.channel.send(logs.error);
-            }
-            if (!logs) {
-              return message.channel.send('Could not find ranking information for ' + player);
-            }
+        let returnLines = 0;
+        logs.forEach(function (log) {
+          if ((isTank && log.spec.toLowerCase() == 'tank')
+            || (!isTank && log.spec.toLowerCase() == 'dps' && metric.toLowerCase() != 'hps')
+            || (metric.toLowerCase() == 'hps' && log.spec.toLowerCase() == 'healer')) {
+            returnLines++;
+            let ranking = log.rank + ' of ' + log.outOf;
+            let encounter = log.encounterName;
+            let logDate = new Date(log.startTime);
+            logDate = moment(logDate).format('ll');
+            logDate = logDate.split(" ");
 
-            let metricDisplay = isTank ? 'tank' : metric;
-            let returnData = '**Top Parses for ' + player + ' (' + metricDisplay + ')**\n';
-            returnData += '```\n';
-            returnData += ''.padEnd(95, '-') + '\n';
-            returnData += 'boss'.padEnd(35);
-            returnData += metric.padEnd(10);
-            returnData += '%'.padEnd(6);
-            returnData += 'ilvl'.padEnd(6);
-            returnData += 'rank'.padEnd(20);
-            returnData += 'date'.padEnd(10);
+            if (isTank) { encounter + ' (tank)'; }
+            returnData += encounter.toString().padEnd(35);
+            returnData += log.total.toString().padEnd(11);
+            returnData += log.percentile.toPrecision(3).toString().padEnd(8);
+            returnData += log.ilvlKeyOrPatch.toString().padEnd(6);
+            returnData += ranking.padEnd(20);
+            returnData += logDate[0] + " " + logDate[1].padEnd(4) + logDate[2];
             returnData += '\n';
-            returnData += ''.padEnd(95, '-') + '\n';
+          }
+        })
 
-            logs.forEach(function(log) {
-              if ((isTank && log.spec.toLowerCase() == 'tank') 
-                || (!isTank && log.spec.toLowerCase() == 'dps' && metric.toLowerCase() != 'hps')
-                || (metric.toLowerCase() == 'hps' && log.spec.toLowerCase() == 'healer')) {
-                var logDate = new Date(log.startTime);
-                var ranking = log.rank + ' of ' + log.outOf;
-                var encounter = log.encounterName;
-                if (isTank) { encounter + ' (tank)'; }
-                returnData += encounter.toString().padEnd(35);
-                returnData += log.total.toString().padEnd(10);
-                returnData += log.percentile.toString().padEnd(6);
-                returnData += log.ilvlKeyOrPatch.toString().padEnd(6);
-                returnData += ranking.padEnd(20);
-                returnData += moment(logDate).format('LL')
-                returnData += '\n';
-              }
-            })
+        returnData += ''.padEnd(98, '-') + '\n';
+        returnData += '```';
+        if (returnLines) {
+          if (returnTitle) {
+            returnData = returnTitle + returnData;
+            returnTitle = "";
+          }
+          message.channel.send(returnData);
+          returnParses++;
+        }
 
-            returnData += ''.padEnd(95, '-') + '\n';
-            returnData += '```';
+        // Continue to next zone if it exists.
+        if (zones.length) {
+          getParses(zones, returnParses);
+        } else {
+          if (!returnParses) {
+            return message.channel.send('We couldn\'t find any parses for ' + player + ' on ' + server + ' ' + region + ' for metric "' + metric + '"');
+          }
 
-            return message.channel.send(returnData);
-        });
-      } catch(e) {
-        console.log(e);
-      }
+        }
+      });
+    } catch (e) {
+      console.log(e);
     }
+  }
 };

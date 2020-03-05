@@ -3,8 +3,8 @@ const Discord = require("discord.js");
 
 exports.run = (client, message, args) => {
   let showTrash = 1;
-  if (args[1]) {
-    showTrash = args[1];
+  if (args[0]) {
+    showTrash = args[0];
   }
   let searchUrl = "https://classic.warcraftlogs.com:443/v1/report/fights/" + args[0] + "?api_key=" + client.config.warcraftlogs;
     reqOpts = {
@@ -24,6 +24,9 @@ exports.run = (client, message, args) => {
         let lastFight = '';
         let lastBossFight = {};
         logs.fights.forEach(function(fight) { 
+            if (!fight.boss && !showTrash) {
+              return
+            }
             if (lastBossFight.boss != 672) {
             if (startTime === '') {
               startTime = fight.start_time;
