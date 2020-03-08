@@ -13,14 +13,15 @@ exports.run = (client, message, args) => {
 
 	const player = args.shift().toLowerCase();
 
+	// Retrieve our category
 	let raidCategory = client.customOptions.get(message.guild, 'raidcategory');
 	if (!raidCategory) {
-		return message.channel.send('Unable to modify raid.  Please create a channel category called "Raid Signups" to use this command, or use +setoption to set a "raidcateory" value. ' + raidCategory);
+		raidCategory = 'Raid Signups';
 	}
 
 	let category = message.guild.channels.find(c => c.name == raidCategory.trim() && c.type == "category");
 	if (!category) {
-		return message.channel.send('Unable to modify raid.  Please create a channel category called "Raid Signups" to use this command, or use +setoption to set a "raidcateory" value. ' + raidCategory);
+		return message.channel.send('Unable to modify raid.  Please create a channel category called "Raid Signups" to use this command, or use +setoption to set a "raidcategory" value. ' + raidCategory);
 	}
 
 	// Retrieve this user's permission for the raid category
