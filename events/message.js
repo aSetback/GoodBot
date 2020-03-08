@@ -29,14 +29,14 @@ module.exports = (client, message) => {
 					return false;
 				}
 
-				if (signupSymbol == '+') {
-					client.signups.set('+', signupName, message.channel.name, message, client);
+				if (signupSymbol == "+") {
+					client.signups.set("+", signupName, message.channel.name, message, client);
 					message.delete().catch(O_o => { });
-				} else if (signupSymbol == '-') {
-					client.signups.set('-', signupName, message.channel.name, message, client);
+				} else if (signupSymbol == "-") {
+					client.signups.set("-", signupName, message.channel.name, message, client);
 					message.delete().catch(O_o => { });
-				} else if (signupSymbol == 'm') {
-					client.signups.set('m', signupName, message.channel.name, message, client);
+				} else if (signupSymbol == "m") {
+					client.signups.set("m", signupName, message.channel.name, message, client);
 					message.delete().catch(O_o => { });
 				}
 			}
