@@ -35,7 +35,7 @@ module.exports = (client, message) => {
 				} else if (args[0] == '-') {
 					client.signups.set('-', signupName, message.channel.name, message, client);
 					message.delete().catch(O_o => { });
-				} else if (args[0].toLowerCase() == 'm') {
+				} else if (args[0] == 'm') {
 					client.signups.set('m', signupName, message.channel.name, message, client);
 					message.delete().catch(O_o => { });
 				}
