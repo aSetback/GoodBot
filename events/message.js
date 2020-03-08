@@ -3,7 +3,9 @@ module.exports = (client, message) => {
 	if (message.author.bot) return;
 
 	// Our standard argument/command name definition.
-	var args = message.content.trim().split(/ +/g);
+	let args = message.content.trim().split(/ +/g);
+	let signupSymbol = args[0];
+	let signupName = args[1] ? args[1] : '';
 
 	// Allow a user to get the current bot trigger
 	if (message.content == '?trigger') {
@@ -19,8 +21,6 @@ module.exports = (client, message) => {
 		// Check if this is a raid channel
 		client.models.raid.findOne({ where: { 'channelID': message.channel.id, 'guildID': message.channel.guild.id } }).then((raid) => {
 			if (raid) {
-				let signupSymbol = args.shift();
-				let signupName = args.shift();
 				if (!signupName) {
 					signupName = message.member.displayName;
 				}
