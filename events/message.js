@@ -15,27 +15,27 @@ module.exports = (client, message) => {
 	}
 
 	// If a message starts with +, - or m, and we're in a sign-up channel, treat it as a sign-up.
-	if (["+", "-", "m"].includes(args[0])) {
+	if (["+", "-", "m"].includes(args[0]) && args[0].length == 1) {
 		// Check if this is a raid channel
 		client.models.raid.findOne({ where: { 'channelID': message.channel.id, 'guildID': message.channel.guild.id } }).then((raid) => {
 			if (raid) {
-
-				let signupName = '';
-				if (message.member) {
+				let signupSymbol = args.shift();
+				let signupName = args.shift();
+				if (!signupName) {
 					signupName = message.member.displayName;
 				}
 
-				if (args[1]) {
-					signupName = args[1];
+				if (!signupSymbol) {
+					return false;
 				}
 
-				if (args[0] == '+') {
+				if (signupSymbol == '+') {
 					client.signups.set('+', signupName, message.channel.name, message, client);
 					message.delete().catch(O_o => { });
-				} else if (args[0] == '-') {
+				} else if (signupSymbol == '-') {
 					client.signups.set('-', signupName, message.channel.name, message, client);
 					message.delete().catch(O_o => { });
-				} else if (args[0] == 'm') {
+				} else if (signupSymbol == 'm') {
 					client.signups.set('m', signupName, message.channel.name, message, client);
 					message.delete().catch(O_o => { });
 				}
