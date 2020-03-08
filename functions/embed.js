@@ -4,17 +4,31 @@ const Discord = require("discord.js");
 module.exports = {
 	update: (message, raid) => {
 		let raidArray = raid.split(/-/g);
-		let raidMonth = raidArray[2];
-		let raidDay = raidArray[3];
+		let raidMonth = raidArray.shift();
+		let raidDay = raidArray.shift();
 		let raidDate = new Date(Date.parse(raidMonth + " " + raidDay));
 		let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
-		let raidName = raidArray[0].replace(/_/g, ' ');
+		let raidName = raidArray.shift().replace(/_/g, ' ');
 		let raidParts = raidName.toLowerCase().split(' ');
-		if (raidParts[0] == 'mc') {
+		if (raidParts[0].toLowerCase() == 'mc') {
 			raidName = 'Molten Core';
-		} else if (raidParts[0] == 'ony') {
+		} else if (raidParts[0].toLowerCase() == 'ony') {
 			raidName = 'Onyxia';
+		} else if (raidParts[0].toLowerCase() == 'aq40') {
+			raidName = 'Temple of Ahn\'Qiraj';
+		} else if (raidParts[0].toLowerCase() == 'aq20') {
+			raidName = 'Ruins of Ahn\'Qiraj';
+		} else if (raidParts[0].toLowerCase() == 'naxx') {
+			raidName = 'Naxxramas';
+		} else if (raidParts[0].toLowerCase() == 'bwl') {
+			raidName = 'Blackwing Lair';
+		} else if (raidParts[0].toLowerCase() == 'zg') {
+			raidName = 'Zul\'Gurub';
 		} else {
+			// Get parent category
+			category = message.channel.parent;
+			console.log(category.name);
+
 			raidName = raidName.charAt(0).toUpperCase() + raidName.slice(1).toLowerCase();
 		}
 		if (raidParts[1]) {
@@ -168,14 +182,12 @@ function createEmbed(title, fileName, message) {
 		Object.keys(classes).forEach(function(classKey) {
 			let classList = "";
 			let playerClass = classes[classKey];
-			let classCount = 0;
 			Object.keys(signups).forEach(function(signupKey) {
 				let signup = signups[signupKey];
 				if (signup.role == key && signup.class == playerClass) {
 					if (data['confirm']) {
 						if (confirmationList.indexOf(signup.name.toLowerCase()) >= 0) {
 							roleCount[key]++;
-							classCount++;
 							confirmCount++;
 							classList += emojis[playerClass].toString() + ' **' + signup.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
 						} else {
@@ -183,7 +195,6 @@ function createEmbed(title, fileName, message) {
 						}
 					} else {
 						roleCount[key]++;
-						classCount++;
 						classList += emojis[playerClass].toString() + ' **' + signup.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
 					}
 				}

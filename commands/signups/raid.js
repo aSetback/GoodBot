@@ -1,66 +1,69 @@
 exports.run = (client, message, args) => {
 
-	const month = {
-		'jan': '01',
-		'feb': '02',
-		'mar': '03',
-		'apr': '04',
-		'may': '05',
-		'jun': '06',
-		'jul': '07',
-		'aug': '08',
-		'sep': '09',
-		'oct': '10',
-		'nov': '11',
-		'dec': '12'
-	};
-
-	// Delete channel
+	// Delete message
 	message.delete().catch(O_o => {});
 
 	// Retrieve our category
-	var raidCategory = client.customOptions.get(message.guild, 'raidcategory');
-	if (!raidCategory) {
-		raidCategory = 'Raid Signups';
+	let category = client.customOptions.get(message.guild, 'raidcategory');
+	if (!category) {
+		category = 'Raid Signups';
 	}
 
-	let category = message.guild.channels.find(c => c.name == raidCategory.trim() && c.type == "category");
-	if (category) {
-		createRaidChannel(category);
-	} else {
-		// Create Category
-		message.guild.createChannel(raidCategory, {
-			'type': 'category'
-		}).then((category) => {
-			createRaidChannel(category);
-		});
+	let raid = args.shift().toUpperCase();
+	let raidDate = args.shift();
+	let name = args.shift();
+	
+	if (!name) {
+		name = raid;
 	}
+
+	// Check for overwrite for this raid type
+	let categoryParams = {'raid': raid, 'guildID': message.guild.id};
+	client.models.raidCategory.findOne({ where: categoryParams}).then((raidCategory) => {
+		if (raidCategory) {
+			category = raidCategory.category; 
+		}
+
+		// Retrieve our category from the discord API
+		let discordCategory = message.guild.channels.find(c => c.name == category.trim() && c.type == "category");
+
+		if (!discordCategory) {
+			return message.channel.send('Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.');
+		}
+
+		// Retrieve this user's permission for the raid category
+		let permissions = discordCategory.permissionsFor(message.author);
+		if (!permissions.has("MANAGE_CHANNELS")) {
+			return message.channel.send('You do not have the manage channels permission for "' + category + '".  Unable to complete command.');
+		}
+
+		createRaidChannel(discordCategory);
+
+	});
+
 
 	function createRaidChannel(category) {
 		if (!category) {
-			message.channel.send('Raid sign-up category __' + raidCategory + '__ does not exist.');
-		}
-		// Retrieve this user's permission for the raid category
-		let permissions = category.permissionsFor(message.author);
-		if (!permissions.has("MANAGE_CHANNELS")) {
-			return message.channel.send('You do not have the manage channels permission for "' + raidCategory + '".  Unable to complete command.');
+			message.channel.send('Raid sign-up category __' + category + '__ does not exist.');
+			return false;
 		}
 
-		const raid = args[0]
-		const date = args[1];
-		if (!raid || !date) {
-			return message.channel.send('Invalid parameters.  Please use the following format: +raid MC Oct-15');
+		if (!raid || !name || !raidDate) {
+			return message.channel.send('Invalid parameters.  Please use the following format: +raid MC Oct-15 <name?>');
 		}
 
-		const raidName = raid + '-signups-' + date;
+		const raidName = raidDate + '-' + name;
 		message.guild.createChannel(raidName, {
 				type: 'text'
 			})
 			.then((channel) => {
-				// Parse our date from the string
-				let dateParts = args[1].split('-');
-				let raidDate = new Date(Date.parse(dateParts[0] + " " + dateParts[1]));
+				let raidDateParts = raidDate.split('-');
+				
+				// Parse out our date
+				raidDate = new Date(Date.parse(raidDateParts[0] + " " + raidDateParts[1]));
 				raidDate.setFullYear(new Date().getFullYear());
+				
+				// If 'date' appears to be in the past, assume it's for the next calendar year (used for the dec => jan swapover)
 				if (raidDate.getTime() < new Date().getTime()) {
 					raidDate.setFullYear(raidDate.getFullYear() + 1);
 				}
@@ -76,6 +79,7 @@ exports.run = (client, message, args) => {
 					'memberID': message.author.id
 				};
 				client.models.raid.create(record);
+
 				let signupMessage = '-';
 				channel.setParent(category.id)
 					.then((channel) => {
@@ -85,12 +89,10 @@ exports.run = (client, message, args) => {
 					});
 
 				channel.send(signupMessage).then((botMsg) => {
-					botMsg.pin();
 					reactEmoji(botMsg);
-					if (raid.indexOf('raid293') > -1) {
-						botMsg.react("🍌");
-					}
-					client.embed.update(botMsg, raidName);
+					botMsg.pin().then(() => {
+						client.embed.update(botMsg, raidName);
+					});
 				});
 			});
 	}

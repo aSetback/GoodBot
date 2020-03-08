@@ -7,7 +7,6 @@ exports.run = (client, message, args) => {
 	if (args[0]) {
 		sheetID = args[0];
 	}
-	var async = require('async');
 	var fs = require('fs');
 
 	message.delete();

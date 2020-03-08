@@ -4,7 +4,7 @@ module.exports = (client, message) => {
 
 	// Our standard argument/command name definition.
 	var args = message.content.trim().split(/ +/g);
-	
+
 	// Allow a user to get the current bot trigger
 	if (message.content == '?trigger') {
 		return message.channel.send('Current trigger: ' + client.config.prefix);
@@ -15,26 +15,32 @@ module.exports = (client, message) => {
 	}
 
 	// If a message starts with +, - or m, and we're in a sign-up channel, treat it as a sign-up.
-	if (message.channel && message.channel.name && message.channel.name.indexOf('signup') > -1) {
-		let signupName = '';
-		if (message.member) {
-			signupName = message.member.displayName;
-		}
-	
-		if (args[1]) {
-			signupName = args[1];
-		}
-	
-		if (args[0] == '+') {
-			client.signups.set('+', signupName, message.channel.name, message, client);
-			message.delete().catch(O_o=>{}); 
-		} else if (args[0] == '-') {
-			client.signups.set('-', signupName, message.channel.name, message, client);
-			message.delete().catch(O_o=>{}); 
-		} else if (args[0].toLowerCase() == 'm') {
-			client.signups.set('m', signupName, message.channel.name, message, client);
-			message.delete().catch(O_o=>{}); 
-		}
+	if (["+", "-", "m"].includes(args[0])) {
+		// Check if this is a raid channel
+		client.models.raid.findOne({ where: { 'channelID': message.channel.id, 'guildID': message.channel.guild.id } }).then((raid) => {
+			if (raid) {
+
+				let signupName = '';
+				if (message.member) {
+					signupName = message.member.displayName;
+				}
+
+				if (args[1]) {
+					signupName = args[1];
+				}
+
+				if (args[0] == '+') {
+					client.signups.set('+', signupName, message.channel.name, message, client);
+					message.delete().catch(O_o => { });
+				} else if (args[0] == '-') {
+					client.signups.set('-', signupName, message.channel.name, message, client);
+					message.delete().catch(O_o => { });
+				} else if (args[0].toLowerCase() == 'm') {
+					client.signups.set('m', signupName, message.channel.name, message, client);
+					message.delete().catch(O_o => { });
+				}
+			}
+		});
 	}
 
 	// Check if the message starts with our command trigger -- if so, pop off first element and check if it's a command.
@@ -50,7 +56,7 @@ module.exports = (client, message) => {
 
 	// Check if user can manage channels
 	message.isAdmin = 0;
-    if (message.member && message.member.hasPermission("MANAGE_CHANNELS")) {
+	if (message.member && message.member.hasPermission("MANAGE_CHANNELS")) {
 		message.isAdmin = 1;
 	}
 
@@ -58,9 +64,9 @@ module.exports = (client, message) => {
 	message.serverAdmin = 0;
 	if (message.member && message.member.hasPermission("ADMINISTRATOR")) {
 		message.serverAdmin = 1;
-	}	
+	}
 
-	member = message.member ?  message.member : message.author;
+	member = message.member ? message.member : message.author;
 
 	// Log the command
 	client.log.write(client, member, message.channel, 'Command: ' + message.content)
