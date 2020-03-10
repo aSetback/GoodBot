@@ -70,7 +70,7 @@ exports.run = (client, message, args) => {
 
 				// Set up our sql record
 				let record = {
-					'name': name,
+					// 'name': name,
 					'raid': raid,
 					'date': raidDate,
 					'color': '#02a64f',
