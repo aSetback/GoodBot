@@ -33,5 +33,40 @@ module.exports = {
         }
         parsedList[playerName] = roleName;
         fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
-    }
+    },
+    hasClass: (guild, player) => {
+        const classFile = 'data/' + guild.id + '-class.json';
+        classList = JSON.parse(fs.readFileSync(classFile));
+        for (classPlayer in classList) {
+            if (player == classPlayer) {
+                return true;
+            }
+        }
+        return false;
+    },
+    hasRole: (guild, player) => {
+        const roleFile = 'data/' + guild.id + '-roles.json';
+        roleList = JSON.parse(fs.readFileSync(roleFile));
+        for (rolePlayer in roleList) {
+            if (player == rolePlayer) {
+                return true;
+            }
+        }
+        return false;
+    },
+    hasFaction: (client, member) => {
+        let horde = member.guild.roles.find(role => role.name.toLowerCase() === 'horde');
+        let alliance = member.guild.roles.find(role => role.name.toLowerCase() === 'alliance');
+        if (member.roles.has(horde.id) || member.roles.has(alliance.id)) {
+            return true;
+        }
+        return false;
+    },
+    validName: (guild, player) => {
+        var reg = /^[a-zàâäåªæÆçÇœŒÐéèêëËƒíìîïÏñÑóòôöºúùûÜýÿ]+$/i;
+        if (!reg.test(player)) {
+            return false;
+        }
+        return true;
+    },
 }

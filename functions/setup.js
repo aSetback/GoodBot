@@ -4,7 +4,13 @@ module.exports = {
     run: (client) => {
         client.on('raw', packet => {
             // Only parse emoji adds
-            if (!['MESSAGE_REACTION_ADD'].includes(packet.t)) return;
+            if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t)) return;
+
+            // Determine if we're adding or removing the emoji
+            let action = "add";
+            if (packet.t == "MESSAGE_REACTION_REMOVE") {
+                action = "remove";
+            }
 
             // Ignore the bot emojis
     		if (packet.d.user_id.toString() == client.config.userId) return;
@@ -18,18 +24,54 @@ module.exports = {
 
             // Only parse emojis from these channels
             if (channel.name == 'select-your-class') {
-                client.setup.selectClass(client, emoji, member, channel);    
+                client.setup.selectClass(client, emoji, member, channel, action);    
             }
             if (channel.name == 'select-your-role') {
-                client.setup.selectRole(client, emoji, member, channel);    
+                client.setup.selectRole(client, emoji, member, channel, action);    
+            }
+            if (channel.name == 'select-your-faction') {
+                client.setup.selectFaction(client, emoji, member, channel, action);    
             }
         });
     },
-    selectClass: (client, emoji, member, channel) => {
+    selectFaction: (client, emoji, member, channel, action) => {
+        let faction = '';
+        // Translate emoji name
+        if (emoji.name == 'GoodBotAlliance') {
+            faction = 'Alliance';
+        }
+
+        if (emoji.name == 'GoodBotHorde') {
+            faction = 'Horde';
+        }
+
+        // A faction emoji wasn't selected
+        if (!faction) {
+            return false;
+        }
+
+        // Check if a discord role exists for this emoji
+        let role = channel.guild.roles.find(role => role.name.toLowerCase() === faction.toLowerCase());
+    
+        if (role) {
+            if (action == 'add') {
+                member.addRole(role).then(() => {
+                    client.setup.checkCompleteness(client, member);
+                });
+                client.log.write(client, member, channel, 'Faction Added: ' + faction);
+            } else {
+                member.removeRole(role)
+                client.log.write(client, member, channel, 'Faction Removed: ' + faction);
+            }
+        }
+    },
+    selectClass: (client, emoji, member, channel, action) => {
+        if (action != 'add') {
+            return false;
+        }
+
         // Check if a discord role exists for this emoji
         let role = channel.guild.roles.find(role => role.name.toLowerCase() === emoji.name.toLowerCase());
-
-        client.log.write(client, member, channel, 'Added Role: ' + emoji.name);
 
         // Tag the player with the selected role, if it exists.
         if (role) {
@@ -45,17 +87,23 @@ module.exports = {
                 }
             });
 
-            member.addRole(role);
+            member.addRole(role).then(() => {
+                client.setup.checkCompleteness(client, member);
+            });
         }
 
         client.set.playerClass(channel.guild, member.displayName, emoji.name);
+        client.log.write(client, member, channel, 'Class Set: ' + emoji.name.toLowerCase());
+        client.setup.checkCompleteness(client, member);
 
     },
-    selectRole: (client, emoji, member, channel) => {
+    selectRole: (client, emoji, member, channel, action) => {
+        if (action != 'add') {
+            return false;
+        }
+
         // Check if a discord role exists for this emoji
         let role = channel.guild.roles.find(role => role.name.toLowerCase() === emoji.name.toLowerCase());
-
-        client.log.write(client, member, channel, 'Added Role: ' + emoji.name);
 
         // Tag the player with the selected role, if it exists.
         if (role) {
@@ -71,10 +119,13 @@ module.exports = {
                 }
             });
 
-            member.addRole(role);
+            member.addRole(role).then(() => {
+                client.setup.checkCompleteness(client, member);
+            });
         }
 
         client.set.playerRole(channel.guild, member.displayName, emoji.name);
+        client.log.write(client, member, channel, 'Role Set: ' + emoji.name.toLowerCase());
 
     },
     nick: (client, message) => {
@@ -90,5 +141,30 @@ module.exports = {
         // UCFirst
         newName = newName.charAt(0).toUpperCase() + newName.slice(1).toLowerCase();
         message.guild.members.get(message.author.id).setNickname(newName);  
+        client.setup.checkCompleteness(client, member);
+    },
+    checkCompleteness(client, member) {
+        let factionChannel = member.guild.channels.find(c => c.name == "select-your-faction");
+        let hasFaction = true;
+        if (factionChannel) {
+            hasFaction = client.set.hasFaction(member.guild, member);
+        }
+        let validName = client.set.validName(member.guild, member.displayName);
+        let hasRole = client.set.hasRole(member.guild, member.displayName);
+        let hasClass = client.set.hasClass(member.guild, member.displayName);
+        if (hasFaction && validName && hasRole && hasClass) {
+            client.setup.applyCompleteRole(client, member)
+        }
+    },
+    applyCompleteRole(client, member) {
+        let roleName = client.customOptions.get(member.guild, 'completerole');
+        if (!roleName) {
+            return false;
+        }
+        let role = member.guild.roles.find(role => role.name.toLowerCase() === roleName.toLowerCase());
+        if (role) {
+            member.addRole(role)
+        }
+
     }
 }
