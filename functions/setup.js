@@ -93,8 +93,11 @@ module.exports = {
         }
 
         client.set.playerClass(channel.guild, member.displayName, emoji.name);
+        if (!role) {
+            client.setup.checkCompleteness(client, member);
+        }
+
         client.log.write(client, member, channel, 'Class Set: ' + emoji.name.toLowerCase());
-        client.setup.checkCompleteness(client, member);
 
     },
     selectRole: (client, emoji, member, channel, action) => {
@@ -125,6 +128,10 @@ module.exports = {
         }
 
         client.set.playerRole(channel.guild, member.displayName, emoji.name);
+        if (!role) {
+            client.setup.checkCompleteness(client, member);
+        }
+
         client.log.write(client, member, channel, 'Role Set: ' + emoji.name.toLowerCase());
 
     },
