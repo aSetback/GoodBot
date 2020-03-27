@@ -92,7 +92,7 @@ module.exports = {
             });
         }
 
-        client.set.playerClass(channel.guild, member.displayName, emoji.name);
+        client.set.playerClass(client, channel.guild, member, member.displayName, emoji.name);
         if (!role) {
             client.setup.checkCompleteness(client, member);
         }
@@ -127,7 +127,7 @@ module.exports = {
             });
         }
 
-        client.set.playerRole(channel.guild, member.displayName, emoji.name);
+        client.set.playerRole(client, channel.guild, member, member.displayName, emoji.name);
         if (!role) {
             client.setup.checkCompleteness(client, member);
         }
@@ -150,20 +150,20 @@ module.exports = {
         message.guild.members.get(message.author.id).setNickname(newName);  
         client.setup.checkCompleteness(client, member);
     },
-    checkCompleteness(client, member) {
+    checkCompleteness: async function(client, member) {
         let factionChannel = member.guild.channels.find(c => c.name == "select-your-faction");
         let hasFaction = true;
         if (factionChannel) {
             hasFaction = client.set.hasFaction(member.guild, member);
         }
         let validName = client.set.validName(member.guild, member.displayName);
-        let hasRole = client.set.hasRole(member.guild, member.displayName);
-        let hasClass = client.set.hasClass(member.guild, member.displayName);
+        let hasRole = await client.set.hasRole(client, member.guild, member.displayName);
+        let hasClass = await client.set.hasClass(client, member.guild, member.displayName);
         if (hasFaction && validName && hasRole && hasClass) {
             client.setup.applyCompleteRole(client, member)
         }
     },
-    applyCompleteRole(client, member) {
+    applyCompleteRole: (client, member) => {
         let roleName = client.customOptions.get(member.guild, 'completerole');
         if (!roleName) {
             return false;

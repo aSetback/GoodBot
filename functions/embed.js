@@ -2,121 +2,120 @@ const fs = require("fs");
 const Discord = require("discord.js");
 
 module.exports = {
-	update: (message, raid) => {
-		let raidArray = raid.split(/-/g);
-		let raidMonth = raidArray.shift();
-		let raidDay = raidArray.shift();
-		let raidDate = new Date(Date.parse(raidMonth + " " + raidDay));
+	update: (client, message, raid) => {
+		let channel = message.channel;
+
+		// Figure out our date
+		let raidDate = new Date(Date.parse(raid.date));
 		let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
-		let raidName = raidArray.shift().replace(/_/g, ' ');
-		let raidParts = raidName.toLowerCase().split(' ');
-		if (raidParts[0].toLowerCase() == 'mc') {
+		let raidType = raid.raid
+		let raidName = '';
+
+		if (raidType.toLowerCase() == 'mc') {
 			raidName = 'Molten Core';
-		} else if (raidParts[0].toLowerCase() == 'ony') {
+		} else if (raidType.toLowerCase() == 'ony') {
 			raidName = 'Onyxia';
-		} else if (raidParts[0].toLowerCase() == 'aq40') {
+		} else if (raidType.toLowerCase() == 'aq40') {
 			raidName = 'Temple of Ahn\'Qiraj';
-		} else if (raidParts[0].toLowerCase() == 'aq20') {
+		} else if (raidType.toLowerCase() == 'aq20') {
 			raidName = 'Ruins of Ahn\'Qiraj';
-		} else if (raidParts[0].toLowerCase() == 'naxx') {
+		} else if (raidType.toLowerCase() == 'naxx') {
 			raidName = 'Naxxramas';
-		} else if (raidParts[0].toLowerCase() == 'bwl') {
+		} else if (raidType.toLowerCase() == 'bwl') {
 			raidName = 'Blackwing Lair';
-		} else if (raidParts[0].toLowerCase() == 'zg') {
+		} else if (raidType.toLowerCase() == 'zg') {
 			raidName = 'Zul\'Gurub';
 		} else {
-			// Get parent category
-			category = message.channel.parent;
-			console.log(category.name);
-
+			category = channel.parent;
 			raidName = raidName.charAt(0).toUpperCase() + raidName.slice(1).toLowerCase();
 		}
-		if (raidParts[1]) {
-			let groupName = raidParts[1];
-			groupName = groupName.charAt(0).toUpperCase() + groupName.slice(1).toLowerCase();
-			raidName += ' (' + groupName + ')';
-		}
 
-		message.channel.fetchPinnedMessages()
+		channel.fetchPinnedMessages()
 			.then(function(list){
 				pinnedMsg = list.last();
 				if (!pinnedMsg) { return false; }
 				currentContent = pinnedMsg.content;
-				const raid = message.channel.name;
-				const fileName = './signups/' + message.guild.id + '-' + raid + '.json';
 				let title = "Raid Signups for " + raidName + ", " + dateString;
-				let embed = createEmbed(title, fileName, message);		
-
-				pinnedMsg.edit(currentContent, embed);
+				let embed = updateEmbed(title, channel, client, pinnedMsg, raidType);		
 			});		
 	},
-}
-
-function createEmbed(title, fileName, message) {
-	let parsedLineup = {};
-	if (fs.existsSync(fileName)) {
-		currentLineup = fs.readFileSync(fileName, 'utf8');
-		parsedLineup = JSON.parse(currentLineup);
+	getClasses: async function(client, guild) {
+		let classList = new Promise((resolve, reject) => {
+			client.models.playerClass.findAll({where: {'guildID': guild.id}}).then((classList) => {
+				resolve(classList);
+			});
+		});
+		return classList;
+	},
+	getRoles: async function(client, guild) {
+		let roleList = new Promise((resolve, reject) => {
+			client.models.playerRole.findAll({where: {'guildID': guild.id}}).then((roleList) => {
+				resolve(roleList);
+			});
+		});
+		return roleList;
+	},
+	getSignups: async function(client, channelID) {
+		let signupList = new Promise((resolve, reject) => {
+			client.models.signup.findAll({where: {'channelID': channelID}}).then((signupList) => {
+				resolve(signupList);
+			});
+		});
+		return signupList;
 	}
+};
 
-	const classFile = 'data/' + message.guild.id + '-class.json';
-	let classList = {};
-	if (fs.existsSync(fileName)) {
-		currentList = fs.readFileSync(classFile, 'utf8');
-		classList = JSON.parse(currentList);
-	}
-
-	const roleFile = 'data/' + message.guild.id + '-roles.json';
-	let roleList = {};
-	if (fs.existsSync(fileName)) {
-		currentList = fs.readFileSync(roleFile, 'utf8');
-		roleList = JSON.parse(currentList);
-	}
-	
-	let signups = [];
-	let noList = [];
-	let maybeList = [];
+async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
+	let signups = await client.embed.getSignups(client, channel.id);
+	let classList = await client.embed.getClasses(client, channel.guild);
+	let roleList = await client.embed.getRoles(client, channel.guild);
 	let data = {
 		'title': title,
 		'color': "#02a64f",
 		'description': 'To sign up for this raid, please click on one of the emojis directly below this post.',
 		'confirm': 0
 	}
-	Object.keys(parsedLineup).forEach(function(key) {
-		let signup = parsedLineup[key];
-		if (key == 'Goodbot' || key == 'confirmed') {
-
-		} else if (key == 'data') {
-			savedData = parsedLineup['data'];	
-			Object.keys(savedData).forEach(function(key) {
-				data[key] = savedData[key];
-			});
-		} else if (signup != 'yes') {
-			if (signup == 'maybe') {
-				maybeList.push(key);
+	let maybeList = [];
+	let noList = [];
+	let lineup = [];
+	// De-duplicate the sign-ups
+	let dedupedSignups = [];
+	signups.forEach((signup, signupKey) => {
+		dedupedSignups.forEach((deduped, dedupedKey) => {
+			if (signup.player == deduped.player) { 
+				dedupedSignups.splice(dedupedKey, 1);
 			}
-			if (signup == 'no') {
-				noList.push(key);
-			}
-			delete parsedLineup[key];
-		} else {
-			parsedLineup[key] = {'name': key};
-
-			Object.keys(classList).forEach(function(classKey) {
-				if (classKey == key) {
-					parsedLineup[key]['class'] = classList[classKey].toLowerCase();
-				}
-			});
-			Object.keys(roleList).forEach(function(roleKey) {
-				if (roleKey == key) {
-					parsedLineup[key]['role'] = roleList[roleKey].toLowerCase();
-				}
-			});
-			signups.push(parsedLineup[key]);
-		}
+		});
+		dedupedSignups.push(signup);
 	});
 
-	let client = message.client;
+	dedupedSignups.forEach((signup) => {
+		if (signup.signup == 'yes') {
+			let playerClass = '';
+			let playerRole = '';
+			classList.forEach((classListItem) => {
+				if (classListItem.player == signup.player) {
+					playerClass = classListItem.class;
+				}
+			});
+			roleList.forEach((roleListItem) => {
+				if (roleListItem.player == signup.player) {
+					playerRole = roleListItem.role;
+				}
+			});
+			player = {
+				name: signup.player,
+				class: playerClass,
+				role: playerRole
+			}
+			lineup.push(player);
+		} else if (signup.signup == 'maybe') {
+			maybeList.push(signup.player);
+		} else if (signup.signup == 'no') {
+			noList.push(signup.player);
+		}
+	})
+
 	const emojis = {
 		"warrior": client.emojis.find(emoji => emoji.name === "warrior"),
 		"druid": client.emojis.find(emoji => emoji.name === "druid"),
@@ -130,9 +129,12 @@ function createEmbed(title, fileName, message) {
 		"dk": client.emojis.find(emoji => emoji.name === "DK")
 	}
 
+	let icon = 'http://softball.setback.me/goodbot/icons/' + raidType + '.png';
 	let embed = new Discord.RichEmbed()
 	.setTitle(data.title)
-	.setColor(data.color);
+	.setColor(data.color)
+	.setThumbnail(icon);
+
 	const roles = {
 		'tank': [
 			'warrior',
@@ -172,31 +174,15 @@ function createEmbed(title, fileName, message) {
 		'caster': 0
 	};
 
-	let confirmCount = 0;
-	let confirmationList = [];
-	if (parsedLineup['confirmed']) {
-		confirmationList = parsedLineup['confirmed'];
-	}
 	Object.keys(roles).forEach(function(key) {
 		let classes = roles[key];
 		Object.keys(classes).forEach(function(classKey) {
 			let classList = "";
 			let playerClass = classes[classKey];
-			Object.keys(signups).forEach(function(signupKey) {
-				let signup = signups[signupKey];
-				if (signup.role == key && signup.class == playerClass) {
-					if (data['confirm']) {
-						if (confirmationList.indexOf(signup.name.toLowerCase()) >= 0) {
-							roleCount[key]++;
-							confirmCount++;
-							classList += emojis[playerClass].toString() + ' **' + signup.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
-						} else {
-							classList += emojis[playerClass].toString() + ' *' + signup.name + '* [' + (parseInt(signupKey) + 1) + ']\n';
-						}
-					} else {
-						roleCount[key]++;
-						classList += emojis[playerClass].toString() + ' **' + signup.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
-					}
+			lineup.forEach(function(player, signupKey) {
+				if (player.role == key && player.class == playerClass) {
+					roleCount[key]++;
+					classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
 				}
 			});
 			if (classList.length) {
@@ -210,7 +196,7 @@ function createEmbed(title, fileName, message) {
 		roleName = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
 		roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
 	} 
-	embed.addField('**Total Sign-ups**', signups.length);
+	embed.addField('**Total Sign-ups**', (dedupedSignups.length - maybeList.length - noList.length));
 	if (data['confirm']) {
 		embed.addField('**Confirmed Sign-ups**', confirmCount);
 	}
@@ -227,5 +213,5 @@ function createEmbed(title, fileName, message) {
 	}
 	embed.setTimestamp();
 
-	return embed;
+	pinnedMsg.edit(currentContent, embed);
 }

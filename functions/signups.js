@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 module.exports = {
-	set: (type, name, channel, message, client) => {
+	set: async function(type, name, channel, message, client) {
         if (!message.guild.id) {
             return channel.send('This can only be used in a sign-up channel.');
         }
@@ -20,8 +20,9 @@ module.exports = {
             playerId = member.user.id.toString();
         }
 
+        // Check if the player is avlid
         var reg = /^[a-zàâäåªæÆçÇœŒÐéèêëËƒíìîïÏñÑóòôöºúùûÜýÿ]+$/i;
-        if (!reg.test(userName)) {
+        if (!client.set.validName(userName)) {
             let playerMessage = 'Unable to sign "' + userName + '" for this raid.  Please set your in-game name using +nick first.';
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
@@ -29,18 +30,19 @@ module.exports = {
             return playerMessage;
         }
 
-        // Check to make sure role is set
-        let playerRole = getRole(userName);
-        let playerClass = getClass(userName);
+        // Check to make sure class & role is set
+        let playerRole = await client.set.hasRole(client, message.guild, userName);
+        let playerClass = await client.set.hasClass(client, message.guild, userName);
 
+        // Either class or 
         let unsavedSettings = false;
-        if ((playerRole == 'unknown' || playerClass == 'unknown') && member) {
+        if ((!playerRole || !playerClass) && member) {
             playerClass = getClassByTag(member);
             playerRole = getRoleByTag(member);
             unsavedSettings = true;
         }
 
-        if (playerClass == 'unknown') {
+        if (!playerClass) {
             let playerMessage = 'Unable to sign "' + userName + '" for this raid.  Player class is not set.';
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
@@ -48,7 +50,7 @@ module.exports = {
             return message.channel.send(playerMessage);
         }
 
-        if (playerRole == 'unknown') {
+        if (!playerRole) {
             let playerMessage = 'Unable to sign "' + userName + '" for this raid.  Player role is not set.';
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
@@ -67,36 +69,9 @@ module.exports = {
                 playerRole = 'Healer';
             }
 
-            // Write to class json file
-            let fileName = 'data/' + message.guild.id + '-class.json';
-            let parsedList = {};
-            if (fs.existsSync(fileName)) {
-                currentList = fs.readFileSync(fileName, 'utf8');
-                parsedList = JSON.parse(currentList);
-            }
-            parsedList[userName] = playerClass;
-            fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
-
-            // Write to roles json file
-            fileName = 'data/' + message.guild.id + '-roles.json';
-            parsedList = {};
-            if (fs.existsSync(fileName)) {
-                currentList = fs.readFileSync(fileName, 'utf8');
-                parsedList = JSON.parse(currentList);
-            }
-            parsedList[userName] = playerRole;
-            fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
+            client.set.playerClass(client, message.guild, member, userName, playerClass)
+            client.set.playerRole(client, message.guild, member, userName, playerRole)
         }
-
-        const fileName = './signups/' + message.guild.id + '-' + channel + '.json';
-        let parsedLineup = {};
-        if (fs.existsSync(fileName)) {
-            currentLineup = fs.readFileSync(fileName, 'utf8');
-            parsedLineup = JSON.parse(currentLineup);
-        }
-
-        parsedLineup[userName] = signValue;
-        fs.writeFileSync(fileName, JSON.stringify(parsedLineup)); 
 
         // Save our sign-up to the db
         client.models.raid.findOne({'where': {'guildID': message.guild.id, 'channelID': message.channel.id}}).then((raid) => {
@@ -109,37 +84,29 @@ module.exports = {
                     'guildID': raid.guildID,
                     'memberID': message.author.id
                 };
-                client.models.signup.create(record);
+
+                client.models.signup.findOne({ where: {'player': userName, 'raidID': raid.id}}).then((signup) => {
+                    if (!signup) {
+                        client.models.signup.create(record).then(() => {
+                            // Update embed
+                            client.embed.update(client, message, raid);
+                        });
+                    } else {
+                        client.models.signup.update(record, {
+                            where: {
+                                id: signup.id
+                            }
+                        }).then(() => {
+                            // Update embed
+                            client.embed.update(client, message, raid);
+                        });
+                    }
+                });
             }
         });
 
-        // Update embed
-        client.embed.update(message, channel);
-
         let logMessage = 'Sign Up: ' + userName + ' => ' + signValue;
         client.log.write(client, message.author, message.channel, logMessage);
-
-        function getRole(player) {
-            const roleFile = 'data/' + message.guild.id + '-roles.json';
-            roleList = JSON.parse(fs.readFileSync(roleFile));
-            for (rolePlayer in roleList) {
-                if (player == rolePlayer) {
-                    return roleList[player].toLowerCase();
-                }
-            }
-            return 'unknown';
-        }
-   
-        function getClass(player) {
-            const classFile = 'data/' + message.guild.id + '-class.json';
-            classList = JSON.parse(fs.readFileSync(classFile));
-            for (classPlayer in classList) {
-                if (player == classPlayer) {
-                    return classList[player].toLowerCase();
-                }
-            }
-            return 'unknown';
-        }
 
         function getClassByTag(member) {
             const validClasses = ['Priest', 'Paladin', 'Druid', 'Warrior', 'Rogue', 'Hunter', 'Mage', 'Warlock'];
