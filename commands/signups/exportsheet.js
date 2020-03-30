@@ -1,6 +1,6 @@
 exports.run = (client, message, args) => {
-	if (!message.isAdmin) {
-		return false;
+	if (!client.permission.manageChannel(message.member, message.channel)) {
+		return message.author.send(client.loc("You need the 'manage channels' permission to use this command."));
 	}
 
 	var sheetID = client.customOptions.get(message.guild, 'sheet').trim();

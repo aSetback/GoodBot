@@ -6,6 +6,10 @@ const client = new Discord.Client();
 // Make our config available throughout all the files.
 client.config = require("./config.json");
 
+client.loc = function(text) {
+  return text;
+};
+
 const Sequelize = require('sequelize');
 
 // Initialize DB
