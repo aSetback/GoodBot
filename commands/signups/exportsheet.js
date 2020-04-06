@@ -1,6 +1,4 @@
-exports.run = async function(client, message, args) {
-	if (!message.isAdmin) {
-		return false;
+	if (!client.permission.manageChannel(message.member, message.channel)) {
 	}
 
 	var sheetID = client.customOptions.get(message.guild, 'sheet').trim();
