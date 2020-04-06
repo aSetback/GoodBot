@@ -3,9 +3,8 @@ const fs = require("fs");
 
 exports.run = (client, message, args) => {
     let text = args.join(' ');
-    message.delete();
 
-    	// Write to notify json file
+    // Write to notify json file
 	let fileName = 'data/notify.json';
 	let parsedList = [];
 	if (fs.existsSync(fileName)) {

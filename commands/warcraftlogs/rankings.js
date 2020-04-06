@@ -3,8 +3,6 @@ var moment = require('moment');
 
 exports.run = (client, message, args) => {
 
-  message.delete();
-
   // Retrieve our server/region.
   let server = client.customOptions.get(message.guild, 'server');
   let region = client.customOptions.get(message.guild, 'region');

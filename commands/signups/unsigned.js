@@ -1,8 +1,6 @@
 const fs = require("fs");
 
 exports.run = (client, message, args) => {
-	message.delete().catch(O_o=>{}); 
-
 	let raid = message.channel.name;
 	let lastRaidChannel = args.shift();
 	if (!lastRaidChannel) {

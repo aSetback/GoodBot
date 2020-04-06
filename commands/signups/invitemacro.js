@@ -1,7 +1,6 @@
 const fs = require("fs");
 
 exports.run = (client, message, args) => {
-    message.delete().catch(O_o=>{});
     client.models.signup.findAll({'where': {'channelID': message.channel.id}}).then((signups) => {
         let dedupedSignups = [];
         signups.forEach((signup, signupKey) => {

@@ -92,7 +92,7 @@ module.exports = {
             });
         }
 
-        client.set.playerClass(client, channel.guild, member, member.displayName, emoji.name);
+        client.set.characterClass(client, channel.guild, member, member.displayName, emoji.name);
         if (!role) {
             client.setup.checkCompleteness(client, member);
         }
@@ -127,7 +127,7 @@ module.exports = {
             });
         }
 
-        client.set.playerRole(client, channel.guild, member, member.displayName, emoji.name);
+        client.set.characterRole(client, channel.guild, member, member.displayName, emoji.name);
         if (!role) {
             client.setup.checkCompleteness(client, member);
         }

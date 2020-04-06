@@ -65,6 +65,4 @@ exports.run = (client, message, args) => {
 	// Notify the user which players were confirmed
 	message.author.send('Confirmed Players: ' + confirmedPlayers.join(', ') + ' for ' + message.channel.name + '.');
 
-	// Clean up the channel by deleting the command
-	message.delete().catch(O_o=>{}); 
 };

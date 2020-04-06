@@ -2,7 +2,6 @@ const Discord = require("discord.js");
 const { Permissions } = require('discord.js');
 
 exports.run = (client, message, args) => {
-    message.delete().catch(O_o=>{}); 
     let newName = args[0];
     if (!newName) {
         return message.author.send('Please include a name with this command.');

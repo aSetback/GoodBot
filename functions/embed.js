@@ -39,25 +39,17 @@ module.exports = {
 				let embed = updateEmbed(title, channel, client, pinnedMsg, raidType);		
 			});		
 	},
-	getClasses: async function(client, guild) {
-		let classList = new Promise((resolve, reject) => {
-			client.models.playerClass.findAll({where: {'guildID': guild.id}}).then((classList) => {
-				resolve(classList);
+	getCharacters: async function(client, guild) {
+		let characterList = new Promise((resolve, reject) => {
+			client.models.character.findAll({where: {'guildID': guild.id}}).then((characterList) => {
+				resolve(characterList);
 			});
 		});
-		return classList;
-	},
-	getRoles: async function(client, guild) {
-		let roleList = new Promise((resolve, reject) => {
-			client.models.playerRole.findAll({where: {'guildID': guild.id}}).then((roleList) => {
-				resolve(roleList);
-			});
-		});
-		return roleList;
+		return characterList;
 	},
 	getSignups: async function(client, channelID) {
 		let signupList = new Promise((resolve, reject) => {
-			client.models.signup.findAll({where: {'channelID': channelID}}).then((signupList) => {
+			client.models.signup.findAll({where: {'channelID': channelID}, order: [['updatedAt', 'DESC']], group: ['player']}).then((signupList) => {
 				resolve(signupList);
 			});
 		});
@@ -67,8 +59,7 @@ module.exports = {
 
 async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	let signups = await client.embed.getSignups(client, channel.id);
-	let classList = await client.embed.getClasses(client, channel.guild);
-	let roleList = await client.embed.getRoles(client, channel.guild);
+	let characterList = await client.embed.getCharacters(client, channel.guild);
 	let data = {
 		'title': title,
 		'color': "#02a64f",
@@ -78,43 +69,27 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	let maybeList = [];
 	let noList = [];
 	let lineup = [];
-	// De-duplicate the sign-ups
-	let dedupedSignups = [];
-	signups.forEach((signup, signupKey) => {
-		dedupedSignups.forEach((deduped, dedupedKey) => {
-			if (signup.player == deduped.player) { 
-				dedupedSignups.splice(dedupedKey, 1);
-			}
-		});
-		dedupedSignups.push(signup);
-	});
 
-	dedupedSignups.forEach((signup) => {
+	// De-duplicate the sign-ups
+	let total = 0;
+	signups.forEach((signup) => {
 		if (signup.signup == 'yes') {
-			let playerClass = '';
-			let playerRole = '';
-			classList.forEach((classListItem) => {
-				if (classListItem.player == signup.player) {
-					playerClass = classListItem.class;
+			total++;
+			characterList.forEach((characterListItem) => {
+				if (characterListItem.name == signup.player) {
+					lineup.push({
+						name: signup.player,
+						class: characterListItem.class,
+						role: characterListItem.role
+					});					
 				}
 			});
-			roleList.forEach((roleListItem) => {
-				if (roleListItem.player == signup.player) {
-					playerRole = roleListItem.role;
-				}
-			});
-			player = {
-				name: signup.player,
-				class: playerClass,
-				role: playerRole
-			}
-			lineup.push(player);
 		} else if (signup.signup == 'maybe') {
 			maybeList.push(signup.player);
 		} else if (signup.signup == 'no') {
 			noList.push(signup.player);
 		}
-	})
+	});
 
 	const emojis = {
 		"warrior": client.emojis.find(emoji => emoji.name === "warrior"),
@@ -196,7 +171,7 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		roleName = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
 		roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
 	} 
-	embed.addField('**Total Sign-ups**', (dedupedSignups.length - maybeList.length - noList.length));
+	embed.addField('**Total Sign-ups**', total);
 	if (data['confirm']) {
 		embed.addField('**Confirmed Sign-ups**', confirmCount);
 	}

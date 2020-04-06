@@ -1,8 +1,5 @@
 exports.run = (client, message, args) => {
 
-    // Delete message
-    message.delete().catch(O_o => {});
-
     // Create Category
     message.guild.createChannel('Get Started', {
             'type': 'category'

@@ -7,8 +7,6 @@ exports.run = (client, message, args) => {
 		return false;
 	}
 
-	message.delete().catch(O_o=>{}); 
-	
 	const channel = message.channel.name;
 	const user = args[0] ? args[0] : message.member.displayName;
 	const userName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();

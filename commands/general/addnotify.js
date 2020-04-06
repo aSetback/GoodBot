@@ -8,7 +8,6 @@ exports.run = (client, message, args) => {
 		return false;
 	}
 	
-	message.delete().catch(O_o=>{}); 
 	if (!args[0]) {
 		return false;
 	}

@@ -1,8 +1,5 @@
 exports.run = (client, message, args) => {
 
-    // Delete message
-    message.delete().catch(O_o => {});
-
     // Find Category
     category = message.guild.channels.find(c => c.name == "Get Started" && c.type == "category");
 

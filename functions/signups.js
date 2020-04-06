@@ -13,71 +13,53 @@ module.exports = {
             signValue = 'maybe';
         }
 
-        const userName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-        let member = message.guild.members.find(member => member.nickname == userName ||  member.user.username == userName);
+        let characterName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+        let member = message.guild.members.find(member => member.nickname == characterName ||  member.user.username == characterName);
         let playerId = null;
         if (member) {
             playerId = member.user.id.toString();
         }
 
+        // Check to make sure class & role is set
+        let character = await client.set.getCharacter(client, message.guild, characterName);
+
         // Check if the player is avlid
-        var reg = /^[a-zàâäåªæÆçÇœŒÐéèêëËƒíìîïÏñÑóòôöºúùûÜýÿ]+$/i;
-        if (!client.set.validName(userName)) {
-            let playerMessage = 'Unable to sign "' + userName + '" for this raid.  Please set your in-game name using +nick first.';
+        if (!client.set.validName(characterName)) {
+            let playerMessage = 'Unable to sign "' + characterName + '" for this raid.  Please set your in-game name using +nick first.';
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
             }
             return playerMessage;
         }
 
-        // Check to make sure class & role is set
-        let playerRole = await client.set.hasRole(client, message.guild, userName);
-        let playerClass = await client.set.hasClass(client, message.guild, userName);
-
-        // Either class or 
-        let unsavedSettings = false;
-        if ((!playerRole || !playerClass) && member) {
-            playerClass = getClassByTag(member);
-            playerRole = getRoleByTag(member);
-            unsavedSettings = true;
-        }
-
-        if (!playerClass) {
-            let playerMessage = 'Unable to sign "' + userName + '" for this raid.  Player class is not set.';
+        // Verify class is set
+        if (!character.class) {
+            let playerMessage = 'Unable to sign "' + characterName + '" for this raid, character\'s class is not set.';
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
             }
             return message.channel.send(playerMessage);
         }
 
-        if (!playerRole) {
-            let playerMessage = 'Unable to sign "' + userName + '" for this raid.  Player role is not set.';
+        // Verify role is set
+        if (!character.role) {
+            let playerMessage = 'Unable to sign "' + characterName + '" for this raid, character\'s role is not set.';
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
             }
             return message.channel.send(playerMessage);
         }
 
-        if (unsavedSettings) {
-            if ((playerClass == 'Mage' || playerClass == 'Warlock' || playerClass == 'Priest' || playerClass == 'Druid') && playerRole == 'RDPS') {
-                playerRole = 'Caster';
-            }
-            if (playerRole == 'RDPS' || playerRole == 'MDPS') {
-                playerRole = 'DPS';
-            }
-            if (playerRole == 'Heal') {
-                playerRole = 'Healer';
-            }
-
-            client.set.playerClass(client, message.guild, member, userName, playerClass)
-            client.set.playerRole(client, message.guild, member, userName, playerRole)
+        // Verify the player class & role is valid
+        if (!client.set.validCombo(character)) {
+            return message.channel.send('Could not sign  "' + characterName + '" for this raid, ' + character.class + '/' + character.role + ' is not a valid combination.');
         }
 
         // Save our sign-up to the db
         client.models.raid.findOne({'where': {'guildID': message.guild.id, 'channelID': message.channel.id}}).then((raid) => {
             if (raid) {
                 let record = {
-                    'player': userName,
+                    'player': characterName,
                     'signup': signValue,
                     'raidID': raid.id,
                     'channelID': raid.channelID,
@@ -85,13 +67,14 @@ module.exports = {
                     'memberID': message.author.id
                 };
 
-                client.models.signup.findOne({ where: {'player': userName, 'raidID': raid.id}}).then((signup) => {
+                client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['updatedAt', 'DESC']], group: ['player']}).then((signup) => {
                     if (!signup) {
                         client.models.signup.create(record).then(() => {
                             // Update embed
                             client.embed.update(client, message, raid);
                         });
                     } else {
+                        console.log(signup.id);
                         client.models.signup.update(record, {
                             where: {
                                 id: signup.id
@@ -105,29 +88,8 @@ module.exports = {
             }
         });
 
-        let logMessage = 'Sign Up: ' + userName + ' => ' + signValue;
+        let logMessage = 'Sign Up: ' + characterName + ' => ' + signValue;
         client.log.write(client, message.author, message.channel, logMessage);
 
-        function getClassByTag(member) {
-            const validClasses = ['Priest', 'Paladin', 'Druid', 'Warrior', 'Rogue', 'Hunter', 'Mage', 'Warlock'];
-            for (key in validClasses) {
-                let localClass = validClasses[key];
-                if (member.roles.some(role => role.name == localClass)) {
-                    return localClass;
-                }
-            }
-            return 'unknown';
-        }
-
-        function getRoleByTag(member) {
-            const validRoles = ['Tank', 'Heal', 'MDPS', 'RDPS'];
-            for (key in validRoles) {
-                let localRole = validRoles[key];
-                if (member.roles.some(role => role.name == localRole)) {
-                    return localRole;
-                }
-            }
-            return 'unknown';
-        }
     }
 }

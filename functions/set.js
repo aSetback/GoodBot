@@ -1,14 +1,10 @@
 const fs = require("fs");
 
 module.exports = {
-    playerClass: (client, guild, member, player, className) => {
+    characterClass: (client, guild, member, characterName, className) => {
+        const validClasses = ['priest', 'paladin', 'druid', 'warrior', 'rogue', 'hunter', 'mage', 'warlock', 'shaman', 'dk'];
         className = className.toLowerCase();
 
-        const validClasses = ['priest', 'paladin', 'druid', 'warrior', 'rogue', 'hunter', 'mage', 'warlock', 'shaman', 'dk'];
-        if (validClasses.indexOf(className) < 0) {
-            return false
-        }
-        
         let guildID = guild
         if (typeof guild == 'object')
             guildID = guild.id;
@@ -19,33 +15,40 @@ module.exports = {
     
 
         let record = {
-            player: player,
+            name: characterName,
             class: className,
             memberID: memberID,
             guildID: guildID
         };
     
-        client.models.playerClass.findOne({ where: {'player': player, 'guildID': guildID}}).then((playerClass) => {
-            if (!playerClass) {
-                client.models.playerClass.create(record);
-            } else {
-                client.models.playerClass.update(record, {
-                    where: {
-                        id: playerClass.id
-                    }
-                });
+        let promise = new Promise((resolve, reject) => {
+            if (validClasses.indexOf(className) < 0) {
+                resolve(false);
             }
-        });
+    
+            client.models.character.findOne({ where: {'name': characterName, 'guildID': guildID}}).then((character) => {
+                if (!character) {
+                    client.models.character.create(record).then((character) => {
+                        resolve(character.id);
+                    });
 
-        return true;
-    },
-    playerRole: (client, guild, member, player, roleName) => {
-        roleName = roleName.toLowerCase();
-        const validRoles = ['tank', 'healer', 'dps', 'caster'];
-        if (validRoles.indexOf(roleName) < 0) {
-            return false
-        }
+                } else {
+                    client.models.character.update(record, {
+                        where: {
+                            id: character.id
+                        }
+                    });
+                    resolve(character.id);
+                }
+            });
+        });
         
+        return promise;
+    },
+    characterRole: (client, guild, member, characterName, roleName) => {
+        const validRoles = ['tank', 'healer', 'dps', 'caster'];
+        roleName = roleName.toLowerCase();
+       
         let guildID = guild
         if (typeof guild == 'object')
             guildID = guild.id;
@@ -56,31 +59,41 @@ module.exports = {
     
 
         let record = {
-            player: player,
+            name: characterName,
             role: roleName,
             memberID: memberID,
             guildID: guildID
         };
         
-        client.models.playerRole.findOne({ where: {'player': player, 'guildID': guildID}}).then((playerRole) => {
-            if (!playerRole) {
-                client.models.playerRole.create(record);
-            } else {
-                client.models.playerRole.update(record, {
-                    where: {
-                        id: playerRole.id
-                    }
-                });
+        let promise = new Promise((resolve, reject) => {
+            if (validRoles.indexOf(roleName) < 0) {
+                resolve(false);
             }
+    
+            client.models.character.findOne({ where: {'name': characterName, 'guildID': guildID}}).then((character) => {
+                if (!character) {
+                    client.models.character.create(record).then((character) => {
+                        resolve(character.id);
+                    });
+
+                } else {
+                    client.models.character.update(record, {
+                        where: {
+                            id: character.id
+                        }
+                    });
+                    resolve(character.id);
+                }
+            });
         });
         
-        return true;
+        return promise;
     },
     hasClass: (client, guild, player) => {
         let promise = new Promise((resolve, reject) => {
-            client.models.playerClass.findOne({ where: {'player': player, 'guildID': guild.id}}).then((playerClass) => {
-                if (playerClass) {
-                    resolve(playerClass);
+            client.models.character.findOne({ where: {'name': player, 'guildID': guild.id}}).then((character) => {
+                if (character) {
+                    resolve(character.class);
                 } else {
                     resolve(false);
                 }
@@ -90,9 +103,21 @@ module.exports = {
     },
     hasRole: (client, guild, player) => {
         let promise = new Promise((resolve, reject) => {
-            client.models.playerRole.findOne({ where: {'player': player, 'guildID': guild.id}}).then((playerRole) => {
-                if (playerRole) {
-                    resolve(playerRole);
+            client.models.character.findOne({ where: {'name': player, 'guildID': guild.id}}).then((character) => {
+                if (character) {
+                    resolve(character.role);
+                } else {
+                    resolve(false);
+                }
+            });
+        });
+        return promise;
+    },
+    getCharacter: (client, guild, characterName) => {
+        let promise = new Promise((resolve, reject) => {
+            client.models.character.findOne({ where: {'name': characterName, 'guildID': guild.id}}).then((character) => {
+                if (character) {
+                    resolve(character);
                 } else {
                     resolve(false);
                 }
@@ -115,4 +140,30 @@ module.exports = {
         }
         return true;
     },
+    validCombo: (character) => {
+        const validCombos = [
+            'warrior-tank',
+            'warrior-dps',
+            'hunter-dps',
+            'rogue-dps',
+            'mage-caster',
+            'warlock-caster',
+            'priest-healer',
+            'paladin-healer',
+            'druid-healer',
+            'druid-caster',
+            'druid-dps',
+            'priest-caster',
+            'paladin-dps',
+            'paladin-tank',
+            'shaman-dps',
+            'shaman-caster',
+            'shaman-healer',
+            'dk-dps',
+            'dk-tank'
+        ];
+
+        let playerCombo = character.class.toLowerCase() + '-' + character.role.toLowerCase();
+        return validCombos.includes(playerCombo);
+    }
 }

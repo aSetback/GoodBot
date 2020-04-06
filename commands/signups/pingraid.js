@@ -1,8 +1,6 @@
 const fs = require("fs");
 
 exports.run = (client, message, args) => {
-	message.delete().catch(O_o=>{}); 
-
 	const raid = message.channel.name;
 
 	const filename = './signups/' + message.guild.id + '-' + raid + '.json';

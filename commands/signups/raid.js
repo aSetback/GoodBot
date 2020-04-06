@@ -1,8 +1,5 @@
 exports.run = (client, message, args) => {
 
-	// Delete message
-	message.delete().catch(O_o => {});
-
 	// Retrieve our category
 	let category = client.customOptions.get(message.guild, 'raidcategory');
 	if (!category) {

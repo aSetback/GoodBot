@@ -11,9 +11,6 @@ exports.run = (client, message, args) => {
 		return false;
     }
     
-    // Delete the command message
-	message.delete().catch(O_o=>{}); 
-
     // Make sure abbreviation is uppercased
 	const raid = args.shift().toUpperCase();
     const category = args.join(" ");

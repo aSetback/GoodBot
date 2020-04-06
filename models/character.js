@@ -1,12 +1,20 @@
 module.exports = (client, Sequelize) => {
-    const playerAlt = client.sequelize.define('player_alt', {
-        altName: {
+    const character = client.sequelize.define('character', {
+        name: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        mainName: {
+        class: {
             type: Sequelize.STRING,
-            allowNull: false
+            allowNull: true
+        },
+        role: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
+        mainID: {
+            type: Sequelize.BIGINT(20),
+            allowNull: true
         },
         guildID: {
             type: Sequelize.BIGINT(20),
@@ -19,6 +27,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    playerAlt.sync();
-    return playerAlt;
+    character.sync();
+    return character;
 }

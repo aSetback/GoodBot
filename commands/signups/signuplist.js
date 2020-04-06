@@ -1,7 +1,6 @@
 const fs = require("fs");
 
 exports.run = (client, message, args) => {
-    message.delete().catch(O_o=>{});
     client.models.signup.findAll({'where': {'channelID': message.channel.id}}).then((signups) => {
         let msg = '-\n```';
         msg += 'Player'.padEnd(30) + 'Signup'.padEnd(15) + 'Date/Time\n';
