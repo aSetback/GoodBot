@@ -1,4 +1,4 @@
-exports.run = (client, message, args) => {
+exports.run = async function(client, message, args) {
 	if (!client.permission.manageChannel(message.member, message.channel)) {
 		return message.author.send(client.loc("You need the 'manage channels' permission to use this command."));
 	}
