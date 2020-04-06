@@ -1,3 +1,4 @@
+exports.run = async function(client, message, args) {
 	if (!client.permission.manageChannel(message.member, message.channel)) {
 	}
 
