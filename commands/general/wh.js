@@ -60,7 +60,6 @@ exports.run = (client, message, args) => {
               .setTitle(matchLine)
               .setThumbnail(icon);
           embedColor = 0x000000;
-          console.log(matchParts);
           for (key in matchParts) {
   
               lineParts = matchParts[key].split('<div class=\\"whtt-sellprice\\">');

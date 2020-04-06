@@ -95,7 +95,6 @@ exports.run = async function(client, message, args) {
 		cellData.forEach((cellInfo) => {
 			let cell = sheet.getCell(cellInfo.row, cellInfo.col);
 			cell.value = cellInfo.value;
-			console.log(cell);
 		});
 		await sheet.saveUpdatedCells();
 

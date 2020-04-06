@@ -29,7 +29,6 @@ exports.run = (client, message, args) => {
 	}
 
 	const fileName = './signups/' + message.guild.id + '-' + raid + '.json';
-	console.log(fileName);
 	let parsedLineup = [];
 	if (fs.existsSync(fileName)) {
 		lineup = fs.readFileSync(fileName, 'utf8');

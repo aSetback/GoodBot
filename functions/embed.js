@@ -61,7 +61,6 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	let signups = await client.embed.getSignups(client, channel.id);
 	let characterList = await client.embed.getCharacters(client, channel.guild);
 	let raid = await client.signups.getRaid(client, channel);
-	console.log(raid);
 	
 	let raidData = {};
 	raidData.color = raid.color ? raid.color : '#02a64f';

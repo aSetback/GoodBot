@@ -74,7 +74,6 @@ module.exports = {
                             client.embed.update(client, message, raid);
                         });
                     } else {
-                        console.log(signup.id);
                         client.models.signup.update(record, {
                             where: {
                                 id: signup.id
