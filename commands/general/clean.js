@@ -12,9 +12,12 @@ module.exports = {
 		if (typeof(args[0] !==  'undefined')) {
 			messageLimit = parseInt(args[0]);
 		}
-		message.channel.fetchMessages({limit: messageLimit})
-		.then(function(list){
-				message.channel.bulkDelete(list);
-			});
+		if (messageLimit > 20) { messageLimit = 20; }
+		setTimeout(() => {
+			message.channel.fetchMessages({limit: messageLimit})
+			.then(function(list){
+					message.channel.bulkDelete(list);
+				});
+		}, 1500);
 	}
 }

@@ -1,4 +1,7 @@
 module.exports = {
+    factionRequired(client, guild) {
+        return parseInt(client.customOptions.get(guild, "factionrequired"));
+    },
     setTitle(client, raid, title) {
         let promise = new Promise((resolve, reject) => {
             let record = {

@@ -9,6 +9,11 @@ exports.run = (client, message, args) => {
 	let raid = args.shift().toUpperCase();
 	let raidDate = args.shift();
 	let name = args.shift();
+	let faction = args.shift();
+	let factionRequired = client.raid.factionRequired(client, message.guild);
+	if (factionRequired && !faction) {
+		return message.channel.send('You need to specify which faction this raid is for.\n usage: `+raid bwl mar-21 tagalong horde`');
+	}
 	
 	if (!name) {
 		name = raid;
@@ -16,6 +21,10 @@ exports.run = (client, message, args) => {
 
 	// Check for overwrite for this raid type
 	let categoryParams = {'raid': raid, 'guildID': message.guild.id};
+	if (factionRequired) {
+		categoryParams.faction = faction;
+	}
+	
 	client.models.raidCategory.findOne({ where: categoryParams}).then((raidCategory) => {
 		if (raidCategory) {
 			category = raidCategory.category; 

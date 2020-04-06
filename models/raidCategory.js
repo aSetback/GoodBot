@@ -9,6 +9,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
+        faction: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
         guildID: {
             type: Sequelize.BIGINT(20),
             allowNull: false
