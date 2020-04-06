@@ -93,6 +93,8 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		}
 	});
 
+	signups.reverse();
+
 	const emojis = {
 		"warrior": client.emojis.find(emoji => emoji.name === "warrior"),
 		"druid": client.emojis.find(emoji => emoji.name === "druid"),
