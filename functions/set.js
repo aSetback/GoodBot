@@ -153,6 +153,7 @@ module.exports = {
             'druid-healer',
             'druid-caster',
             'druid-dps',
+            'druid-tank',
             'priest-caster',
             'paladin-dps',
             'paladin-tank',
