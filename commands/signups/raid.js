@@ -76,20 +76,20 @@ exports.run = (client, message, args) => {
 					'guildID': channel.guild.id,
 					'memberID': message.author.id
 				};
-				client.models.raid.create(record);
-
-				let signupMessage = '-';
-				channel.setParent(category.id)
-					.then((channel) => {
-						channel.lockPermissions()
-							.then(() => console.log('Successfully synchronized permissions with parent channel'))
-							.catch(console.error);
-					});
-
-				channel.send(signupMessage).then((botMsg) => {
-					reactEmoji(botMsg);
-					botMsg.pin().then(() => {
-						client.embed.update(botMsg, raidName);
+				client.models.raid.create(record).then((raid) => {
+					let signupMessage = '-';
+					channel.setParent(category.id)
+						.then((channel) => {
+							channel.lockPermissions()
+								.then(() => console.log('Successfully synchronized permissions with parent channel'))
+								.catch(console.error);
+						});
+	
+					channel.send(signupMessage).then((botMsg) => {
+						reactEmoji(botMsg);
+						botMsg.pin().then(() => {
+							client.embed.update(client, botMsg, raid);
+						});
 					});
 				});
 			});
