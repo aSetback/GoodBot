@@ -1,5 +1,5 @@
 module.exports = (client, Sequelize) => {
-    const Log = client.sequelize.define('log', {
+    const model = client.sequelize.define('log', {
         // attributes
         event: {
             type: Sequelize.TEXT,
@@ -16,6 +16,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    Log.sync();
-    return Log;
+    model.sync({alter: true});
+    return model;
 }

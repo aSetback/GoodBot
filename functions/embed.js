@@ -60,12 +60,14 @@ module.exports = {
 async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	let signups = await client.embed.getSignups(client, channel.id);
 	let characterList = await client.embed.getCharacters(client, channel.guild);
-	let data = {
-		'title': title,
-		'color': "#02a64f",
-		'description': 'To sign up for this raid, please click on one of the emojis directly below this post.',
-		'confirm': 0
-	}
+	let raid = await client.signups.getRaid(client, channel);
+	console.log(raid);
+	
+	let raidData = {};
+	raidData.color = raid.color ? raid.color : '#02a64f';
+	raidData.description = raid.description ? raid.description : 'To sign up for this raid, please click on one of the emojis directly below this post.'
+	raidData.title = raid.title ? raid.title : title;
+
 	let maybeList = [];
 	let noList = [];
 	let lineup = [];
@@ -80,7 +82,8 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 					lineup.push({
 						name: signup.player,
 						class: characterListItem.class,
-						role: characterListItem.role
+						role: characterListItem.role,
+						confirmed: signup.confirmed
 					});					
 				}
 			});
@@ -106,9 +109,13 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 
 	let icon = 'http://softball.setback.me/goodbot/icons/' + raidType + '.png';
 	let embed = new Discord.RichEmbed()
-	.setTitle(data.title)
-	.setColor(data.color)
+	.setTitle(raidData.title)
+	.setColor(raidData.color)
 	.setThumbnail(icon);
+
+	if (raid.time) {
+		embed.addField('Time', raid.time);
+	}
 
 	const roles = {
 		'tank': [
@@ -141,7 +148,7 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		]
 	}
 
-	embed.setDescription(data.description);
+	embed.setDescription(raidData.description);
 	let roleCount = {
 		'tank': 0,
 		'healer': 0,
@@ -149,6 +156,7 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		'caster': 0
 	};
 
+	let confirmCount = 0;
 	Object.keys(roles).forEach(function(key) {
 		let classes = roles[key];
 		Object.keys(classes).forEach(function(classKey) {
@@ -157,7 +165,12 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 			lineup.forEach(function(player, signupKey) {
 				if (player.role == key && player.class == playerClass) {
 					roleCount[key]++;
-					classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
+					if (player.confirmed) {
+						classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
+						confirmCount++;
+					} else {
+						classList += emojis[playerClass].toString() + ' *' + player.name + '* [' + (parseInt(signupKey) + 1) + ']\n';
+					}
 				}
 			});
 			if (classList.length) {
@@ -172,7 +185,7 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
 	} 
 	embed.addField('**Total Sign-ups**', total);
-	if (data['confirm']) {
+	if (raid.confirmation) {
 		embed.addField('**Confirmed Sign-ups**', confirmCount);
 	}
 	embed.addField('**Group Composition**', roleField, false);
@@ -183,7 +196,7 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	if (noList.length) {
 		embed.addField('**No**', noList.join(', '));
 	}
-	if (data['confirm']) {
+	if (raid.confirmation) {
 		embed.addField('**Please Note:**', "Confirmation mode has been enabled.  The players with **bold** names are currently confirmed for the raid.  *Italicized* names may or may not be brought to this raid.");
 	}
 	embed.setTimestamp();

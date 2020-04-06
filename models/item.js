@@ -1,5 +1,5 @@
 module.exports = (client, Sequelize) => {
-    const Item = client.sequelize.define('item', {
+    const model = client.sequelize.define('item', {
         // attributes
         entry: {
             type: Sequelize.INTEGER,
@@ -12,6 +12,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    // Item.sync({force: true});
-    return Item;
+    model.sync({alter: true});
+    return model;
 }

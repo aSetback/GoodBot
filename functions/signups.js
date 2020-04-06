@@ -90,6 +90,45 @@ module.exports = {
 
         let logMessage = 'Sign Up: ' + characterName + ' => ' + signValue;
         client.log.write(client, message.author, message.channel, logMessage);
-
+    },
+    confirm(client, raidID, characterName) {
+        let promise = new Promise((resolve, reject) => {
+            let record = {
+                confirmed: true
+            };
+            client.models.signup.update(record, {
+                where: {
+                    raidID: raidID,
+                    player: characterName
+                }
+            }).then(() => {
+                resolve(true);
+            });
+        });
+        return promise;
+    },
+    unconfirm(client, raidID, characterName) {
+        let promise = new Promise((resolve, reject) => {
+            let record = {
+                confirmed: false
+            };
+            client.models.signup.update(record, {
+                where: {
+                    raidID: raidID,
+                    player: characterName
+                }
+            }).then(() => {
+                resolve(true);
+            });
+        });
+        return promise;
+    },
+    getRaid(client, channel) {
+        let promise = new Promise((resolve, reject) => {
+            client.models.raid.findOne({ where: {'channelID': channel.id}}).then((raid) => {
+                resolve(raid);
+            });
+        });
+        return promise;
     }
 }

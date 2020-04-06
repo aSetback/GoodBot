@@ -1,5 +1,5 @@
 module.exports = (client, Sequelize) => {
-    const character = client.sequelize.define('character', {
+    const model = client.sequelize.define('character', {
         name: {
             type: Sequelize.STRING,
             allowNull: false
@@ -27,6 +27,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    character.sync();
-    return character;
+    model.sync({alter: true});
+    return model;
 }

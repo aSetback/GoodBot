@@ -1,7 +1,6 @@
-const fs = require("fs");
 const Discord = require("discord.js");
 
-exports.run = (client, message, args) => {
+exports.run = async function(client, message, args) {
 	// This can't be used via DM
 	if (!message.guild) {
 		return false;
@@ -37,32 +36,18 @@ exports.run = (client, message, args) => {
 	// Keep a record of which players are added
 	let confirmedPlayers = [];
 
-	// Retrieve our parsed list of players
-	const fileName = './signups/' + message.guild.id + '-' + message.channel.name + '.json';
-	let parsedFile = {};
-	if (fs.existsSync(fileName)) {
-		file = fs.readFileSync(fileName, 'utf8');
-		parsedFile = JSON.parse(file);
+	let raid = await client.signups.getRaid(client, message.channel);
+	// Loop through the players to confirm
+	for (key in players) {
+		let player = players[key];
+		await client.signups.confirm(client, raid.id, player);
+		confirmedPlayers.push(player);
 	}
 
-	// Loop through the players to confirm
-	players.forEach((player) => {
-		if (!parsedFile.confirmed) {
-			parsedFile.confirmed = [];
-		}
-		if (parsedFile.confirmed.indexOf(player) == -1) {
-			parsedFile.confirmed.push(player);
-			confirmedPlayers.push(player)
-		} 
-	});
-
-	// Write the new list to the file
-	fs.writeFileSync(fileName, JSON.stringify(parsedFile)); 
-
 	// Update our embed
-	client.embed.update(message, message.channel.name);
+	client.embed.update(client, message, raid);
 
 	// Notify the user which players were confirmed
-	message.author.send('Confirmed Players: ' + confirmedPlayers.join(', ') + ' for ' + message.channel.name + '.');
+	message.author.send('Added confirmation for players: ' + confirmedPlayers.join(', ') + ' for ' + message.channel.name + '.');
 
 };

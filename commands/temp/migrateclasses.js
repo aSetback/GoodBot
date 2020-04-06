@@ -1,42 +1,33 @@
 const fs = require("fs");
 
-exports.run = (client, message, args) => {
-    fs.readdir("./data/", (err, files) => {
-        files.forEach((file) => {
-            if (file.indexOf('roles') >= 0 && file.indexOf('-') >= 0) {
-                migrateRoles(file, client);
+exports.run = async function(client, message, args) {
+    let files = fs.readdirSync("./data/");
+    for (key in files) {
+        let file = files[key];
+
+        console.log('parsing ' + file);
+        let guildID = file.split('-')[0];
+        if (file.indexOf('roles') >= 0 && file.indexOf('-') >= 0) {
+            file = 'data/' + file;
+            if (fs.existsSync(file)) {
+                list = fs.readFileSync(file, 'utf8');
+                parsedList = JSON.parse(list);
             }
-            if (file.indexOf('class') >= 0 && file.indexOf('-') >= 0) {
-                migrateClasses(file, client);
+            for (player in parsedList) {
+                let characterRole = parsedList[player];
+                await client.set.characterRole(client, guildID, 0, player, characterRole);
             }
-        }); 
-
-    });
-}
-
-function migrateRoles(file, client) {
-    let guildID = file.split('-')[0];
-    file = 'data/' + file;
-	if (fs.existsSync(file)) {
-		list = fs.readFileSync(file, 'utf8');
-		parsedList = JSON.parse(list);
+        }
+        if (file.indexOf('class') >= 0 && file.indexOf('-') >= 0) {
+            file = 'data/' + file;
+            if (fs.existsSync(file)) {
+                list = fs.readFileSync(file, 'utf8');
+                parsedList = JSON.parse(list);
+            }
+            for (player in parsedList) {
+                let characterClass = parsedList[player];
+                await client.set.characterClass(client, guildID, 0, player, characterClass);
+            }
+        }
     }
-    for (player in parsedList) {
-        let playerRole = parsedList[player];
-        client.set.playerRole(client, guildID, 0, player, playerRole);
-    }
-}
-
-function migrateClasses(file, client) {
-    let guildID = file.split('-')[0];
-    file = 'data/' + file;
-    if (fs.existsSync(file)) {
-		list = fs.readFileSync(file, 'utf8');
-		parsedList = JSON.parse(list);
-	}
-    for (player in parsedList) {
-        let playerClass = parsedList[player];
-        client.set.playerClass(client, guildID, 0, player, playerClass);
-    }
-
 }

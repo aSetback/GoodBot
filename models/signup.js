@@ -1,5 +1,5 @@
 module.exports = (client, Sequelize) => {
-    const signup = client.sequelize.define('signup', {
+    const model = client.sequelize.define('signup', {
         // attributes
         player: {
             type: Sequelize.STRING,
@@ -8,6 +8,10 @@ module.exports = (client, Sequelize) => {
         signup: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        confirmed: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true
         },
         raidID: {
             type: Sequelize.BIGINT(20),
@@ -28,6 +32,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    signup.sync();
-    return signup;
+    model.sync({alter: true});
+    return model;
 }

@@ -1,5 +1,5 @@
 module.exports = (client, Sequelize) => {
-    const Profession = client.sequelize.define('profession', {
+    const model = client.sequelize.define('profession', {
         // attributes
         name: {
             type: Sequelize.STRING,
@@ -12,6 +12,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    Profession.sync();
-    return Profession;
+    model.sync({alter: true});
+    return model;
 }
