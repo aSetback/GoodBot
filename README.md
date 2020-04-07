@@ -66,31 +66,34 @@
 
 ## Raid Sign-up Commands
 ```
++alt altName mainName
+  Set a character as an alt of your main character (for pinging purposes)
+  
++confirmation
+  Toggle 'confirmation mode' for a raid
+
 +confirm Player
   Confirms player for the raid (Confirmation mode must be enabled!)
 
 +exportsheet
   Attempt to export your spreadsheet to Google Sheets  (Will only work if this has been set up, and bot has permissions)
   
-+pingalt altName mainName
-  Instruct the bot to notify a different player instead of the sign-up name (Useful for alt signups)
-  
 +pingraid
   Send a notification to all players signed up for the current raid
 
-+raid RaidName Mar-21
-  Create a new raid channel under the raid category called RaidName-signups-mar-21
++raid RaidName Mar-21 (title?) (faction?)
+  Create a new raid channel under the raid category called mar-21-RaidName
 
-+raiddata confirm 1
-  Enable confirmation mode
-
-+raiddata description New description
++setdescription New description
   Alter the raid description in the embed
   
-+raiddata color #hexCode
++settime Time
+  Set the time for the raid start
+
++setcolor #hexCode
   Set the color of the sidebar of the embed
 
-+raiddata title New title
++settitle New title
   Alter the raid title in the embed
 
 +set Player class role
@@ -102,6 +105,16 @@
 +unsigned PreviousRaidChannel
   Compare the current lineup to the specified raid, and send a notification to all players not currently signed up.
 ```
+
+## Configuration Options
+```
+  +setoption factionrequired 1
+    Require a faction when creating a raid and setting a raid category
+
+  +raidcategory raid (faction?) Category Name
+    Set a category for a raid to be set up under (for a specific faction, if factionrequired is enabled)
+```
+
 
 ## Warcraft Logs Commands
 ```
