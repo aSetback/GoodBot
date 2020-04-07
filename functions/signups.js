@@ -129,5 +129,13 @@ module.exports = {
             });
         });
         return promise;
+    },
+    getSignups(client, raid) {
+        let promise = new Promise((resolve, reject) => {
+            client.models.signup.findAll({ where: {'raidID': raid.id}}).then((signups) => {
+                resolve(signups);
+            });
+        });
+        return promise;
     }
 }
