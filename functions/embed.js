@@ -166,11 +166,15 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 			lineup.forEach(function(player, signupKey) {
 				if (player.role == key && player.class == playerClass) {
 					roleCount[key]++;
-					if (player.confirmed) {
-						classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
-						confirmCount++;
-					} else {
-						classList += emojis[playerClass].toString() + ' *' + player.name + '* [' + (parseInt(signupKey) + 1) + ']\n';
+					if (raid.confirmation) {
+						if (player.confirmed) {
+							classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
+							confirmCount++;
+						} else {
+							classList += emojis[playerClass].toString() + ' *' + player.name + '* [' + (parseInt(signupKey) + 1) + ']\n';
+						}
+					} else { 
+						classList += emojis[playerClass].toString() + ' ' + player.name + ' [' + (parseInt(signupKey) + 1) + ']\n';
 					}
 				}
 			});
