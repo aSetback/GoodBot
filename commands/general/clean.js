@@ -4,6 +4,9 @@ module.exports = {
     },
 	run: (client, message, args) => {
 
+		if (!args[0]) {
+			return false;
+		}
 		if (!message.isAdmin) {
 			return false;
 		}
