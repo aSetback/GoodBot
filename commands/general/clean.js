@@ -7,10 +7,10 @@ module.exports = {
 		if (!args[0]) {
 			return false;
 		}
-		if (!message.isAdmin) {
+		if (!client.permission.manageChannel(message.member, message.channel)) {
 			return false;
 		}
-		
+			
 		let messageLimit = 20;
 		if (typeof(args[0] !==  'undefined')) {
 			messageLimit = parseInt(args[0]);

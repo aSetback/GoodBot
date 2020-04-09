@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 
 exports.run = async function(client, message, args) {
-	if (!message.isAdmin) {
+	if (!client.permission.manageChannel(message.member, message.channel)) {
 		return false;
 	}
 

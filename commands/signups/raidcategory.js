@@ -30,11 +30,13 @@ exports.run = async function(client, message, args) {
         guildID: message.guild.id
     };
 
+    let whereClause = {'raid': raid, 'guildID': message.guild.id};
 	if (factionRequired) {
         record.faction = faction;
+        whereClause.faction = faction;
     }
 
-    client.models.raidCategory.findOne({ where: {'raid': raid, 'guildID': message.guild.id}}).then((raidCategory) => {
+    client.models.raidCategory.findOne({ where: whereClause }).then((raidCategory) => {
         if (!raidCategory) {
             client.models.raidCategory.create(record);
         } else {
