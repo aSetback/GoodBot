@@ -33,6 +33,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.BOOLEAN,
             allowNull: true
         },
+        softreserve: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true
+        },
         channelID: {
             type: Sequelize.BIGINT(20),
             allowNull: false

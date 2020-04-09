@@ -115,8 +115,13 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	.setThumbnail(icon);
 
 	if (raid.time) {
-		embed.addField('Time', raid.time);
+		embed.addField('**Time**', raid.time);
 	}
+
+	if (raid.softreserve) {
+		embed.addField('**Loot**', "Soft Reserve");
+	}
+
 
 	const roles = {
 		'tank': [
