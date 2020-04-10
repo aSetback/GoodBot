@@ -5,8 +5,8 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.BIGINT(20),
             allowNull: false
         },
-        joinMessage: {
-            type: Sequelize.STRING,
+        welcomeMessage: {
+            type: Sequelize.TEXT,
             allowNull: false
         },
     }, {
