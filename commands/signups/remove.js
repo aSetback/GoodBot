@@ -1,30 +1,21 @@
 const fs = require("fs");
 
-exports.run = (client, message, args) => {
+exports.run = async function(client, message, args) {
 
-
-	if (!message.isAdmin) {
+	// This can't be used via DM
+	if (!message.guild) {
 		return false;
 	}
 
-	const channel = message.channel.name;
-	const user = args[0] ? args[0] : message.member.displayName;
-	const userName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();
-	const fileName = './signups/' + message.guild.id + '-' + channel + '.json';
-	client.models.raid.findOne({ where: { 'channelID': message.channel.id, 'guildID': message.channel.guild.id } }).then((raid) => {
-		if (raid) {
-			let parsedLineup = {};
-			if (fs.existsSync(fileName)) {
-				currentLineup = fs.readFileSync(fileName, 'utf8');
-				parsedLineup = JSON.parse(currentLineup);
-			}
-			
-			delete parsedLineup[userName];
-			fs.writeFileSync(fileName, JSON.stringify(parsedLineup));
-			client.embed.update(message, channel);
-		} else {
-			message.channel.send("This command can only be used in a sign-up channel.");
-			return false;
-		}
-	});
+	// Check permissions on the category
+	if (!client.permission.manageChannel(message.member, message.channel)) {
+		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
+	}	
+
+	let characterName = args.shift();
+	let raid = await client.signups.getRaid(client, message.channel);
+
+	// Remove the sign-up
+	client.signups.remove(client, raid.id, characterName);
+	client.embed.update(client, message, raid);
 }

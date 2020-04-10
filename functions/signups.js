@@ -90,6 +90,13 @@ module.exports = {
         let logMessage = 'Sign Up: ' + characterName + ' => ' + signValue;
         client.log.write(client, message.author, message.channel, logMessage);
     },
+    remove(client, raidID, characterName) {
+        let promise = new Promise((resolve, reject) => {
+            client.models.signup.destroy({ where: {raidID: raidID, player: characterName}}).then(() => {
+                resolve(true);
+            });
+        });
+    },
     confirm(client, raidID, characterName) {
         let promise = new Promise((resolve, reject) => {
             let record = {
