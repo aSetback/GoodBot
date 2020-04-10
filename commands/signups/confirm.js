@@ -11,24 +11,11 @@ exports.run = async function(client, message, args) {
 		return false;
 	}
 
-	// Retrieve our category
-	let raidCategory = client.customOptions.get(message.guild, 'raidcategory');
-	if (!raidCategory) {
-		raidCategory = 'Raid Signups';
-	}
-
 	// Check permissions on the category
-	let category = message.guild.channels.find(c => c.name == raidCategory.trim() && c.type == "category");
-	if (!category) {
-		return message.channel.send('Unable to modify raid.  Please create a channel category called "Raid Signups" to use this command, or use +setoption to set a "raidcategory" value. ' + raidCategory);
-	}
-	
-	// Retrieve this user's permission for the raid category
-    let permissions = category.permissionsFor(message.author);
-	if (!permissions.has("MANAGE_CHANNELS")) {
-		return message.channel.send('You do not have the manage channels permission for "' + raidCategory + '".  Unable to complete command.');
-	}
-	
+	if (!client.permission.manageChannel(message.member, message.channel)) {
+		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
+	}	
+
 	// Get the first parameter as either player, or player list.
 	let players = args.shift().toLowerCase();
 	// Attempt to split on comma to see if it's a list

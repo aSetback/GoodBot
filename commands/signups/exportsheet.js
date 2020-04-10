@@ -1,6 +1,8 @@
 exports.run = async function(client, message, args) {
+	// Check permissions on the category
 	if (!client.permission.manageChannel(message.member, message.channel)) {
-	}
+		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
+	}	
 
 	var sheetID = client.customOptions.get(message.guild, 'sheet').trim();
 	if (args[0]) {

@@ -1,6 +1,16 @@
 const fs = require("fs");
 
 exports.run = (client, message, args) => {
+	// This can't be used via DM
+	if (!message.guild) {
+		return false;
+	}
+
+	// Check permissions on the category
+	if (!client.permission.manageChannel(message.member, message.channel)) {
+		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
+	}	
+
 	let raid = message.channel.name;
 	let lastRaidChannel = args.shift();
 	if (!lastRaidChannel) {
