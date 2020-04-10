@@ -60,6 +60,9 @@
 +setupfaction
   Generate a channel under 'Getting Started' for choosing faction
 
++joinmessage message
+  Sets a message that will be sent to all new players when they join your discord server.
+
 +wh
   Attempts to retrieve item information from Wowhead.  (experimental)
 ```
