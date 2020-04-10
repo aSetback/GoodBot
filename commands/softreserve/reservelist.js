@@ -1,29 +1,28 @@
 exports.run = async function(client, message, args) {
 	let raid = await client.signups.getRaid(client, message.channel);
-
-    // Find this player in the sign-up
-    client.models.signup.findOne({where: {raidID: raid.id, player: player}}).then((signup) => {
-        if (signup) {
-            client.models.reserveItem.findOne({where: {raid: raid.raid, name: item}}).then((reserveItem) => {
-                if (reserveItem) {
-                    record = {
-                        raidID: raid.id,
-                        reserveItemID: reserveItem.id,
-                        signupID: signup.id 
-                    };
-                    client.models.raidReserve.create(record).then((record) => {
-                        return message.author.send("Your reserve for " + item + " has been added!");
-                    })
-                } else {
-                    return message.channel.send("Unable to find " + item + " in the list of available items for " + raid.raid.toUpperCase());
-                }
-            });
-
-        
-        } else {
-            return message.channel.send("We couldn't find " + player + " in the sign-ups for this raid.");
+    client.models.raidReserve.belongsTo(client.models.signup, {as: 'signup', foreignKey: 'signupID'});
+   
+    let includes = [
+        {model: client.models.signup, as: 'signup'},
+    ];
+    
+    client.models.raidReserve.findAll({where: {RaidID: raid.id}, include: includes}).then((raidReserves) => {
+        let returnMessage = '';
+        raidReserves.forEach((reserve) => {
+            if (!returnMessage.length) {
+                returnMessage = '-\n```md\n';
+                returnMessage += '__Player__'.padEnd(20) + '__Item__' + '\n';
+            }
+            returnMessage += reserve.signup.player.padEnd(20) + reserve.item.name + '\n';
+            if (returnMessage.length > 1800) {
+                returnMessage += '```';
+                message.channel.send(returnMessage);    
+                returnMessage = '';
+            }
+        });
+        if (returnMessage.length) {
+            returnMessage += '```';
+            message.channel.send(returnMessage);    
         }
-    })
-
-
+    });
 };

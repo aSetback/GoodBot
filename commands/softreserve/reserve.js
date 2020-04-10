@@ -13,9 +13,19 @@ exports.run = async function(client, message, args) {
                         reserveItemID: reserveItem.id,
                         signupID: signup.id 
                     };
-                    client.models.raidReserve.create(record).then((record) => {
-                        return message.author.send("Your reserve for " + item + " has been added!");
-                    })
+
+                    // Check if the player already has an existing reserve
+                    client.models.raidReserve.findOne({where: {signupID: signup.id, raidID: raid.id}}).then((raidReserve) => {
+                        if (raidReserve) { 
+                            client.models.raidReserve.update({reserveItemID: reserveItem.id}, {where: {id: raidReserve.id}});
+                            return message.author.send("Your reserve has been updated to " + item + ".");
+                        } else {
+                            client.models.raidReserve.create(record).then((record) => {
+                                return message.author.send("Your reserve for " + item + " has been added.");
+                            });       
+                        }
+                    });
+
                 } else {
                     return message.channel.send("Unable to find " + item + " in the list of available items for " + raid.raid.toUpperCase());
                 }

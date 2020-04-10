@@ -3,11 +3,11 @@ module.exports = (client, Sequelize) => {
         // attributes
         raidID: {
             type: Sequelize.BIGINT(20),
-            allowNull: false
+            allowNull: false,
         },
         reserveItemID: {
             type: Sequelize.BIGINT(20),
-            allowNull: false
+            allowNull: false,
         },
         signupID: {
             type: Sequelize.BIGINT(20),
