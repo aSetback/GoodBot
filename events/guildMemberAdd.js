@@ -1,6 +1,8 @@
 module.exports = (client, member) => {
     let guildID = member.guild.id;
     client.models.settings.findOne({where: {guildID: guildID}}).then((settings) => {
-        member.send(settings.welcomeMessage);
+        if (settings && settings.welcomeMessage) {
+            member.send(settings.welcomeMessage);
+        }
     });
 };
