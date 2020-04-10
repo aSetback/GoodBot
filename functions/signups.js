@@ -67,7 +67,7 @@ module.exports = {
                     'memberID': message.author.id
                 };
 
-                client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['updatedAt', 'DESC']], group: ['player']}).then((signup) => {
+                client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['createdAt', 'DESC']], group: ['player']}).then((signup) => {
                     if (!signup) {
                         client.models.signup.create(record).then(() => {
                             // Update embed
