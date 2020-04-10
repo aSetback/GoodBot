@@ -16,6 +16,7 @@ exports.run = async function(client, message, args) {
 
 	message.guild.fetchMembers().then(async function(guild) {
 		mentionText = '';
+		let noMatch = [];
 		for (key in signups) {
 			let signup = signups[key];
 			if (signup.signup == 'yes') {
@@ -31,16 +32,15 @@ exports.run = async function(client, message, args) {
 					member = await getMain(client, signup.player, message.guild);
 				}
 				
-				let playerId = null;
+				
 				if (member) {
-					playerId = member.user.id;
+					mentionText += '<@' + member.user.id + '> ';
 				} else {
-					console.log('Could not find ' + signup.player);
+					noMatch.push(signup.player);
 				}
-				mentionText += '<@' + playerId + '> ';
 			}
 		}
-
+		mentionText += '\n' + 'Could not find: ' + noMatch.join(', ');
 		message.channel.send(mentionText);
 	});
 }
