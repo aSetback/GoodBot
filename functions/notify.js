@@ -40,7 +40,7 @@ module.exports = {
                 if (character && character.mainID) {
                     client.models.character.findOne({where: {id: character.mainID}}).then((main) => {
                         let search = main.name.toLowerCase();
-                        let member = guild.members.find(member => member.nickname.toLowerCase() == search);
+                        var member = guild.members.find((member) => (member.nickname && member.nickname.toLowerCase() == search));
                         if (!member) {
                             member = guild.members.find(member => member.user.username.toLowerCase() == search);
                         }
