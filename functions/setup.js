@@ -148,7 +148,7 @@ module.exports = {
         // UCFirst
         newName = newName.charAt(0).toUpperCase() + newName.slice(1).toLowerCase();
         message.guild.members.get(message.author.id).setNickname(newName);  
-        client.setup.checkCompleteness(client, member);
+        client.setup.checkCompleteness(client, message.member);
     },
     checkCompleteness: async function(client, member) {
         let factionChannel = member.guild.channels.find(c => c.name == "select-your-faction");
