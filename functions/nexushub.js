@@ -5,15 +5,36 @@ module.exports = {
         let promise = new Promise(async function(resolve, reject) {
             let nexus = new Nexus;
             let itemList = await nexus.get('/wow-classic/v1/search?query=' + itemString);
-            console.log(itemList);
             let item = itemList[0];
             let itemInfo = await nexus.get('/wow-classic/v1/item/' + item.itemId);
-            console.log(itemInfo);
             resolve(itemInfo);
-
         });
         return promise;
     },
+    priceInfo: async function(itemString, server, faction) {
+        let promise = new Promise(async function(resolve, reject) {
+            let nexus = new Nexus;
+            let itemList = await nexus.get('/wow-classic/v1/search?query=' + itemString);
+            let item = itemList[0];
+            let priceInfo = await nexus.get('/wow-classic/v1/items/' + server + '-' + faction + '/' + item.itemId);
+            resolve(priceInfo);
+        });
+        return promise;
+    },
+    convertGold: function(raw) { 
+        let itemMessage = '';
+        let sellPriceGold = Math.floor(raw / 10000);
+        let sellPriceSilver = Math.floor((raw % 10000) / 100);
+        let sellPriceCopper = Math.floor((raw % 100));
+        if (sellPriceGold) {
+           itemMessage += sellPriceGold + 'g' + sellPriceSilver + 's' + sellPriceCopper + 'c';
+        } else if (sellPriceSilver) {
+           itemMessage += sellPriceSilver + 's' + sellPriceCopper + 'c';
+        } else {
+           itemMessage += sellPriceCopper + 'c';
+        }
+        return itemMessage;
+    }
 
 }
 

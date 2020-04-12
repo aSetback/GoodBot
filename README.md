@@ -118,6 +118,15 @@
     Set a category for a raid to be set up under (for a specific faction, if factionrequired is enabled)
 ```
 
+## Nexushub Commands
+```
++item Item
+  Does a fuzzy search for the item string and returns the top result as an embed.
+
++price Item
+  Does a fuzzy search for the item string and returns AH price information for it as an embed.
+```
+
 
 ## Warcraft Logs Commands
 ```

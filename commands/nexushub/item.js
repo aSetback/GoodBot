@@ -34,16 +34,7 @@ exports.run = async function(client, message, args) {
         } else if (line.label.indexOf('Item Level') >= 0) {
             itemLevel = line.label;
         } else if (line.label.indexOf('Sell Price') >= 0) {
-            sellPriceGold = Math.floor(itemInfo.sellPrice / 10000);
-            sellPriceSilver = Math.floor((itemInfo.sellPrice % 10000) / 100);
-            sellPriceCopper = Math.floor((itemInfo.sellPrice % 100));
-            if (sellPriceGold) {
-               itemMessage += 'Sell Price: ' + sellPriceGold + 'g' + sellPriceSilver + 's' + sellPriceCopper + 'c';
-            } else if (sellPriceSilver) {
-               itemMessage += 'Sell Price: ' + sellPriceSilver + 's' + sellPriceCopper + 'c';
-            } else {
-               itemMessage += 'Sell Price: ' + sellPriceCopper + 'c';
-            }
+            itemMessage += 'Sell Price: ' + client.nexushub.convertGold(itemInfo.sellPrice);
         } else if (line.label == itemInfo.name || line.format == 'indent') {
             // Skip the title line so it doesn't show twice.
         } else {
