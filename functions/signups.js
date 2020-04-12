@@ -144,5 +144,14 @@ module.exports = {
             });
         });
         return promise;
+    },
+    getConfirmed(client, raid) {
+        let promise = new Promise((resolve, reject) => {
+            client.models.signup.findAll({ where: {'raidID': raid.id, confirmed: 1}}).then((signups) => {
+                resolve(signups);
+            });
+        });
+        return promise;
     }
+
 }
