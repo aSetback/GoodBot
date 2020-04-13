@@ -10,7 +10,7 @@
   * Create a 'set-your-class' channel, where users can set the class the bot will use for their sign-ups.
   * Create a 'set-your-role' channel, where users can set the role the bot will use for their sign-ups.
 * Optionally use +setupfaction command -- This will add an additional set-up channel for 'set-your-faction'
-* Set a completion role: +setoption complete Setup // (This is optional, but will add this role to players who have completed the set-up channels)
+* Set a completion role: +setoption completerole Setup // (This is optional, but will add this role to players who have completed the set-up channels)
 
 ### Set Up Spreadsheet Export
 * Set your spreadsheet ID: +setoption sheet GoogleSheetID // This is covered further in the "Spreadsheet" section.
