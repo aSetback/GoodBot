@@ -4,8 +4,6 @@ const Discord = require("discord.js");
 
 exports.run = (client, message, args) => {
 
-	message.delete().catch(O_o=>{}); 
-
 	const optionName = args.shift();
 	const optionValue = args.join(' ');
 	

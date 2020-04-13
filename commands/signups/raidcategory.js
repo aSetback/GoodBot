@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 
-exports.run = (client, message, args) => {
+exports.run = async function(client, message, args) {
     // Make sure we're in a discord & not DM, and that user is an admin
     if (!message.guild || !message.isAdmin) {
 		return false;
@@ -10,12 +10,17 @@ exports.run = (client, message, args) => {
 	if (!args[0] || !args[1]) {
 		return false;
     }
-    
-    // Delete the command message
-	message.delete().catch(O_o=>{}); 
+
+    const raid = args.shift().toUpperCase();
+
+    let factionRequired = await client.raid.factionRequired(client, message.guild);
+
+    let faction;
+    if (factionRequired) {
+        faction = args.shift();
+	}
 
     // Make sure abbreviation is uppercased
-	const raid = args.shift().toUpperCase();
     const category = args.join(" ");
 
     let record = {
@@ -25,7 +30,13 @@ exports.run = (client, message, args) => {
         guildID: message.guild.id
     };
 
-    client.models.raidCategory.findOne({ where: {'raid': raid, 'guildID': message.guild.id}}).then((raidCategory) => {
+    let whereClause = {'raid': raid, 'guildID': message.guild.id};
+	if (factionRequired) {
+        record.faction = faction;
+        whereClause.faction = faction;
+    }
+
+    client.models.raidCategory.findOne({ where: whereClause }).then((raidCategory) => {
         if (!raidCategory) {
             client.models.raidCategory.create(record);
         } else {
@@ -38,6 +49,10 @@ exports.run = (client, message, args) => {
         }
     });
 
-	message.channel.send('Raid category for "' + raid + '" is set as "' + category + '".');
+    if (faction) {
+        message.channel.send('Raid category for "' + raid + '" is set as "' + category + '" for ' + faction + '.');
+    } else {
+        message.channel.send('Raid category for "' + raid + '" is set as "' + category + '".');
+    }
 
 };

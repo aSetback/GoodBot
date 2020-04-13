@@ -51,8 +51,14 @@ module.exports = (client, message) => {
 	};
 
 	const cmd = client.commands.get(command);
+	
 	// If that command doesn't exist, silently exit and do nothing
 	if (!cmd) return;
+
+	// Delete the message from the channel after delaying for 1s (prevents 'phantom message' bug)
+	setTimeout(() => {
+		message.delete();
+	}, 1000)
 
 	// Check if user can manage channels
 	message.isAdmin = 0;

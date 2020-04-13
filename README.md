@@ -10,7 +10,7 @@
   * Create a 'set-your-class' channel, where users can set the class the bot will use for their sign-ups.
   * Create a 'set-your-role' channel, where users can set the role the bot will use for their sign-ups.
 * Optionally use +setupfaction command -- This will add an additional set-up channel for 'set-your-faction'
-* Set a completion role: +setoption copmpleterole Setup // (This is optional, but will add this role to players who have completed the set-up channels)
+* Set a completion role: +setoption complete Setup // (This is optional, but will add this role to players who have completed the set-up channels)
 
 ### Set Up Spreadsheet Export
 * Set your spreadsheet ID: +setoption sheet GoogleSheetID // This is covered further in the "Spreadsheet" section.
@@ -60,37 +60,51 @@
 +setupfaction
   Generate a channel under 'Getting Started' for choosing faction
 
-+wh
-  Attempts to retrieve item information from Wowhead.  (experimental)
++joinmessage message
+  Sets a message that will be sent to all new players when they join your discord server.
+
 ```
 
 ## Raid Sign-up Commands
 ```
++alt altName mainName
+  Set a character as an alt of your main character (for pinging purposes)
+  
++confirmation
+  Toggle 'confirmation mode' for a raid
+
 +confirm Player
   Confirms player for the raid (Confirmation mode must be enabled!)
 
 +exportsheet
   Attempt to export your spreadsheet to Google Sheets  (Will only work if this has been set up, and bot has permissions)
-  
-+pingalt altName mainName
-  Instruct the bot to notify a different player instead of the sign-up name (Useful for alt signups)
+  This will ping only confirmed players if confirmation mode is enabled.
   
 +pingraid
   Send a notification to all players signed up for the current raid
 
-+raid RaidName Mar-21
-  Create a new raid channel under the raid category called RaidName-signups-mar-21
++ping confirmed
+  Send a notification to confirmed players for the current raid
 
-+raiddata confirm 1
-  Enable confirmation mode
++raid RaidName Mar-21 (title?) (faction?)
+  Create a new raid channel under the raid category called mar-21-RaidName
 
-+raiddata description New description
++rules add RulesName Rules go here
+  Add a rule to be displayed later with a name of "RulesName"
+
++rules RulesName
+  Have the bot display rules with the name of "RulesName"
+
++setdescription New description
   Alter the raid description in the embed
   
-+raiddata color #hexCode
++settime Time
+  Set the time for the raid start
+
++setcolor #hexCode
   Set the color of the sidebar of the embed
 
-+raiddata title New title
++settitle New title
   Alter the raid title in the embed
 
 +set Player class role
@@ -102,6 +116,25 @@
 +unsigned PreviousRaidChannel
   Compare the current lineup to the specified raid, and send a notification to all players not currently signed up.
 ```
+
+## Configuration Options
+```
+  +setoption factionrequired 1
+    Require a faction when creating a raid and setting a raid category
+
+  +raidcategory raid (faction?) Category Name
+    Set a category for a raid to be set up under (for a specific faction, if factionrequired is enabled)
+```
+
+## Nexushub Commands
+```
++item Item
+  Does a fuzzy search for the item string and returns the top result as an embed.
+
++price Item
+  Does a fuzzy search for the item string and returns AH price information for it as an embed.
+```
+
 
 ## Warcraft Logs Commands
 ```

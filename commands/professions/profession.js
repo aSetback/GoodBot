@@ -22,7 +22,6 @@ exports.run = (client, message, args) => {
 
     function addProfession(record) {
         model.findAll({ where: record }).then(existRecords => {
-            console.log(existRecords);
             if (existRecords.length) {
                 return message.channel.send('Profession already existed!');
             }

@@ -1,52 +1,40 @@
-const fs = require("fs");
 const Discord = require("discord.js");
 
-exports.run = (client, message, args) => {
+exports.run = async function(client, message, args) {
+	// This can't be used via DM
 	if (!message.guild) {
 		return false;
 	}
-	message.delete().catch(O_o=>{}); 
 
+	// Make sure an argument was provided
 	if (!args[0]) {
 		return false;
 	}
 
-	const player = args.shift().toLowerCase();
+	// Check permissions on the category
+	if (!client.permission.manageChannel(message.member, message.channel)) {
+		return message.channel.send('Unable to modify raid.  Please create a channel category called "Raid Signups" to use this command, or use +raidcategry to set a your category.');
+	}	
+	
+	// Get the first parameter as either player, or player list.
+	let players = args.shift().toLowerCase();
+	// Attempt to split on comma to see if it's a list
+	players = players.split(',');
+	// Keep a record of which players are added
+	let confirmedPlayers = [];
 
-	// Retrieve our category
-	let raidCategory = client.customOptions.get(message.guild, 'raidcategory');
-	if (!raidCategory) {
-		raidCategory = 'Raid Signups';
-	}
-
-	let category = message.guild.channels.find(c => c.name == raidCategory.trim() && c.type == "category");
-	if (!category) {
-		return message.channel.send('Unable to modify raid.  Please create a channel category called "Raid Signups" to use this command, or use +setoption to set a "raidcategory" value. ' + raidCategory);
-	}
-
-	// Retrieve this user's permission for the raid category
-    let permissions = category.permissionsFor(message.author);
-	if (!permissions.has("MANAGE_CHANNELS")) {
-		return message.channel.send('You do not have the manage channels permission for "' + raidCategory + '".  Unable to complete command.');
-	}
-
-	// Write to class json file
-	const fileName = './signups/' + message.guild.id + '-' + message.channel.name + '.json';
-	let parsedFile = {};
-	if (fs.existsSync(fileName)) {
-		file = fs.readFileSync(fileName, 'utf8');
-		parsedFile = JSON.parse(file);
-	}
-	if (!parsedFile.confirmed) {
-		parsedFile.confirmed = [];
+	let raid = await client.signups.getRaid(client, message.channel);
+	// Loop through the players to confirm
+	for (key in players) {
+		let player = players[key];
+		await client.signups.unconfirm(client, raid.id, player);
+		confirmedPlayers.push(player);
 	}
 
-	if (parsedFile.confirmed.indexOf(player) >= 0) {
-		parsedFile.confirmed.splice(parsedFile.confirmed.indexOf(player), 1);
-		fs.writeFileSync(fileName, JSON.stringify(parsedFile)); 
-		client.embed.update(message, message.channel.name);
-		message.author.send('Removed confirmation of ' + player + ' for ' + message.channel.name + '.');
-	} else {
-		message.author.send('Player was not confirmed.');
-	}
+	// Update our embed
+	client.embed.update(client, message, raid);
+
+	// Notify the user which players were confirmed
+	message.author.send('Removed confirmation for players: ' + confirmedPlayers.join(', ') + ' for ' + message.channel.name + '.');
+
 };

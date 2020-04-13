@@ -1,15 +1,17 @@
 exports.run = async function(client, message, args) {
+	// Check permissions on the category
 	if (!client.permission.manageChannel(message.member, message.channel)) {
-		return message.author.send(client.loc("You need the 'manage channels' permission to use this command."));
-	}
+		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
+	}	
+
 
 	var sheetID = client.customOptions.get(message.guild, 'sheet').trim();
+	
 	if (args[0]) {
 		sheetID = args[0];
 	}
-	var fs = require('fs');
 
-	message.delete();
+	let raid = await client.signups.getRaid(client, message.channel);
 
 	const sheetCols = {
 		'warrior-tank': 1,
@@ -33,80 +35,57 @@ exports.run = async function(client, message, args) {
 		'dk-tank': 19
 	};
 	
-	const raid = message.channel.name;
-	const fileName = './signups/' + message.guild.id + '-' + raid + '.json';
-	let parsedLineup = {};
-	if (fs.existsSync(fileName)) {
-		currentLineup = fs.readFileSync(fileName, 'utf8');
-		parsedLineup = JSON.parse(currentLineup);
+	let signups = {}
+	if (raid.confirmation) {
+		signups = await client.signups.getConfirmed(client, raid);		
+	} else {
+		signups = await client.embed.getSignups(client, message.channel.id);
 	}
+	let characterList = await client.embed.getCharacters(client, message.channel.guild);
+	let lineup = [];
 
-	// Look for druid-dps, and move them to the bottom of the line-up so the druid tanks will be on top of the feral list.
-	for (player in parsedLineup) {
-		let playerType = getClass(player) + '-' + getRole(player);
-		let result = parsedLineup[player];
-		if (playerType == 'druid-dps') {
-			delete parsedLineup[player];
-			parsedLineup[player] = result;
-		}	
-	}
+	signups.forEach((signup) => {
+		if (signup.signup == 'yes') {
+			characterList.forEach((characterListItem) => {
+				if (characterListItem.name == signup.player) {
+					lineup.push({
+						name: signup.player,
+						class: characterListItem.class,
+						role: characterListItem.role
+					});					
+				}
+			});
+		}
+	});
 
 	cellData = [];
 	rowCounter = [];
-	for (player in parsedLineup) {
-		result = parsedLineup[player];
-		if (result == 'yes') {
-			let playerType = getClass(player) + '-' + getRole(player);
-			if (playerType == 'druid-tank') {
-				playerType = 'druid-dps';
+	for (key in lineup) {
+		player = lineup[key];
+		let playerType = player.class + '-' + player.role;
+		if (playerType == 'druid-tank') {
+			playerType = 'druid-dps';
+		}
+		col = sheetCols[playerType];			
+		if (col !== undefined) {
+			if (rowCounter[col] === undefined) {
+				rowCounter[col] = 2;
 			}
-			col = sheetCols[playerType];			
-			if (col === undefined) {
-				message.author.send('Could not find a column assignment for ' + player + '.');
-			} else {
-				if (rowCounter[col] === undefined) {
-					rowCounter[col] = 2;
-				}
-				cellData.push({
-					row: rowCounter[col], 
-					col: col, 
-					value: player
-				});
-	
-				rowCounter[col]++;
-			}
+			cellData.push({
+				row: rowCounter[col], 
+				col: col, 
+				value: player.name
+			});
+
+			rowCounter[col]++;
 		}
 	}
 	setCells(cellData);
-
-	function getRole(player) {
-		const roleFile = 'data/' + message.guild.id + '-roles.json';
-		roleList = JSON.parse(fs.readFileSync(roleFile));
-		for (rolePlayer in roleList) {
-			if (player == rolePlayer) {
-				return roleList[player].toLowerCase();
-			}
-		}
-		return 'unknown';
-	}
-
-	function getClass(player) {
-		const classFile = 'data/' + message.guild.id + '-class.json';
-		classList = JSON.parse(fs.readFileSync(classFile));
-		for (classPlayer in classList) {
-			if (player == classPlayer) {
-				return classList[player].toLowerCase();
-			}
-		}
-		return 'unknown';
-	}
 
 	async function setCells(cellData) {
 		var { GoogleSpreadsheet } = require('google-spreadsheet');
 		var doc = new GoogleSpreadsheet(sheetID);
 		var sheet;
-		var cells;
-
 		var creds = require("../../google.json");
 		await doc.useServiceAccountAuth(creds);
 		await doc.loadInfo();
@@ -127,7 +106,6 @@ exports.run = async function(client, message, args) {
 		cellData.forEach((cellInfo) => {
 			let cell = sheet.getCell(cellInfo.row, cellInfo.col);
 			cell.value = cellInfo.value;
-			console.log(cell);
 		});
 		await sheet.saveUpdatedCells();
 

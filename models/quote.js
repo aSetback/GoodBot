@@ -1,5 +1,5 @@
 module.exports = (client, Sequelize) => {
-    const Quote = client.sequelize.define('quote', {
+    const model = client.sequelize.define('quote', {
         // attributes
         quote: {
             type: Sequelize.TEXT,
@@ -16,6 +16,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    Quote.sync();
-    return Quote;
+    model.sync({alter: true});
+    return model;
 }

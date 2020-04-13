@@ -1,7 +1,6 @@
 const fs = require("fs");
 
 exports.run = (client, message, args) => {
-	message.delete().catch(O_o=>{}); 
 
     let command = args.shift();
     let guildID = message.guild.id;

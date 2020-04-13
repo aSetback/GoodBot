@@ -2,8 +2,6 @@ const fs = require("fs");
 const { Op } = require('sequelize');
 
 exports.run = (client, message, args) => {
-	message.delete();
-
 	if (!args[0]) {
 		return message.channel.send('Please provide one or more classes for a standings look-up.');
 	}

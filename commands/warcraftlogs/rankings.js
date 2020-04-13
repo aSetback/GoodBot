@@ -3,8 +3,6 @@ var moment = require('moment');
 
 exports.run = (client, message, args) => {
 
-  message.delete();
-
   // Retrieve our server/region.
   let server = client.customOptions.get(message.guild, 'server');
   let region = client.customOptions.get(message.guild, 'region');
@@ -99,6 +97,8 @@ exports.run = (client, message, args) => {
         returnData += ''.padEnd(98, '-') + '\n';
 
         let returnLines = 0;
+        let rankingTotal = 0;
+        let rankingCount = 0;
         logs.forEach(function (log) {
           if ((isTank && log.spec.toLowerCase() == 'tank')
             || (!isTank && log.spec.toLowerCase() == 'dps' && metric.toLowerCase() != 'hps')
@@ -118,10 +118,16 @@ exports.run = (client, message, args) => {
             returnData += ranking.padEnd(20);
             returnData += logDate[0] + " " + logDate[1].padEnd(4) + logDate[2];
             returnData += '\n';
+            rankingTotal += log.percentile;
+            rankingCount ++;
           }
-        })
+        });
+
+        // Calculate the player's average ranking for this raid
+        let averageRanking = (rankingTotal/rankingCount).toPrecision(3);
 
         returnData += ''.padEnd(98, '-') + '\n';
+        returnData += 'Average Ranking'.padEnd(46) + averageRanking.toString()  + '\n';
         returnData += '```';
         if (returnLines) {
           if (returnTitle) {

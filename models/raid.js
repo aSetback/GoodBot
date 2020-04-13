@@ -1,5 +1,5 @@
 module.exports = (client, Sequelize) => {
-    const raid = client.sequelize.define('raid', {
+    const model = client.sequelize.define('raid', {
         // attributes
         // name: {
         //     type: Sequelize.STRING,
@@ -13,6 +13,14 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.DATEONLY,
             allowNull: false
         },
+        title: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
+        time: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
         description: {
             type: Sequelize.STRING,
             allowNull: true
@@ -20,6 +28,14 @@ module.exports = (client, Sequelize) => {
         color: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        confirmation: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true
+        },
+        softreserve: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true
         },
         channelID: {
             type: Sequelize.BIGINT(20),
@@ -36,6 +52,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    raid.sync();
-    return raid;
+    model.sync({alter: true});
+    return model;
 }

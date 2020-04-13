@@ -2,121 +2,99 @@ const fs = require("fs");
 const Discord = require("discord.js");
 
 module.exports = {
-	update: (message, raid) => {
-		let raidArray = raid.split(/-/g);
-		let raidMonth = raidArray.shift();
-		let raidDay = raidArray.shift();
-		let raidDate = new Date(Date.parse(raidMonth + " " + raidDay));
+	update: (client, message, raid) => {
+		let channel = message.channel;
+
+		// Figure out our date
+		let raidDate = new Date(Date.parse(raid.date));
 		let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
-		let raidName = raidArray.shift().replace(/_/g, ' ');
-		let raidParts = raidName.toLowerCase().split(' ');
-		if (raidParts[0].toLowerCase() == 'mc') {
+		let raidType = raid.raid
+		let raidName = '';
+
+		if (raidType.toLowerCase() == 'mc') {
 			raidName = 'Molten Core';
-		} else if (raidParts[0].toLowerCase() == 'ony') {
+		} else if (raidType.toLowerCase() == 'ony') {
 			raidName = 'Onyxia';
-		} else if (raidParts[0].toLowerCase() == 'aq40') {
+		} else if (raidType.toLowerCase() == 'aq40') {
 			raidName = 'Temple of Ahn\'Qiraj';
-		} else if (raidParts[0].toLowerCase() == 'aq20') {
+		} else if (raidType.toLowerCase() == 'aq20') {
 			raidName = 'Ruins of Ahn\'Qiraj';
-		} else if (raidParts[0].toLowerCase() == 'naxx') {
+		} else if (raidType.toLowerCase() == 'naxx') {
 			raidName = 'Naxxramas';
-		} else if (raidParts[0].toLowerCase() == 'bwl') {
+		} else if (raidType.toLowerCase() == 'bwl') {
 			raidName = 'Blackwing Lair';
-		} else if (raidParts[0].toLowerCase() == 'zg') {
+		} else if (raidType.toLowerCase() == 'zg') {
 			raidName = 'Zul\'Gurub';
 		} else {
-			// Get parent category
-			category = message.channel.parent;
-			console.log(category.name);
-
+			category = channel.parent;
 			raidName = raidName.charAt(0).toUpperCase() + raidName.slice(1).toLowerCase();
 		}
-		if (raidParts[1]) {
-			let groupName = raidParts[1];
-			groupName = groupName.charAt(0).toUpperCase() + groupName.slice(1).toLowerCase();
-			raidName += ' (' + groupName + ')';
-		}
 
-		message.channel.fetchPinnedMessages()
+		channel.fetchPinnedMessages()
 			.then(function(list){
 				pinnedMsg = list.last();
 				if (!pinnedMsg) { return false; }
 				currentContent = pinnedMsg.content;
-				const raid = message.channel.name;
-				const fileName = './signups/' + message.guild.id + '-' + raid + '.json';
 				let title = "Raid Signups for " + raidName + ", " + dateString;
-				let embed = createEmbed(title, fileName, message);		
-
-				pinnedMsg.edit(currentContent, embed);
+				let embed = updateEmbed(title, channel, client, pinnedMsg, raidType);		
 			});		
 	},
-}
-
-function createEmbed(title, fileName, message) {
-	let parsedLineup = {};
-	if (fs.existsSync(fileName)) {
-		currentLineup = fs.readFileSync(fileName, 'utf8');
-		parsedLineup = JSON.parse(currentLineup);
+	getCharacters: async function(client, guild) {
+		let characterList = new Promise((resolve, reject) => {
+			client.models.character.findAll({where: {'guildID': guild.id}}).then((characterList) => {
+				resolve(characterList);
+			});
+		});
+		return characterList;
+	},
+	getSignups: async function(client, channelID) {
+		let signupList = new Promise((resolve, reject) => {
+			client.models.signup.findAll({where: {'channelID': channelID}, order: [['createdAt', 'DESC']], group: ['player']}).then((signupList) => {
+				resolve(signupList);
+			});
+		});
+		return signupList;
 	}
+};
 
-	const classFile = 'data/' + message.guild.id + '-class.json';
-	let classList = {};
-	if (fs.existsSync(fileName)) {
-		currentList = fs.readFileSync(classFile, 'utf8');
-		classList = JSON.parse(currentList);
-	}
-
-	const roleFile = 'data/' + message.guild.id + '-roles.json';
-	let roleList = {};
-	if (fs.existsSync(fileName)) {
-		currentList = fs.readFileSync(roleFile, 'utf8');
-		roleList = JSON.parse(currentList);
-	}
+async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
+	let signups = await client.embed.getSignups(client, channel.id);
+	let characterList = await client.embed.getCharacters(client, channel.guild);
+	let raid = await client.signups.getRaid(client, channel);
 	
-	let signups = [];
-	let noList = [];
+	let raidData = {};
+	raidData.color = raid.color ? raid.color : '#02a64f';
+	raidData.description = raid.description ? raid.description : 'To sign up for this raid, please click on one of the emojis directly below this post.'
+	raidData.title = raid.title ? raid.title : title;
+
 	let maybeList = [];
-	let data = {
-		'title': title,
-		'color': "#02a64f",
-		'description': 'To sign up for this raid, please click on one of the emojis directly below this post.',
-		'confirm': 0
-	}
-	Object.keys(parsedLineup).forEach(function(key) {
-		let signup = parsedLineup[key];
-		if (key == 'Goodbot' || key == 'confirmed') {
+	let noList = [];
+	let lineup = [];
 
-		} else if (key == 'data') {
-			savedData = parsedLineup['data'];	
-			Object.keys(savedData).forEach(function(key) {
-				data[key] = savedData[key];
-			});
-		} else if (signup != 'yes') {
-			if (signup == 'maybe') {
-				maybeList.push(key);
-			}
-			if (signup == 'no') {
-				noList.push(key);
-			}
-			delete parsedLineup[key];
-		} else {
-			parsedLineup[key] = {'name': key};
-
-			Object.keys(classList).forEach(function(classKey) {
-				if (classKey == key) {
-					parsedLineup[key]['class'] = classList[classKey].toLowerCase();
+	// De-duplicate the sign-ups
+	let total = 0;
+	signups.forEach((signup) => {
+		if (signup.signup == 'yes') {
+			total++;
+			characterList.forEach((characterListItem) => {
+				if (characterListItem.name == signup.player) {
+					lineup.push({
+						name: signup.player,
+						class: characterListItem.class,
+						role: characterListItem.role,
+						confirmed: signup.confirmed
+					});					
 				}
 			});
-			Object.keys(roleList).forEach(function(roleKey) {
-				if (roleKey == key) {
-					parsedLineup[key]['role'] = roleList[roleKey].toLowerCase();
-				}
-			});
-			signups.push(parsedLineup[key]);
+		} else if (signup.signup == 'maybe') {
+			maybeList.push(signup.player);
+		} else if (signup.signup == 'no') {
+			noList.push(signup.player);
 		}
 	});
 
-	let client = message.client;
+	lineup.reverse();
+
 	const emojis = {
 		"warrior": client.emojis.find(emoji => emoji.name === "warrior"),
 		"druid": client.emojis.find(emoji => emoji.name === "druid"),
@@ -130,9 +108,21 @@ function createEmbed(title, fileName, message) {
 		"dk": client.emojis.find(emoji => emoji.name === "DK")
 	}
 
+	let icon = 'http://softball.setback.me/goodbot/icons/' + raidType + '.png';
 	let embed = new Discord.RichEmbed()
-	.setTitle(data.title)
-	.setColor(data.color);
+	.setTitle(raidData.title)
+	.setColor(raidData.color)
+	.setThumbnail(icon);
+
+	if (raid.time) {
+		embed.addField('**Time**', raid.time);
+	}
+
+	if (raid.softreserve) {
+		embed.addField('**Loot**', "Soft Reserve");
+	}
+
+
 	const roles = {
 		'tank': [
 			'warrior',
@@ -164,7 +154,7 @@ function createEmbed(title, fileName, message) {
 		]
 	}
 
-	embed.setDescription(data.description);
+	embed.setDescription(raidData.description);
 	let roleCount = {
 		'tank': 0,
 		'healer': 0,
@@ -173,29 +163,23 @@ function createEmbed(title, fileName, message) {
 	};
 
 	let confirmCount = 0;
-	let confirmationList = [];
-	if (parsedLineup['confirmed']) {
-		confirmationList = parsedLineup['confirmed'];
-	}
 	Object.keys(roles).forEach(function(key) {
 		let classes = roles[key];
 		Object.keys(classes).forEach(function(classKey) {
 			let classList = "";
 			let playerClass = classes[classKey];
-			Object.keys(signups).forEach(function(signupKey) {
-				let signup = signups[signupKey];
-				if (signup.role == key && signup.class == playerClass) {
-					if (data['confirm']) {
-						if (confirmationList.indexOf(signup.name.toLowerCase()) >= 0) {
-							roleCount[key]++;
+			lineup.forEach(function(player, signupKey) {
+				if (player.role == key && player.class == playerClass) {
+					roleCount[key]++;
+					if (raid.confirmation) {
+						if (player.confirmed) {
+							classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
 							confirmCount++;
-							classList += emojis[playerClass].toString() + ' **' + signup.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
 						} else {
-							classList += emojis[playerClass].toString() + ' *' + signup.name + '* [' + (parseInt(signupKey) + 1) + ']\n';
+							classList += emojis[playerClass].toString() + ' *' + player.name + '* [' + (parseInt(signupKey) + 1) + ']\n';
 						}
-					} else {
-						roleCount[key]++;
-						classList += emojis[playerClass].toString() + ' **' + signup.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
+					} else { 
+						classList += emojis[playerClass].toString() + ' ' + player.name + ' [' + (parseInt(signupKey) + 1) + ']\n';
 					}
 				}
 			});
@@ -210,8 +194,8 @@ function createEmbed(title, fileName, message) {
 		roleName = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
 		roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
 	} 
-	embed.addField('**Total Sign-ups**', signups.length);
-	if (data['confirm']) {
+	embed.addField('**Total Sign-ups**', total);
+	if (raid.confirmation) {
 		embed.addField('**Confirmed Sign-ups**', confirmCount);
 	}
 	embed.addField('**Group Composition**', roleField, false);
@@ -222,10 +206,10 @@ function createEmbed(title, fileName, message) {
 	if (noList.length) {
 		embed.addField('**No**', noList.join(', '));
 	}
-	if (data['confirm']) {
+	if (raid.confirmation) {
 		embed.addField('**Please Note:**', "Confirmation mode has been enabled.  The players with **bold** names are currently confirmed for the raid.  *Italicized* names may or may not be brought to this raid.");
 	}
 	embed.setTimestamp();
 
-	return embed;
+	pinnedMsg.edit(currentContent, embed);
 }

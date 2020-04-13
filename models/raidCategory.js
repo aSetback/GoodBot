@@ -1,5 +1,5 @@
 module.exports = (client, Sequelize) => {
-    const raidCategory = client.sequelize.define('raid_category', {
+    const model = client.sequelize.define('raid_category', {
         // attributes
         raid: {
             type: Sequelize.STRING,
@@ -8,6 +8,10 @@ module.exports = (client, Sequelize) => {
         category: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        faction: {
+            type: Sequelize.STRING,
+            allowNull: true
         },
         guildID: {
             type: Sequelize.BIGINT(20),
@@ -20,6 +24,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    raidCategory.sync();
-    return raidCategory;
+    model.sync({alter: true});
+    return model;
 }

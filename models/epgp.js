@@ -1,5 +1,5 @@
 module.exports = (client, Sequelize) => {
-    const Epgp = client.sequelize.define('epgp', {
+    const model = client.sequelize.define('epgp', {
         // attributes
         player: {
             type: Sequelize.STRING,
@@ -28,6 +28,6 @@ module.exports = (client, Sequelize) => {
     }, {
     // options
     });
-    Epgp.sync();
-    return Epgp;
+    model.sync({alter: true});
+    return model;
 }

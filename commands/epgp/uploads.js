@@ -2,7 +2,6 @@ const fs = require("fs");
 const { Op } = require('sequelize');
 
 exports.run = (client, message, args) => {
-    message.delete();
     
     if (!args[0]) {
         client.models.epgp.findAll({'where': {'guildID': parseInt(message.guild.id)}, 'group': ['createdAt'], 'order': [['createdAt', 'DESC']]}).then((listings) => {

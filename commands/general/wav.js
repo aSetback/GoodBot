@@ -6,8 +6,6 @@ exports.run = (client, message, args) => {
 		return false;
 	}
 
-	message.delete().catch(O_o=>{}); 
-	
 	var vc = message.member.voiceChannel;
 	if (!vc) {
 		return message.channel.send('Must be in voice channel.');

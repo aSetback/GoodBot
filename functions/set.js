@@ -1,58 +1,129 @@
 const fs = require("fs");
 
 module.exports = {
-    playerClass: (guild, playerName, className) => {
+    characterClass: (client, guild, member, characterName, className) => {
         const validClasses = ['priest', 'paladin', 'druid', 'warrior', 'rogue', 'hunter', 'mage', 'warlock', 'shaman', 'dk'];
-        
-        if (validClasses.indexOf(className.toLowerCase()) < 0) {
-            return message.channel.send(className + ' is not a valid class assignment.');
-        }
+        className = className.toLowerCase();
+
+        let guildID = guild
+        if (typeof guild == 'object')
+            guildID = guild.id;
+
+        let memberID = member
+        if (typeof member == 'object')
+            memberID = member.id;
     
-        // Write to class json file
-        let fileName = 'data/' + guild.id + '-class.json';
-        let parsedList = {};
-        if (fs.existsSync(fileName)) {
-            currentList = fs.readFileSync(fileName, 'utf8');
-            parsedList = JSON.parse(currentList);
-        }
-        parsedList[playerName] = className;
-        fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
+
+        let record = {
+            name: characterName,
+            class: className,
+            memberID: memberID,
+            guildID: guildID
+        };
+    
+        let promise = new Promise((resolve, reject) => {
+            if (validClasses.indexOf(className) < 0) {
+                resolve(false);
+            }
+    
+            client.models.character.findOne({ where: {'name': characterName, 'guildID': guildID}}).then((character) => {
+                if (!character) {
+                    client.models.character.create(record).then((character) => {
+                        resolve(character.id);
+                    });
+
+                } else {
+                    client.models.character.update(record, {
+                        where: {
+                            id: character.id
+                        }
+                    });
+                    resolve(character.id);
+                }
+            });
+        });
+        
+        return promise;
     },
-    playerRole: (guild, playerName, roleName) => {
+    characterRole: (client, guild, member, characterName, roleName) => {
         const validRoles = ['tank', 'healer', 'dps', 'caster'];
-        if (validRoles.indexOf(roleName.toLowerCase()) < 0) {
-            return message.channel.send(roleName + ' is not a valid role assignment.');
-        }
-            
-        // Write to roles json file
-        fileName = 'data/' + guild.id + '-roles.json';
-        parsedList = {};
-        if (fs.existsSync(fileName)) {
-            currentList = fs.readFileSync(fileName, 'utf8');
-            parsedList = JSON.parse(currentList);
-        }
-        parsedList[playerName] = roleName;
-        fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
-    },
-    hasClass: (guild, player) => {
-        const classFile = 'data/' + guild.id + '-class.json';
-        classList = JSON.parse(fs.readFileSync(classFile));
-        for (classPlayer in classList) {
-            if (player == classPlayer) {
-                return true;
+        roleName = roleName.toLowerCase();
+       
+        let guildID = guild
+        if (typeof guild == 'object')
+            guildID = guild.id;
+
+        let memberID = member
+        if (typeof member == 'object')
+            memberID = member.id;
+    
+
+        let record = {
+            name: characterName,
+            role: roleName,
+            memberID: memberID,
+            guildID: guildID
+        };
+        
+        let promise = new Promise((resolve, reject) => {
+            if (validRoles.indexOf(roleName) < 0) {
+                resolve(false);
             }
-        }
-        return false;
+    
+            client.models.character.findOne({ where: {'name': characterName, 'guildID': guildID}}).then((character) => {
+                if (!character) {
+                    client.models.character.create(record).then((character) => {
+                        resolve(character.id);
+                    });
+
+                } else {
+                    client.models.character.update(record, {
+                        where: {
+                            id: character.id
+                        }
+                    });
+                    resolve(character.id);
+                }
+            });
+        });
+        
+        return promise;
     },
-    hasRole: (guild, player) => {
-        const roleFile = 'data/' + guild.id + '-roles.json';
-        roleList = JSON.parse(fs.readFileSync(roleFile));
-        for (rolePlayer in roleList) {
-            if (player == rolePlayer) {
-                return true;
-            }
-        }
-        return false;
+    hasClass: (client, guild, player) => {
+        let promise = new Promise((resolve, reject) => {
+            client.models.character.findOne({ where: {'name': player, 'guildID': guild.id}}).then((character) => {
+                if (character) {
+                    resolve(character.class);
+                } else {
+                    resolve(false);
+                }
+            });
+        });
+        return promise;
+    },
+    hasRole: (client, guild, player) => {
+        let promise = new Promise((resolve, reject) => {
+            client.models.character.findOne({ where: {'name': player, 'guildID': guild.id}}).then((character) => {
+                if (character) {
+                    resolve(character.role);
+                } else {
+                    resolve(false);
+                }
+            });
+        });
+        return promise;
+    },
+    getCharacter: (client, guild, characterName) => {
+        let promise = new Promise((resolve, reject) => {
+            client.models.character.findOne({ where: {'name': characterName, 'guildID': guild.id}}).then((character) => {
+                if (character) {
+                    resolve(character);
+                } else {
+                    resolve(false);
+                }
+            });
+        });
+        return promise;
     },
     hasFaction: (client, member) => {
         let horde = member.guild.roles.find(role => role.name.toLowerCase() === 'horde');
@@ -69,4 +140,31 @@ module.exports = {
         }
         return true;
     },
+    validCombo: (character) => {
+        const validCombos = [
+            'warrior-tank',
+            'warrior-dps',
+            'hunter-dps',
+            'rogue-dps',
+            'mage-caster',
+            'warlock-caster',
+            'priest-healer',
+            'paladin-healer',
+            'druid-healer',
+            'druid-caster',
+            'druid-dps',
+            'druid-tank',
+            'priest-caster',
+            'paladin-dps',
+            'paladin-tank',
+            'shaman-dps',
+            'shaman-caster',
+            'shaman-healer',
+            'dk-dps',
+            'dk-tank'
+        ];
+
+        let playerCombo = character.class.toLowerCase() + '-' + character.role.toLowerCase();
+        return validCombos.includes(playerCombo);
+    }
 }
