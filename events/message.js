@@ -17,7 +17,7 @@ module.exports = (client, message) => {
 	}
 
 	// If a message starts with +, - or m, and we're in a sign-up channel, treat it as a sign-up.
-	if (["+", "-", "m"].includes(args[0]) && args[0].length == 1) {
+	if (["+", "-", "m"].includes(signupSymbol) && signupSymbol.length == 1) {
 		// Check if this is a raid channel
 		client.models.raid.findOne({ where: { 'channelID': message.channel.id, 'guildID': message.channel.guild.id } }).then((raid) => {
 			if (raid) {
@@ -29,16 +29,10 @@ module.exports = (client, message) => {
 					return false;
 				}
 
-				if (signupSymbol == "+") {
-					client.signups.set("+", signupName, message.channel.name, message, client);
+				client.signups.set(signupSymbol, signupName, message.channel.name, message, client);
+				setTimeout(() => {
 					message.delete().catch(O_o => { });
-				} else if (signupSymbol == "-") {
-					client.signups.set("-", signupName, message.channel.name, message, client);
-					message.delete().catch(O_o => { });
-				} else if (signupSymbol == "m") {
-					client.signups.set("m", signupName, message.channel.name, message, client);
-					message.delete().catch(O_o => { });
-				}
+				}, 1000);
 			}
 		});
 	}
@@ -57,7 +51,7 @@ module.exports = (client, message) => {
 
 	// Delete the message from the channel after delaying for 1s (prevents 'phantom message' bug)
 	setTimeout(() => {
-		message.delete();
+		message.delete().catch(O_o => { });
 	}, 1000)
 
 	// Check if user can manage channels

@@ -136,7 +136,9 @@ module.exports = {
 
     },
     nick: (client, message) => {
-        message.delete().catch(O_o=>{}); 
+        setTimeout(() => {
+            message.delete().catch(O_o=>{}); 
+        }, 1000);
         let newName = message.content.trim();
         var reg = /^[a-zàâäåªæÆçÇœŒéèêëËƒíìîïÏñÑóòôöºúùûÜýÿ]+$/i;
         if (!reg.test(newName)) {
@@ -147,7 +149,10 @@ module.exports = {
 
         // UCFirst
         newName = newName.charAt(0).toUpperCase() + newName.slice(1).toLowerCase();
-        message.guild.members.get(message.author.id).setNickname(newName);  
+        let result = message.guild.members.get(message.author.id).setNickname(newName);  
+        result.catch((e) => {
+            message.author.send('Unable to set your name: ' + e.message);
+        });
         client.setup.checkCompleteness(client, message.member);
     },
     checkCompleteness: async function(client, member) {
