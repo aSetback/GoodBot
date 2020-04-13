@@ -35,10 +35,11 @@ exports.run = async function(client, message, args) {
 		'dk-tank': 19
 	};
 	
+	let signups = {}
 	if (raid.confirmation) {
-		let signups = await client.signups.getConfirmed(client, raid);		
+		signups = await client.signups.getConfirmed(client, raid);		
 	} else {
-		let signups = await client.embed.getSignups(client, message.channel.id);
+		signups = await client.embed.getSignups(client, message.channel.id);
 	}
 	let characterList = await client.embed.getCharacters(client, message.channel.guild);
 	let lineup = [];
