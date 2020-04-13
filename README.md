@@ -63,8 +63,6 @@
 +joinmessage message
   Sets a message that will be sent to all new players when they join your discord server.
 
-+wh
-  Attempts to retrieve item information from Wowhead.  (experimental)
 ```
 
 ## Raid Sign-up Commands
@@ -80,12 +78,22 @@
 
 +exportsheet
   Attempt to export your spreadsheet to Google Sheets  (Will only work if this has been set up, and bot has permissions)
+  This will ping only confirmed players if confirmation mode is enabled.
   
 +pingraid
   Send a notification to all players signed up for the current raid
 
++ping confirmed
+  Send a notification to confirmed players for the current raid
+
 +raid RaidName Mar-21 (title?) (faction?)
   Create a new raid channel under the raid category called mar-21-RaidName
+
++rules add RulesName Rules go here
+  Add a rule to be displayed later with a name of "RulesName"
+
++rules RulesName
+  Have the bot display rules with the name of "RulesName"
 
 +setdescription New description
   Alter the raid description in the embed
