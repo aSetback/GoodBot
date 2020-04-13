@@ -4,10 +4,14 @@ exports.run = async function(client, message, args) {
 		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
 
+
 	var sheetID = client.customOptions.get(message.guild, 'sheet').trim();
+	
 	if (args[0]) {
 		sheetID = args[0];
 	}
+
+	let raid = await client.signups.getRaid(client, message.channel);
 
 	const sheetCols = {
 		'warrior-tank': 1,
@@ -31,7 +35,11 @@ exports.run = async function(client, message, args) {
 		'dk-tank': 19
 	};
 	
-	let signups = await client.embed.getSignups(client, message.channel.id);
+	if (raid.confirmation) {
+		let signups = await client.signups.getConfirmed(client, raid);		
+	} else {
+		let signups = await client.embed.getSignups(client, message.channel.id);
+	}
 	let characterList = await client.embed.getCharacters(client, message.channel.guild);
 	let lineup = [];
 
