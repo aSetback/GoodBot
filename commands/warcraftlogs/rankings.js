@@ -101,7 +101,7 @@ exports.run = (client, message, args) => {
         let rankingCount = 0;
         logs.forEach(function (log) {
           if ((isTank && log.spec.toLowerCase() == 'tank')
-            || (!isTank && log.spec.toLowerCase() == 'dps' && metric.toLowerCase() != 'hps')
+            || (!isTank && metric.toLowerCase() != 'hps' && log.spec.toLowerCase() != 'tank')
             || (metric.toLowerCase() == 'hps' && log.spec.toLowerCase() == 'healer')) {
             returnLines++;
             let ranking = log.rank + ' of ' + log.outOf;
