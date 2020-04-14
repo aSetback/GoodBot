@@ -49,6 +49,10 @@ fs.readdir("./models/", (err, files) => {
   console.log('Loaded ' + models.length + ' models. (' + models.join(', ') + ')');
 })
 
+// Associations
+client.models.raidReserve.belongsTo(client.models.signup, {as: 'signup', foreignKey: 'signupID'});
+client.models.raidReserve.belongsTo(client.models.reserveItem, {as: 'item', foreignKey: 'reserveItemID'});
+
 
 // Add the events from the /events folder
 let events = [];

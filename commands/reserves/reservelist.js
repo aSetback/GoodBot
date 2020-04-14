@@ -2,8 +2,6 @@ const moment = require('moment');
 
 exports.run = async function(client, message, args) {
 	let raid = await client.signups.getRaid(client, message.channel);
-    client.models.raidReserve.belongsTo(client.models.signup, {as: 'signup', foreignKey: 'signupID'});
-    client.models.raidReserve.belongsTo(client.models.reserveItem, {as: 'item', foreignKey: 'reserveItemID'});
    
     let includes = [
         {model: client.models.signup, as: 'signup', foreignKey: 'signupID'},
