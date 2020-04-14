@@ -45,14 +45,12 @@ fs.readdir("./models/", (err, files) => {
     client.models[modelName] = require(`./models/${file}`)(client, Sequelize);
     models.push(modelName);
   });
-  console.log(client.models);
+
+  // Associations
+  client.models.raidReserve.belongsTo(client.models.signup, {as: 'signup', foreignKey: 'signupID'});
+  client.models.raidReserve.belongsTo(client.models.reserveItem, {as: 'item', foreignKey: 'reserveItemID'});
   console.log('Loaded ' + models.length + ' models. (' + models.join(', ') + ')');
 })
-
-// Associations
-client.models.raidReserve.belongsTo(client.models.signup, {as: 'signup', foreignKey: 'signupID'});
-client.models.raidReserve.belongsTo(client.models.reserveItem, {as: 'item', foreignKey: 'reserveItemID'});
-
 
 // Add the events from the /events folder
 let events = [];
