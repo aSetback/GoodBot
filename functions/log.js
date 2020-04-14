@@ -3,6 +3,8 @@ module.exports = {
 
         // Base message of timestamp, and the data to be logged
         let logMessage = data;
+        let memberName = null;
+        let memberID = null;
         try {
             // Check if this is being sent via DM
             if (channel.type != 'dm') {
@@ -10,8 +12,9 @@ module.exports = {
                     if (!member.user) {
                         member.user = member;
                     }
-                    nickname = member.nickname ? member.nickname : member.user.username;
-
+                    let nickname = member.nickname ? member.nickname : member.user.username;
+                    memberName = nickname;
+                    memberID = member.user.id;
                     if (client.config.userId == member.user.id) {
                         logMessage += ' / Sign up via emoji';
                     } else {
@@ -31,7 +34,26 @@ module.exports = {
             } else {
                 // This is a direct message, only write it to console
                 logMessage += ' / DM From: ' + member.username + ' (' + member.id + ')';
+                memberName = member.username;
+                memberID = member.id;
             }
+
+            let guildID = null;
+            let guildName = null;
+            if (channel.guild) {
+                guildID = channel.guild.id;
+                guildName = channel.guild.name;
+            }
+
+            let record = {
+                event: logMessage,
+                guildName: channel.guild.name,
+                guildID: channel.guild.id,
+                memberName: memberName,
+                memberID: memberID
+            }
+
+            client.models.log.create(record);
 
             // Write to console
             console.log('[' + client.timestamp.get() + '] ' + logMessage);

@@ -5,13 +5,21 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.TEXT,
             allowNull: false
         },
+        guildName: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
         guildID: {
             type: Sequelize.BIGINT(20),
-            allowNull: false
+            allowNull: true
+        },
+        memberName: {
+            type: Sequelize.STRING,
+            allowNull: true
         },
         memberID: {
             type: Sequelize.BIGINT(20),
-            allowNull: false
+            allowNull: true
         }
     }, {
     // options
