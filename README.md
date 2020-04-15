@@ -117,6 +117,23 @@
   Compare the current lineup to the specified raid, and send a notification to all players not currently signed up.
 ```
 
+## Soft Reserves
+```
+  +softreserve
+    Toggle a raid to have soft reserve as the loot system (reservable items are keyed off of the selected raid type)
+
+  +reserve CharacterName Full Item Name
+    Save a reserve for the specificed item for the specified character name
+
+  +reservelist
+    The bot will DM the user a list of all reserves that have been made for this raid, ordered by item name
+
+  +reserveitems
+    The bot will DM the user a list of all items that are available for reserve for this raid
+
+```
+
+
 ## Configuration Options
 ```
   +setoption factionrequired 1
