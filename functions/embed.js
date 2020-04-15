@@ -119,7 +119,7 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	}
 
 	if (raid.softreserve) {
-		embed.addField('**Loot**', "Soft Reserve");
+		embed.addField('**Soft Reserve**', "To reserve an item, use `+reserve PlayerName Full Item Name`\nTo see all current reserves, use `+reservelist`\nTo view items eligible for reserving, use `+reserveitems`");
 	}
 
 
