@@ -3,6 +3,9 @@ const Enmap = require("enmap");
 const fs = require("fs");
 const client = new Discord.Client();
 
+// Our music
+client.queue = {};
+
 // Make our config available throughout all the files.
 client.config = require("./config.json");
 
