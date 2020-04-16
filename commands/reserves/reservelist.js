@@ -25,7 +25,7 @@ exports.run = async function(client, message, args) {
             returnMessage += reserve.signup.player.padEnd(20) + reserve.item.name.padEnd(40) + moment(reserve.updatedAt).utcOffset(-240).format('h:mm A, L') + '\n';
             if (returnMessage.length > 1800) {
                 returnMessage += '```';
-                message.channel.send(returnMessage);    
+                message.author.send(returnMessage);    
                 returnMessage = '';
             }
         });
