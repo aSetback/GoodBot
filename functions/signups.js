@@ -15,6 +15,17 @@ module.exports = {
 
         let characterName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
         let member = message.guild.members.find(member => member.nickname == characterName ||  member.user.username == characterName);
+        let raid = await client.raid.get(client, message.channel);
+
+        // Locked raid handling
+        if (raid.locked) {
+            if (client.config.userId != message.author.id) {
+                return message.author.send('This raid is locked -- sign-ups can no longer be modified.');
+            } else {
+                return member.send('This raid is locked -- sign-ups can no longer be modified.');
+            }
+        }
+        
         let playerId = null;
         if (member) {
             playerId = member.user.id.toString();
@@ -58,6 +69,7 @@ module.exports = {
         // Save our sign-up to the db
         client.models.raid.findOne({'where': {'guildID': message.guild.id, 'channelID': message.channel.id}}).then((raid) => {
             if (raid) {
+
                 let record = {
                     'player': characterName,
                     'signup': signValue,

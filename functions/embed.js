@@ -114,6 +114,10 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	.setColor(raidData.color)
 	.setThumbnail(icon);
 
+	if (raid.locked) {
+		embed.addField('**Status**', '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*');
+	}
+
 	if (raid.time) {
 		embed.addField('**Time**', raid.time);
 	}

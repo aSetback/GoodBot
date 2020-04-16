@@ -37,6 +37,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.BOOLEAN,
             allowNull: true
         },
+        locked: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true
+        },
         channelID: {
             type: Sequelize.BIGINT(20),
             allowNull: false

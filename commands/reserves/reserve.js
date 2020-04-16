@@ -3,6 +3,10 @@ exports.run = async function(client, message, args) {
 	let player = args.shift().toLowerCase();
     let item = args.join(' ');
 
+    if (raid.locked) {
+        return message.author.send('This raid is locked -- new reserves can not currently be added.');
+    }
+
     // Find this player in the sign-up
     client.models.signup.findOne({where: {raidID: raid.id, player: player}}).then((signup) => {
         if (signup) {
