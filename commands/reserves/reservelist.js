@@ -8,7 +8,7 @@ exports.run = async function(client, message, args) {
         {model: client.models.reserveItem, as: 'item', foreignKey: 'reserveItemID'},
     ];
     
-    client.models.raidReserve.findAll({where: {RaidID: raid.id}, include: includes}, {order: 'item.name'}).then((raidReserves) => {
+    client.models.raidReserve.findAll({where: {RaidID: raid.id}, include: includes}).then((raidReserves) => {
         let returnMessage = '';
         raidReserves.sort((a, b) => {
             if (a.item.name == b.item.name) {
