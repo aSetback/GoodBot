@@ -5,6 +5,7 @@ module.exports = {
 	update: (client, guild, file) => {
         // Read our SavedVariables file
         if (!fs.existsSync(file)) {
+            console.log("File doesn't exist: " + file)
             return false;
         }
 		let data = fs.readFileSync(file, 'utf8');
@@ -35,6 +36,7 @@ module.exports = {
         let lineSplit = line.split(" = ");
         let characterName = lineSplit.shift().trim();
         characterName = characterName.substr(2, characterName.length - 4);
+        console.log
         let contents = lineSplit.shift().trim();
         contents = contents.substr(1, contents.length - 3);
         contents = JSON.parse(contents);    

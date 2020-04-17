@@ -6,7 +6,7 @@ module.exports = {
 		// Watch the upload folder
 		let fsTimeout = null;
 		let uploadPath = client.config.epgpBackupFolder + '/upload/';
-		fs.watch(client.config.epgpBackupFolder + '/upload/', {interval: 5000}, (eventType, fileName) => {
+		fs.watch(uploadPath, {interval: 5000}, (eventType, fileName) => {
 			if (!fsTimeout) {
 				let guildID = fileName.split('-').shift();
 				let guild = client.guilds.get(guildID);
