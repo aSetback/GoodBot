@@ -13,7 +13,7 @@ module.exports = {
             signValue = 'maybe';
         }
 
-        let characterName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+        let characterName = client.general.ucfirst(hame);
         let member = message.guild.members.find(member => member.nickname == characterName ||  member.user.username == characterName);
         let raid = await client.raid.get(client, message.channel);
 

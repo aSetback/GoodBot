@@ -15,12 +15,14 @@ module.exports = {
         .on("error", () => {
             client.music.next(guild, client)
         })
-        .on("finish", () => {
+        .on("end", () => {
             client.music.next(guild, client)
         });
     },
     next: async function(guild, client) {
-        if (guild.queue.length) {
+        if (guild.repeat) {
+            client.music.play(guild.playing, guild, client);
+        } else if (guild.queue.length) {
             let next = guild.queue.shift();
             client.music.play(next, guild, client);
         } else {
@@ -29,4 +31,3 @@ module.exports = {
         }
     } 
 }
-

@@ -5,7 +5,8 @@ exports.run = async function(client, message, args) {
             queue: [],
             playing: false,
             conn: null,
-            vc: null
+            vc: null,
+            repeat: false
         }
     }
 

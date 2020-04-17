@@ -15,7 +15,7 @@ module.exports = {
     
 
         let record = {
-            name: characterName,
+            name: client.general.ucfirst(characterName),
             class: className,
             memberID: memberID,
             guildID: guildID
@@ -59,7 +59,7 @@ module.exports = {
     
 
         let record = {
-            name: characterName,
+            name: client.general.ucfirst(characterName),
             role: roleName,
             memberID: memberID,
             guildID: guildID
