@@ -21,7 +21,9 @@ module.exports = {
                         logMessage += ' / Member: ' + nickname + ' (' + member.user.id + ')';
                     }
                 }
-                logMessage += ' / Channel: ' + channel.name;
+                if (channel.name) {
+                    logMessage += ' / Channel: ' + channel.name;
+                }
 
                 // Attempt to log to a server-logs channel
                 let logChannel = channel.guild ? channel.guild.channels.find(c => c.name == "server-logs") : null;
@@ -47,8 +49,8 @@ module.exports = {
 
             let record = {
                 event: logMessage,
-                guildName: channel.guild.name,
-                guildID: channel.guild.id,
+                guildName: guildName,
+                guildID: guildID,
                 memberName: memberName,
                 memberID: memberID
             }
