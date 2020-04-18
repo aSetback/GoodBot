@@ -5,10 +5,15 @@ const youtube = new Youtube(youtubeAPI.private_key);
 
 module.exports = {
     play: async function(song, guild, client) {
+        if (!guild.vc) {
+            client.queue[guild.id].vc = song.message.member.voiceChannel;
+            client.queue[guild.id].conn = await client.queue[guild.id].vc.join();
+        }
+    
         client.queue[guild.id].playing = song;
-        let dl = ytdl(song, {
+        let dl = ytdl(song.url, {
             quality: 'highestaudio',
-            highWaterMark: 1024 * 1024 * 10,
+            highWaterMark: 1024 * 1024 * 1,
             filter: 'audioonly'
         });
         client.queue[guild.id].dispatcher = guild.conn.playStream(dl)
@@ -16,18 +21,20 @@ module.exports = {
             client.music.next(guild, client)
         })
         .on("end", () => {
-            client.music.next(guild, client)
+            let next = null;
+            if (guild.repeat) {
+                next = guild.playing;
+            } else {
+                next = guild.queue.shift();
+            }
+            if (!next) {
+                guild.vc.leave();
+            } else {
+                client.music.play(next, guild, client);
+            }
         });
     },
-    next: async function(guild, client) {
-        if (guild.repeat) {
-            client.music.play(guild.playing, guild, client);
-        } else if (guild.queue.length) {
-            let next = guild.queue.shift();
-            client.music.play(next, guild, client);
-        } else {
-            client.queue[guild.id].playing = null;
-            return guild.vc.leave();
-        }
+    next: async function(guild) {
+        guild.dispatcher.end();
     } 
 }

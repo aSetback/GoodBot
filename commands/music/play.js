@@ -1,3 +1,5 @@
+const ytdl = require('ytdl-core');
+
 exports.run = async function(client, message, args) {
     if (!client.queue[message.guild.id]) {
         client.queue[message.guild.id] = {
@@ -11,14 +13,24 @@ exports.run = async function(client, message, args) {
     }
 
     let song = args[0];
-    client.queue[message.guild.id].vc = message.member.voiceChannel;
-    client.queue[message.guild.id].conn = await client.queue[message.guild.id].vc.join();
 
     // Add song to queue
+    let songInfo = await ytdl.getInfo(song);
+    let songLength = Math.floor(songInfo.length_seconds / 60) + ':' + songInfo.length_seconds % 60
+
+    let songData = {
+        url: song,
+        title: songInfo.title,
+        songLength: songLength,
+        message: message
+    };
+
     if (client.queue[message.guild.id].playing) {
-        client.queue[message.guild.id].queue.push(song);
-        return message.channel.send("Song added to queue.");
+        client.queue[message.guild.id].queue.push(songData);
+        message.channel.send("Song added to queue: **" + songInfo.title + "** (" + songLength + ").");
+    } else {
+        client.music.play(songData, client.queue[message.guild.id], client);
+        message.channel.send("Now playing: **" + songInfo.title + "** (" + songLength + ").");
     }
 
-    client.music.play(song, client.queue[message.guild.id], client);
 };

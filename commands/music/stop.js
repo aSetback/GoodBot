@@ -1,6 +1,9 @@
 exports.run = async function(client, message, args) {
-    if (!client.queue[message.guild.id]) {
+    let guild = client.queue[message.guild.id];
+    if (!guild) {
         return message.channel.send('There is currently no songs in the queue.');
     }
-    client.queue[message.guild.id].vc.leave();
+    guild.queue = [];
+    guild.dispatcher.end();
+    client.queue[message.guild.id] = guild;
 };
