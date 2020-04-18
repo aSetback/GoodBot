@@ -29,6 +29,7 @@ module.exports = {
             }
             if (!next) {
                 guild.vc.leave();
+                guild.vc = null;
             } else {
                 client.music.play(next, guild, client);
             }
