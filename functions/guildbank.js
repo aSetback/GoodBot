@@ -8,6 +8,7 @@ module.exports = {
             console.log("File doesn't exist: " + file)
             return false;
         }
+        console.log('Reading file');
 		let data = fs.readFileSync(file, 'utf8');
 
 		let channel = guild.channels.find(channel => channel.name === "bank");
@@ -33,6 +34,7 @@ module.exports = {
 		}
 	},
 	parse: (client, guild, line) => {
+        console.log("Parsing line: " + line);
         let lineSplit = line.split(" = ");
         let characterName = lineSplit.shift().trim();
         characterName = characterName.substr(2, characterName.length - 4);
@@ -49,8 +51,9 @@ module.exports = {
             if (b.name > a.name)
                 return -1;
             return 0;
-        })
+        });
     
+        console.log("Creating embed.");
         let channel = guild.channels.find(channel => channel.name === "bank");
         let embed = new Discord.RichEmbed()
 		.setTitle("Character: " + characterName)
