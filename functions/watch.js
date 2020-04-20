@@ -16,7 +16,7 @@ module.exports = {
 				};
 				fsTimeout = setTimeout(() => { 
 					fsTimeout=null
-					let content = fs.readFileSync(file, 'utf8');
+					let content = fs.readFileSync(uploadPath + fileName, 'utf8');
 					if (fileName.indexOf('GoodEPGP') > -1) {
 						console.log('Parse EPGP: ' + fileName);
 						client.epgp.update(client, guild, content);
