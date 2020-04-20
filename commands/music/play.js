@@ -12,6 +12,10 @@ exports.run = async function(client, message, args) {
         }
     }
 
+    if (!message.member.voiceChannel) {
+        return message.channel.send('You must be in a voice channel to listen to music.');
+    }
+
     let song = args[0];
 
     // Add song to queue

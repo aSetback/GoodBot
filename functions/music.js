@@ -7,7 +7,7 @@ module.exports = {
     play: async function(song, guild, client) {
         if (!guild.vc) {
             client.queue[guild.id].vc = song.message.member.voiceChannel;
-            client.queue[guild.id].conn = await client.queue[guild.id].vc.join();
+            client.queue[guild.id].conn = await song.message.member.voiceChannel.join();
         }
     
         client.queue[guild.id].playing = song;
@@ -30,6 +30,7 @@ module.exports = {
             if (!next) {
                 guild.vc.leave();
                 guild.vc = null;
+                guild.playing = null;
             } else {
                 client.music.play(next, guild, client);
             }
