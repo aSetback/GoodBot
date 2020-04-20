@@ -44,7 +44,7 @@ exports.run = (client, message, args) => {
 
   let returnTitle = "Best " + metricDisplay + " Parses: **" + player + "** (" + server + " " + region + ")\n";
 
-  let zones = [1000, 1001, 1002];
+  let zones = [1002, 1003, 1000, 1001];
   getParses(zones, 0);
 
   function getParses(parseZones, returnParses) {
@@ -67,6 +67,10 @@ exports.run = (client, message, args) => {
     searchUrl += '&zone=' + parseZones.shift();
     searchUrl += '&timeframe=historical';
 
+    if (returnParses >= 2) {
+      return false;
+    }
+
     // Set our encoded URL
     reqOpts = {
       url: encodeURI(searchUrl)
@@ -82,60 +86,60 @@ exports.run = (client, message, args) => {
           console.log(e);
           return false;
         }
-        if (!logs.length) {
-          return false
-        }
-        returnData = '```\n';
-        returnData += ''.padEnd(98, '-') + '\n';
-        returnData += 'boss'.padEnd(35);
-        returnData += searchMetric.padEnd(11);
-        returnData += '%'.padEnd(8);
-        returnData += 'ilvl'.padEnd(6);
-        returnData += 'rank'.padEnd(20);
-        returnData += 'date'.padEnd(10);
-        returnData += '\n';
-        returnData += ''.padEnd(98, '-') + '\n';
+        if (logs.length) {
+          returnData = '```\n';
+          returnData += ''.padEnd(98, '-') + '\n';
+          returnData += 'boss'.padEnd(35);
+          returnData += searchMetric.padEnd(11);
+          returnData += '%'.padEnd(8);
+          returnData += 'ilvl'.padEnd(6);
+          returnData += 'rank'.padEnd(20);
+          returnData += 'date'.padEnd(10);
+          returnData += '\n';
+          returnData += ''.padEnd(98, '-') + '\n';
 
-        let returnLines = 0;
-        let rankingTotal = 0;
-        let rankingCount = 0;
-        logs.forEach(function (log) {
-          if ((isTank && log.spec.toLowerCase() == 'tank')
-            || (!isTank && metric.toLowerCase() != 'hps' && log.spec.toLowerCase() != 'tank' && log.spec.toLowerCase() != 'healer')
-            || (metric.toLowerCase() == 'hps' && log.spec.toLowerCase() == 'healer')) {
-            returnLines++;
-            let ranking = log.rank + ' of ' + log.outOf;
-            let encounter = log.encounterName;
-            let logDate = new Date(log.startTime);
-            logDate = moment(logDate).format('ll');
-            logDate = logDate.split(" ");
+          let returnLines = 0;
+          let rankingTotal = 0;
+          let rankingCount = 0;
+          logs.forEach(function (log) {
+            if ((isTank && log.spec.toLowerCase() == 'tank')
+              || (!isTank && metric.toLowerCase() != 'hps' && log.spec.toLowerCase() != 'tank' && log.spec.toLowerCase() != 'healer')
+              || (metric.toLowerCase() == 'hps' && log.spec.toLowerCase() == 'healer')) {
 
-            if (isTank) { encounter + ' (tank)'; }
-            returnData += encounter.toString().padEnd(35);
-            returnData += log.total.toString().padEnd(11);
-            returnData += log.percentile.toPrecision(3).toString().padEnd(8);
-            returnData += log.ilvlKeyOrPatch.toString().padEnd(6);
-            returnData += ranking.padEnd(20);
-            returnData += logDate[0] + " " + logDate[1].padEnd(4) + logDate[2];
-            returnData += '\n';
-            rankingTotal += log.percentile;
-            rankingCount ++;
+              returnLines++;
+              let ranking = log.rank + ' of ' + log.outOf;
+              let encounter = log.encounterName;
+              let logDate = new Date(log.startTime);
+              logDate = moment(logDate).format('ll');
+              logDate = logDate.split(" ");
+
+              if (isTank) { encounter + ' (tank)'; }
+              returnData += encounter.toString().padEnd(35);
+              returnData += log.total.toString().padEnd(11);
+              returnData += log.percentile.toPrecision(3).toString().padEnd(8);
+              returnData += log.ilvlKeyOrPatch.toString().padEnd(6);
+              returnData += ranking.padEnd(20);
+              returnData += logDate[0] + " " + logDate[1].padEnd(4) + logDate[2];
+              returnData += '\n';
+              rankingTotal += log.percentile;
+              rankingCount ++;
+            }
+          });
+
+          // Calculate the player's average ranking for this raid
+          let averageRanking = (rankingTotal/rankingCount).toPrecision(3);
+
+          returnData += ''.padEnd(98, '-') + '\n';
+          returnData += 'Average Ranking'.padEnd(46) + averageRanking.toString()  + '\n';
+          returnData += '```';
+          if (returnLines) {
+            if (returnTitle) {
+              returnData = returnTitle + returnData;
+              returnTitle = "";
+            }
+            message.channel.send(returnData);
+            returnParses++;
           }
-        });
-
-        // Calculate the player's average ranking for this raid
-        let averageRanking = (rankingTotal/rankingCount).toPrecision(3);
-
-        returnData += ''.padEnd(98, '-') + '\n';
-        returnData += 'Average Ranking'.padEnd(46) + averageRanking.toString()  + '\n';
-        returnData += '```';
-        if (returnLines) {
-          if (returnTitle) {
-            returnData = returnTitle + returnData;
-            returnTitle = "";
-          }
-          message.channel.send(returnData);
-          returnParses++;
         }
 
         // Continue to next zone if it exists.
