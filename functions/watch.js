@@ -14,17 +14,18 @@ module.exports = {
 					guild: guild,
 					type: null
 				};
-				fsTimeout = setTimeout(() => { fsTimeout=null}, 5000);
-				let content = fs.readFileSync(file, 'utf8');
-				if (fileName.indexOf('GoodEPGP') > -1) {
-					console.log('Parse EPGP: ' + fileName);
-					client.epgp.update(client, guild, content);
-				}
-				if (fileName.indexOf('GoodBot') > -1) {
-					client.log.write(client, null, channel, "Guild bank information has been uploaded.");
-					client.guildbank.update(client, guild, content);
-				}
-
+				fsTimeout = setTimeout(() => { 
+					fsTimeout=null
+					let content = fs.readFileSync(file, 'utf8');
+					if (fileName.indexOf('GoodEPGP') > -1) {
+						console.log('Parse EPGP: ' + fileName);
+						client.epgp.update(client, guild, content);
+					}
+					if (fileName.indexOf('GoodBot') > -1) {
+						client.log.write(client, null, channel, "Guild bank information has been uploaded.");
+						client.guildbank.update(client, guild, content);
+					}
+				}, 10000);
 			}
 		});
 
