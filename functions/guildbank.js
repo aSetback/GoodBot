@@ -16,22 +16,18 @@ module.exports = {
 		parseLine = false;
 		for (key in lines) {
             let line = lines[key];
-            console.log(line);
             if (line.indexOf('}') == 0) {
                 parseLine = false;
             }
             if (parseLine) {
-                console.log('found a line!');
                 client.guildbank.parse(client, guild, line.replace(/\\"/g, '"'));
             }
 			if (line.indexOf('GoodBotGuildBank = ') >= 0) {
-                console.log('enable parsing');
                 parseLine = true;
 			}
 		}
 	},
 	parse: (client, guild, line) => {
-        console.log("Parsing line: " + line);
         let lineSplit = line.split(" = ");
         let characterName = lineSplit.shift().trim();
         characterName = characterName.substr(2, characterName.length - 4);
