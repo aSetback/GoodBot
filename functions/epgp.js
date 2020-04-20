@@ -2,12 +2,9 @@ const fs = require("fs");
 const Discord = require("discord.js");
 
 module.exports = {
-	update: (client, guild, file) => {
-		// Read our SavedVariables file
-		epgpData = fs.readFileSync(file, 'utf8');
-
+	update: (client, guild, content) => {
 		// Split the lua file up into lines
-		epgpLines = epgpData.split('\n');
+		epgpLines = content.split('\n');
 
 		let channel = guild.channels.find(channel => channel.name === "standings");
 		if (!channel) {

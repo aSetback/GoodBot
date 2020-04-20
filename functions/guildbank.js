@@ -2,15 +2,7 @@ const fs = require("fs");
 const Discord = require("discord.js");
 
 module.exports = {
-	update: (client, guild, file) => {
-        // Read our SavedVariables file
-        if (!fs.existsSync(file)) {
-            console.log("File doesn't exist: " + file)
-            return false;
-        }
-        console.log('Reading file');
-		let data = fs.readFileSync(file, 'utf8');
-
+	update: (client, guild, content) => {
 		let channel = guild.channels.find(channel => channel.name === "bank");
         if (!channel) {
             console.log('Error: Guild Bank channel could not be found!');
@@ -18,17 +10,22 @@ module.exports = {
         }
 
 		// Split the lua file up into lines
-		let lines = data.split('\n');
+		let lines = content.split('\n');
 
         // Loop through the lines, find the one that has the standings.
 		parseLine = false;
 		for (key in lines) {
             let line = lines[key];
-            if (line.indexOf('}') == 0) 
+            console.log(line);
+            if (line.indexOf('}') == 0) {
                 parseLine = false;
-            if (parseLine) 
+            }
+            if (parseLine) {
+                console.log('found a line!');
                 client.guildbank.parse(client, guild, line.replace(/\\"/g, '"'));
+            }
 			if (line.indexOf('GoodBotGuildBank = ') >= 0) {
+                console.log('enable parsing');
                 parseLine = true;
 			}
 		}
@@ -38,7 +35,6 @@ module.exports = {
         let lineSplit = line.split(" = ");
         let characterName = lineSplit.shift().trim();
         characterName = characterName.substr(2, characterName.length - 4);
-        console.log
         let contents = lineSplit.shift().trim();
         contents = contents.substr(1, contents.length - 3);
         contents = JSON.parse(contents);    
