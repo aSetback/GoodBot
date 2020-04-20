@@ -1,5 +1,9 @@
 exports.run = (client, message, args) => {
 
+    if (!message.isAdmin) {
+		return false;
+    }
+    
     // Find Category
     category = message.guild.channels.find(c => c.name == "Get Started" && c.type == "category");
 

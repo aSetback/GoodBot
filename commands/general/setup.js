@@ -1,5 +1,9 @@
 exports.run = (client, message, args) => {
 
+    if (!message.isAdmin) {
+		return false;
+    }
+    
     // Create Category
     message.guild.createChannel('Get Started', {
             'type': 'category'

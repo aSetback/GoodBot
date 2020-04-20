@@ -1,9 +1,9 @@
 exports.run = (client, message, args) => {
 
-	if (!message.isAdmin) {
-		return false;
+	if (!client.permission.manageChannel(message.member, message.channel)) {
+		return message.channel.send('You need permission to manage this channel to be able to archive it.')
 	}
-	
+
 	let category = message.guild.channels.find(c => c.name == "Archives" && c.type == "category");
 	if (category) {
 		message.channel.setParent(category.id).then((channel) => {
