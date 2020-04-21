@@ -3,6 +3,10 @@ exports.run = async function(client, message, args) {
 	let player = args.shift().toLowerCase();
     let item = args.join(' ');
 
+    if (!raid.softreserve) {
+        return message.author.send("Soft reserve is not currently enabled for this raid.");
+    }
+
     if (raid.locked) {
         return message.author.send('This raid is locked -- new reserves can not currently be added.');
     }

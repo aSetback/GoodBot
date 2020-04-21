@@ -5,7 +5,11 @@ exports.run = async function(client, message, args) {
 		return false;
 	}
 
-	let raid = await client.signups.getRaid(client, message.channel);
+    let raid = await client.signups.getRaid(client, message.channel);
+    if (!raid.softreserve) {
+        return message.author.send("Soft reserve is not currently enabled for this raid.");
+    }
+
     let includes = [
         {model: client.models.signup, as: 'signup', foreignKey: 'signupID'},
     ];
