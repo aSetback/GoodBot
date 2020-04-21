@@ -20,7 +20,7 @@ exports.run = async function(client, message, args) {
             if (a.signup.player > b.signup.player) {
                 return 1;
             }
-            if (b.signup.player < b.signup.player) {
+            if (a.signup.player < b.signup.player) {
                 return -1;
             }
             return 0;
