@@ -17,6 +17,12 @@ exports.run = async function(client, message, args) {
             if (a.item.name < b.item.name) {
                 return -1;
             }
+            if (a.signup.player > b.signup.player) {
+                return 1;
+            }
+            if (b.signup.player < b.signup.player) {
+                return -1;
+            }
             return 0;
         });
         raidReserves.forEach((reserve) => {
