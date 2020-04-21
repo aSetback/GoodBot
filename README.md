@@ -131,6 +131,9 @@
   +reserveitems
     The bot will DM the user a list of all items that are available for reserve for this raid
 
+  +noreserve
+    The bot will ping all players who are signed up as 'yes', but do not currently have a reserve set
+
 ```
 
 
