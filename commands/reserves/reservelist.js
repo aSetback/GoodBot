@@ -11,10 +11,13 @@ exports.run = async function(client, message, args) {
     client.models.raidReserve.findAll({where: {RaidID: raid.id}, include: includes}).then((raidReserves) => {
         let returnMessage = '';
         raidReserves.sort((a, b) => {
-            if (a.item.name == b.item.name) {
-                return a.signup.player > b.signup.player ? true : false;
+            if (a.item.name > b.item.name) {
+                return 1;
             }
-            return (a.item.name > b.item.name) ? true : false;
+            if (a.item.name < b.item.name) {
+                return -1;
+            }
+            return 0;
         });
         raidReserves.forEach((reserve) => {
             if (!returnMessage.length) {

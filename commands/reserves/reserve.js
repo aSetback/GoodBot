@@ -22,7 +22,7 @@ exports.run = async function(client, message, args) {
                     client.models.raidReserve.findOne({where: {signupID: signup.id, raidID: raid.id}}).then((raidReserve) => {
                         if (raidReserve) { 
                             client.models.raidReserve.update({reserveItemID: reserveItem.id}, {where: {id: raidReserve.id}});
-                            return message.author.send('**' + client.general.ucfirst(player) + '**\'s reserve has been updated to  **' + item + '** for raid **' + raid.raid + '**.');
+                            return message.author.send('**' + client.general.ucfirst(player) + '**\'s reserve has been updated to **' + item + '** for raid **' + raid.raid + '**.');
                         } else {
                             client.models.raidReserve.create(record).then((record) => {
                                 return message.author.send('A reserve for **' + item + '** has been added for **' + client.general.ucfirst(player) + '** for raid **' + raid.raid + '**.');
