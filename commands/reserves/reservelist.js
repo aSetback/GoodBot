@@ -29,16 +29,19 @@ exports.run = async function(client, message, args) {
             return 0;
         });
         raidReserves.forEach((reserve) => {
-            if (!returnMessage.length) {
-                returnMessage = '-\n```md\n';
-                returnMessage += 'Player'.padEnd(20) + 'Item'.padEnd(40) +  'Reserved At\n';
-                returnMessage += ''.padEnd(85, '-') + '\n';
-            }
-            returnMessage += reserve.signup.player.padEnd(20) + reserve.item.name.padEnd(40) + moment(reserve.updatedAt).utcOffset(-240).format('h:mm A, L') + '\n';
-            if (returnMessage.length > 1800) {
-                returnMessage += '```';
-                message.author.send(returnMessage);    
-                returnMessage = '';
+            // Only show reserves from players who have a sign-up of 'yes'
+            if (reserve.signup.signup == 'yes') { 
+                if (!returnMessage.length) {
+                    returnMessage = '-\n```md\n';
+                    returnMessage += 'Player'.padEnd(20) + 'Item'.padEnd(40) +  'Reserved At\n';
+                    returnMessage += ''.padEnd(85, '-') + '\n';
+                }
+                returnMessage += reserve.signup.player.padEnd(20) + reserve.item.name.padEnd(40) + moment(reserve.updatedAt).utcOffset(-240).format('h:mm A, L') + '\n';
+                if (returnMessage.length > 1800) {
+                    returnMessage += '```';
+                    message.author.send(returnMessage);    
+                    returnMessage = '';
+                }
             }
         });
         if (returnMessage.length) {
