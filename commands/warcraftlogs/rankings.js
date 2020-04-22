@@ -3,6 +3,27 @@ var moment = require('moment');
 
 exports.run = (client, message, args) => {
 
+  let zone;
+  args.forEach((arg, key) => {
+    if (arg.indexOf('-z=') == 0) {
+      zone = arg.replace('-z=', '').toLowerCase();
+      args.splice(key, 1);
+    }
+  });
+
+  let zones = [1002, 1003, 1000, 1001];
+  if (zone) {
+    zoneObj = {
+      'mc': [1000],
+      'bwl': [1002],
+      'ony': [1001],
+      'zg': [1003]
+    };
+    if (zoneObj[zone]) {
+      zones = zoneObj[zone]
+    }
+  }
+
   // Retrieve our server/region.
   let server = client.customOptions.get(message.guild, 'server');
   let region = client.customOptions.get(message.guild, 'region');
@@ -44,7 +65,6 @@ exports.run = (client, message, args) => {
 
   let returnTitle = "Best " + metricDisplay + " Parses: **" + player + "** (" + server + " " + region + ")\n";
 
-  let zones = [1002, 1003, 1000, 1001];
   getParses(zones, 0);
 
   function getParses(parseZones, returnParses) {
