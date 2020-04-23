@@ -38,7 +38,23 @@ exports.run = (client, message, args) => {
         returnString += '\n' + ''.padEnd(100, '-') + '\n';
       }
       returnString += '```';
-      message.channel.send(returnString);
+      if (returnString.length > 2000) {
+        let returnParts = returnString.split('\n');
+        let partialString = '';
+        returnParts.forEach((part) => {
+          partialString += part + '\n';
+          if (partialString.length > 1500) {
+            partialString += '```';
+            message.channel.send(partialString);
+            partialString = '```diff\n';
+          }
+        });
+        if (partialString.length > 10) {
+          message.channel.send(partialString);
+        }
+      } else {
+        message.channel.send(returnString);
+      }
     });
   }
 
