@@ -114,13 +114,18 @@ module.exports = {
             let record = {
                 confirmed: true
             };
-            client.models.signup.update(record, {
-                where: {
-                    raidID: raidID,
-                    player: characterName
+            client.models.signup.findOne({where: {player: characterName, raidID: raidID, signup: 'yes'}}).then((signup) => {
+                if (!signup) {
+                    resolve(false);
+                } else {
+                    client.models.signup.update(record, {
+                        where: {
+                            id: signup.id
+                        }
+                    }).then((rows) => {
+                        resolve(true);
+                    });
                 }
-            }).then(() => {
-                resolve(true);
             });
         });
         return promise;
@@ -130,13 +135,18 @@ module.exports = {
             let record = {
                 confirmed: false
             };
-            client.models.signup.update(record, {
-                where: {
-                    raidID: raidID,
-                    player: characterName
+            client.models.signup.findOne({where: {player: characterName, raidID: raidID, signup: 'yes'}}).then((signup) => {
+                if (!signup) {
+                    resolve(false);
+                } else {
+                    client.models.signup.update(record, {
+                        where: {
+                            id: signup.id
+                        }
+                    }).then((rows) => {
+                        resolve(true);
+                    });
                 }
-            }).then(() => {
-                resolve(true);
             });
         });
         return promise;

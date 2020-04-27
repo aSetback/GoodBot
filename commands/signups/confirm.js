@@ -17,24 +17,34 @@ exports.run = async function(client, message, args) {
 	}	
 
 	// Get the first parameter as either player, or player list.
-	let players = args.shift().toLowerCase();
+	let players = args.join().toLowerCase();
 	// Attempt to split on comma to see if it's a list
 	players = players.split(',');
 	// Keep a record of which players are added
 	let confirmedPlayers = [];
+	let notFound = [];
 
 	let raid = await client.signups.getRaid(client, message.channel);
 	// Loop through the players to confirm
 	for (key in players) {
-		let player = players[key];
-		await client.signups.confirm(client, raid.id, player);
-		confirmedPlayers.push(player);
+		let player = client.general.ucfirst(players[key]);
+		let confirmed = await client.signups.confirm(client, raid.id, player);
+		if (confirmed) {
+			confirmedPlayers.push(player);
+		} else {
+			notFound.push(player);
+		}
 	}
 
 	// Update our embed
 	client.embed.update(client, message, raid);
 
 	// Notify the user which players were confirmed
-	message.author.send('Added confirmation for players: ' + confirmedPlayers.join(', ') + ' for ' + message.channel.name + '.');
+	if (confirmedPlayers.length) {
+		message.author.send('Added confirmation for players: ' + confirmedPlayers.join(', ') + ' for  **' + message.channel.name + '**.');
+	}
+	if (notFound.length) {
+		message.author.send('Could not find players: ' + notFound.join(', ') + ' for **' + message.channel.name + '**.');
+	}
 
 };
