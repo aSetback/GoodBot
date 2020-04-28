@@ -28,7 +28,7 @@ exports.run = async function(client, message, args) {
 	// Loop through the players to confirm
 	for (key in players) {
 		let player = client.general.ucfirst(players[key]);
-		let confirmed = await client.signups.confirm(client, raid.id, player);
+		let confirmed = await client.signups.unconfirm(client, raid.id, player);
 		if (confirmed) {
 			unconfirmedPlayers.push(player);
 		} else {
