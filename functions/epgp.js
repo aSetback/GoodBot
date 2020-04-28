@@ -29,6 +29,23 @@ module.exports = {
 			return false;
 		}
 
+		// Convert to mysql time
+		let fileTime = new Date();
+		let createdAt = fileTime.toISOString().slice(0, 19).replace('T', ' ');
+
+		standings.forEach((player) => {
+			let record = {
+				'player': player.player,
+				'ep': parseFloat(player.ep),
+				'gp': parseFloat(player.gp),
+				'pr': parseFloat(player.pr),
+				'class': player.class,
+				'guildID': guild.id,
+				'createdAt': createdAt
+			};
+			client.models.epgp.create(record);
+		});
+
 		channel.fetchMessages({limit: 20})
 		   .then(function(list){
 				channel.bulkDelete(list, true);
@@ -69,56 +86,5 @@ module.exports = {
 				returnMsg += '```';
 				channel.send(returnMsg);
 			});
-	},
-	parseFile: (client, file) => {
-		let fileParts = file.split('-');
-		let fileTime = new Date();
-		let standings = fs.readFileSync(file, 'utf8');
-		let jsonParse = '';
-		try {
-			jsonParse = JSON.parse(standings);
-		} catch (e) {
-			console.log('Invalid json content.');
-			return false;
-		}
-		let month = parseInt(fileParts[2]) - 1;
-		fileTime.setMonth(parseInt(fileParts[2]) - 1);
-		fileTime.setDate(fileParts[3]);
-		fileTime.setFullYear(fileParts[4]);
-		fileTime.setHours(fileParts[5]);
-		fileTime.setMinutes(fileParts[6]);
-		fileTime.setSeconds(fileParts[7].replace('.json', ''));
-
-		// Convert to mysql time
-		let createdAt = fileTime.toISOString().slice(0, 19).replace('T', ' ');
-
-		let guildID = 0;
-		if (!fileParts[8]) {
-			if (standings.indexOf('Taunt') != -1) {
-				guildID = 581817176915181568;
-			}
-			if (standings.indexOf('Memerlord') != -1) {
-				guildID = 379733719952654337;
-			}
-		} else {
-			guildID = parseInt(fileParts[8].split('.')[0]);
-		}
-		if (!guildID) {
-			console.log('Unable to import file: ' + file);
-			return false;
-		}
-
-		jsonParse.forEach((player) => {
-			let record = {
-				'player': player.player,
-				'ep': parseFloat(player.ep),
-				'gp': parseFloat(player.gp),
-				'pr': parseFloat(player.pr),
-				'class': player.class,
-				'guildID': guildID,
-				'createdAt': createdAt
-			};
-			client.models.epgp.create(record);
-		});
 	}
 }
