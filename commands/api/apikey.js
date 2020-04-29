@@ -16,11 +16,11 @@ exports.run = (client, message, args) => {
     client.models.apikey.findOne(({where: {memberID: record.memberID, guildID: record.guildID}})).then((apikey) => {
         if (apikey) {
             client.models.apikey.update(record, {where: {id: apikey.id}}).then(() => {
-                message.author.send('Your API key has been updated.\nYour updated API key: **' + key + '**');
+                message.author.send('Your API key has been updated.\nYour User ID: **' + message.member.id + '**\nYour API Key: **' + key + '**');
             })
         } else {
             client.models.apikey.create(record).then(() => {
-                message.author.send('Your API key has been created.\nYour API Key: **' + key + '**');
+                message.author.send('Your API key has been created.\nYour User ID: **' + message.member.id + '**\nYour API Key: **' + key + '**');
             });
         }
     })
