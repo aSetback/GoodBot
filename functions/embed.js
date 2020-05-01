@@ -49,7 +49,7 @@ module.exports = {
 	},
 	getSignups: async function(client, channelID) {
 		let signupList = new Promise((resolve, reject) => {
-			client.models.signup.findAll({where: {'channelID': channelID}, order: [['createdAt', 'ASC']], group: ['player']}).then((signupList) => {
+			client.models.signup.findAll({where: {'channelID': channelID}, order: [['createdAt', 'DESC']], group: ['player']}).then((signupList) => {
 				resolve(signupList);
 			});
 		});
