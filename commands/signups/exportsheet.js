@@ -5,13 +5,19 @@ exports.run = async function(client, message, args) {
 	}	
 
 
-	var sheetID = client.customOptions.get(message.guild, 'sheet').trim();
-	
+	let sheetID = client.customOptions.get(message.guild, 'sheet').trim();
 	if (args[0]) {
 		sheetID = args[0];
 	}
 
+	let { GoogleSpreadsheet } = require('google-spreadsheet');
+	let doc = new GoogleSpreadsheet(sheetID);
+	var creds = require("../../google.json");
+	await doc.useServiceAccountAuth(creds);
+	await doc.loadInfo();
 	let raid = await client.signups.getRaid(client, message.channel);
+	let reserves = await client.reserves.byRaid(client, raid);
+	await exportReserves(reserves);
 
 	const sheetCols = {
 		'warrior-tank': 1,
@@ -82,13 +88,43 @@ exports.run = async function(client, message, args) {
 	}
 	setCells(cellData);
 
+	function exportReserves(reserves) {
+		return new Promise(async (resolve, reject) => {
+			let sheet = null;
+			for (key in doc.sheetsById) {
+				if (doc.sheetsById[key].title == 'Reserves') {
+					sheet = doc.sheetsById[key];
+				}
+			}
+			if (!sheet) {
+				resolve(false);
+			}
+
+			await sheet.loadCells('A2:C60');
+			for (row = 1; row < 60; row++) {
+				for (col = 0; col <  3; col++) {
+					sheet.getCell(row, col).value = '';
+				}
+			}
+			let outputRow = 1;
+			for (key in reserves) {
+				let reserve = reserves[key];
+				let cell = sheet.getCell(outputRow, 0);
+				cell.value = reserve.player;
+				cell = sheet.getCell(outputRow, 1);
+				cell.value = reserve.item;
+				cell = sheet.getCell(outputRow, 2);
+				cell.value = reserve.reserveTime;
+				outputRow++;
+			}
+			await sheet.saveUpdatedCells();
+			resolve(true)
+		});
+	}
+
+
 	async function setCells(cellData) {
-		var { GoogleSpreadsheet } = require('google-spreadsheet');
-		var doc = new GoogleSpreadsheet(sheetID);
 		var sheet;
-		var creds = require("../../google.json");
-		await doc.useServiceAccountAuth(creds);
-		await doc.loadInfo();
 		sheet = doc.sheetsByIndex[0];
 		await sheet.loadCells('B3:V35');
 		for (row = 2; row < 23; row++) {
