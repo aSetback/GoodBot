@@ -39,7 +39,7 @@ exports.run = async function(client, message, args) {
 	if (raid.confirmation) {
 		signups = await client.signups.getConfirmed(client, raid);		
 	} else {
-		signups = await client.embed.getSignups(client, message.channel.id);
+		signups = await client.signups.getSignups(client, raid);
 	}
 	let characterList = await client.embed.getCharacters(client, message.channel.guild);
 	let lineup = [];
