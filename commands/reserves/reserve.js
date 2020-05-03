@@ -40,7 +40,8 @@ exports.run = async function (client, message, args) {
     if (!reserve) {
         let likeItem = await likeSearch(client, raid, item);
         if (likeItem.length == 1) {
-            reserve = likeItem.shift();
+            let itemInfo = likeItem.shift();
+            reserve = await signupReserve(client, signup.id, raid, itemInfo.name);
         }
         if (likeItem.length > 1) {
             let possibleItems = [];
@@ -61,7 +62,7 @@ exports.run = async function (client, message, args) {
 
 function likeSearch(client, raid, item) {
     let promise = new Promise((resolve, reject) => {
-        let reserveItem = client.models.reserveItem.findAll({where: { name: {[Op.like]: '%' + item + '%'}, raid: raid.raid}}).then((items) => {
+        client.models.reserveItem.findAll({where: { name: {[Op.like]: '%' + item + '%'}, raid: raid.raid}}).then((items) => {
             resolve(items);
         });
     });
