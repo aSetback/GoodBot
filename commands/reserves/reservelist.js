@@ -14,6 +14,9 @@ exports.run = async function(client, message, args) {
     client.models.raidReserve.findAll({where: {RaidID: raid.id}, include: includes}).then((raidReserves) => {
         let returnMessage = '';
         raidReserves.sort((a, b) => {
+            if (!a.signup || !b.signup) {
+                return 0;
+            }
             if (a.item.name > b.item.name) {
                 return 1;
             }
@@ -29,8 +32,7 @@ exports.run = async function(client, message, args) {
             return 0;
         });
         raidReserves.forEach((reserve) => {
-            // Only show reserves from players who have a sign-up of 'yes'
-            if (reserve.signup.signup == 'yes') { 
+            if (reserve.signup && reserve.signup.signup == 'yes') { 
                 if (!returnMessage.length) {
                     returnMessage = '-\n```md\n';
                     returnMessage += 'Player'.padEnd(20) + 'Item'.padEnd(40) +  'Reserved At\n';
