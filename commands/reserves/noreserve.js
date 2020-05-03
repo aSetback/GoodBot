@@ -17,7 +17,9 @@ exports.run = async function(client, message, args) {
     client.models.raidReserve.findAll({where: {RaidID: raid.id}, include: includes}).then((raidReserves) => {
         let hasReserve = [];
         for (key in raidReserves) {
-            hasReserve.push(raidReserves[key].signup.player);
+            if (raidReserves[key].signup) {
+                hasReserve.push(raidReserves[key].signup.player);
+            }
         }
         
         client.models.signup.findAll({where: {RaidID: raid.id, signup: 'yes'}}).then(async (signups) => {

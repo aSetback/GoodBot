@@ -108,6 +108,7 @@ module.exports = {
                 resolve(true);
             });
         });
+        return promise;
     },
     confirm(client, raidID, characterName) {
         let promise = new Promise((resolve, reject) => {

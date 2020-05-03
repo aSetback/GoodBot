@@ -12,8 +12,17 @@ exports.run = async function(client, message, args) {
     ];
     
     client.models.raidReserve.findAll({where: {RaidID: raid.id}, include: includes}).then((raidReserves) => {
+        let reserves = [];
+        for (key in raidReserves) {
+            let raidReserve = raidReserves[key];
+            if (raidReserve.signup) {
+                reserves.push(raidReserve);
+            }
+        }
+
+
         let returnMessage = '';
-        raidReserves.sort((a, b) => {
+        reserves.sort((a, b) => {
             if (!a.signup || !b.signup) {
                 return 0;
             }
@@ -31,7 +40,7 @@ exports.run = async function(client, message, args) {
             }
             return 0;
         });
-        raidReserves.forEach((reserve) => {
+        reserves.forEach((reserve) => {
             if (reserve.signup && reserve.signup.signup == 'yes') { 
                 if (!returnMessage.length) {
                     returnMessage = '-\n```md\n';
