@@ -13,6 +13,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.DATEONLY,
             allowNull: false
         },
+        faction: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
         title: {
             type: Sequelize.STRING,
             allowNull: true

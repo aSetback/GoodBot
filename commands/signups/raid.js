@@ -76,9 +76,9 @@ exports.run = (client, message, args) => {
 
 				// Set up our sql record
 				let record = {
-					// 'name': name,
 					'raid': raid,
 					'date': raidDate,
+					'faction': faction.toLowerCase(),
 					'color': '#02a64f',
 					'description': null,
 					'channelID': channel.id,

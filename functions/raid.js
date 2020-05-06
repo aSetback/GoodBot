@@ -62,6 +62,21 @@ module.exports = {
         });
         return promise;
     },
+    setFaction(client, raid, faction) {
+        let promise = new Promise((resolve, reject) => {
+            let record = {
+                faction: faction
+            };
+            client.models.raid.update(record, {
+                where: {
+                    id: raid.id,
+                }
+            }).then(() => {
+                resolve(true);
+            });
+        });
+        return promise;
+    },
     get(client, channel) {
         let promise = new Promise((resolve, reject) => {
             client.models.raid.findOne({ where: {'channelID': channel.id}}).then((raid) => {
