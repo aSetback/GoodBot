@@ -21,7 +21,7 @@ exports.run = async function (client, message, args) {
         }
         signup = await findSignup(client, raid.id, player);
         if (!signup) {
-            return message.channel.send("We couldn't find " + player + " in the sign-ups for this raid.");
+            return client.messages.errorMessage(message.channel, "We couldn't find " + player + " in the sign-ups for this raid.", 240);
         }
     } else {
         args.shift();
@@ -54,7 +54,7 @@ exports.run = async function (client, message, args) {
     }
 
     if (!reserve) {
-        return message.channel.send("I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**.");
+        return client.messages.errorMessage(message.channel, "I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**.", 240);
     } else {
         return message.author.send('A reserve for **' + reserve.name + '** has been added for **' + client.general.ucfirst(player) + '** for raid **' + raid.raid.toUpperCase() + '**.');
     }

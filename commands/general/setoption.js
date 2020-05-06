@@ -25,6 +25,6 @@ exports.run = (client, message, args) => {
 	parsedList[optionName] = optionValue;
 	fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
 
-	message.channel.send('Option Saved.');
+	return client.messages.send(message.channel, 'Option saved.', 240);
 
 };

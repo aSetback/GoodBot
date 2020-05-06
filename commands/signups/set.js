@@ -21,15 +21,15 @@ exports.run = async function(client, message, args) {
 
 	let characterClass = await client.set.characterClass(client, message.guild, message.member, characterName, className);
 	if (!characterClass) {
-		return message.channel.send(className + ' is not a valid class.');
+		return client.messages.errorMessage(message.channel, className + ' is not a valid class.', 240);
 	} else {
 		let characterRole = await client.set.characterRole(client, message.guild, message.member, characterName, roleName);
 		// Only execute this once character class has been set to prevent race conditions
 		if (!characterRole) {
-			return message.channel.send(roleName + ' is not a valid role.');
+			return client.messages.errorMessage(message.channel, roleName + ' is not a valid role.  Valid roles are caster, dps, tank, healer.', 240);
 		} else {
 			// Completed successfully!
-			return message.channel.send(characterName + ' has been set as ' + className + '/' + roleName + '.');
+			return client.messages.send(message.channel + ' has been set as ' + className + '/' + roleName + '.', 240);
 		}
 	}
 };

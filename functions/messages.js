@@ -9,6 +9,12 @@ module.exports = {
         if (errorChannel) {
             errorChannel.send(channel + ': ' + message);
         }
-
+    },
+    send: (channel, message, seconds) => {
+        channel.send(message).then((sentMessage) => {
+            setTimeout(() => {
+                sentMessage.delete();
+            }, seconds * 1000);
+        });
     }
 }

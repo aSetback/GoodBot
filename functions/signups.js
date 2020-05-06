@@ -3,7 +3,7 @@ const fs = require("fs");
 module.exports = {
 	set: async function(type, name, channel, message, client) {
         if (!message.guild.id) {
-            return channel.send('This can only be used in a sign-up channel.');
+            return client.messages.send(message.channel, 'This can only be used in a sign-up channel.', 240);
         }
         if (type === '+') {
             signValue = 'yes';
@@ -22,8 +22,8 @@ module.exports = {
             if (client.config.userId != message.author.id) {
                 return message.author.send('This raid is locked -- sign-ups can no longer be modified.');
             } else {
-                return member.send('This raid is locked -- sign-ups can no longer be modified.');
-            }
+                return client.messages.send(message.channel, 'This raid is locked -- sign-ups can no longer be modified.', 240);
+z           }
         }
         
         let playerId = null;
@@ -40,7 +40,7 @@ module.exports = {
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
             }
-            return client.messages.errorMessage(message.channel, playerMessage, 15);
+            return client.messages.errorMessage(message.channel, playerMessage, 240);
         }
 
         // Verify class is set
@@ -49,7 +49,7 @@ module.exports = {
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
             }
-            return client.messages.errorMessage(message.channel, playerMessage, 15);
+            return client.messages.errorMessage(message.channel, playerMessage, 240);
         }
 
         // Verify role is set
@@ -58,12 +58,13 @@ module.exports = {
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
             }
-            return client.messages.errorMessage(message.channel, playerMessage, 15);
+            return client.messages.errorMessage(message.channel, playerMessage, 240);
         }
 
         // Verify the player class & role is valid
         if (!client.set.validCombo(character)) {
-            return message.channel.send('Could not sign  "' + characterName + '" for this raid, ' + character.class + '/' + character.role + ' is not a valid combination.');
+            let playerMessage = 'Could not sign  "' + characterName + '" for this raid, ' + character.class + '/' + character.role + ' is not a valid combination.';
+            return client.messages.errorMessage(message.channel, playerMessage, 240);
         }
 
         // Save our sign-up to the db
