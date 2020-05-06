@@ -78,7 +78,7 @@ exports.run = (client, message, args) => {
 				let record = {
 					'raid': raid,
 					'date': raidDate,
-					'faction': faction.toLowerCase(),
+					'faction': faction ? faction.toLowerCase() : null,
 					'color': '#02a64f',
 					'description': null,
 					'channelID': channel.id,
