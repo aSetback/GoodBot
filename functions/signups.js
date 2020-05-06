@@ -40,7 +40,7 @@ module.exports = {
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
             }
-            return playerMessage;
+            return client.messages.errorMessage(message.channel, playerMessage, 15);
         }
 
         // Verify class is set
@@ -49,7 +49,7 @@ module.exports = {
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
             }
-            return message.channel.send(playerMessage);
+            return client.messages.errorMessage(message.channel, playerMessage, 15);
         }
 
         // Verify role is set
@@ -58,7 +58,7 @@ module.exports = {
             if (playerId) {
                 playerMessage = '<@' + playerId + '> ' + playerMessage;
             }
-            return message.channel.send(playerMessage);
+            return client.messages.errorMessage(message.channel, playerMessage, 15);
         }
 
         // Verify the player class & role is valid

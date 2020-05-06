@@ -6,11 +6,11 @@ module.exports = (client, Sequelize) => {
             allowNull: false,
         },
         reserveItemID: {
-            type: Sequelize.BIGINT(20),
+            type: Sequelize.INTEGER,
             allowNull: false,
         },
         signupID: {
-            type: Sequelize.BIGINT(20),
+            type: Sequelize.INTEGER,
             allowNull: false
         }
     }, {

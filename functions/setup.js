@@ -18,9 +18,14 @@ module.exports = {
             let channel = client.channels.get(packet.d.channel_id);
             let emoji = packet.d.emoji;
             let member = channel.guild.members.get(packet.d.user_id);	
-
+            
             // Don't operate on DMs
             if (!channel.guild) return;
+
+            if (!member) {
+                channel.send('[Error]: Could not find user ID: ' + packet.d.user_id + '.');
+                return false;
+            } 
 
             // Only parse emojis from these channels
             if (channel.name == 'select-your-class') {
@@ -109,11 +114,12 @@ module.exports = {
         let role = channel.guild.roles.find(role => role.name.toLowerCase() === emoji.name.toLowerCase());
 
         // Tag the player with the selected role, if it exists.
-        if (role) {
+        if (member && role) {
             // Make an array of role objects for each of the roles
             let roles = ['healer', 'tank', 'dps', 'caster'];
             // Remove the selected role from the remove list
             roles.splice(roles.indexOf(role.name.toLowerCase()), 1);
+
             // Remove all other roles
             roles.forEach((roleName) => {
                 let memberRole = channel.guild.roles.find(role => role.name.toLowerCase() === roleName.toLowerCase());
@@ -125,6 +131,8 @@ module.exports = {
             member.addRole(role).then(() => {
                 client.setup.checkCompleteness(client, member);
             });
+        } else {
+
         }
 
         client.set.characterRole(client, channel.guild, member, member.displayName, emoji.name);

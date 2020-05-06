@@ -9,7 +9,7 @@ client.queue = {};
 // Make our config available throughout all the files.
 client.config = require("./config.json");
 
-client.loc = function(text) {
+client.loc = function (text) {
   return text;
 };
 
@@ -17,32 +17,37 @@ const Sequelize = require('sequelize');
 
 // Initialize DB
 client.sequelize = new Sequelize(client.config.db.name, client.config.db.user, client.config.db.pass, {
-    host: client.config.db.ip,
-    dialect: 'mariadb',
-    dialectOptions: {
-      timezone: "Etc/GMT-5"
-    },
-    logging: false
+  host: client.config.db.ip,
+  dialect: 'mariadb',
+  dialectOptions: {
+    timezone: "Etc/GMT-5"
+  },
+  logging: false
 });
 
 // Add the functions from the /functions folder
 let functions = [];
 fs.readdir("./functions/", (err, files) => {
   if (err) return console.error(err);
+  console.log('-- Loading Functions');
   files.forEach(file => {
     const loadedFunction = require(`./functions/${file}`);
     let functionName = file.split(".")[0];
     functions.push(functionName);
     client[functionName] = loadedFunction;
   });
-  console.log('Loaded ' + functions.length + ' functions. (' + functions.join(', ') + ')');
+  console.log('    > ' + functions.join(', '));
 })
+
+
 
 // Load models
 let models = [];
 client.models = {};
 fs.readdir("./models/", (err, files) => {
   if (err) return console.error(err);
+  console.log('-- Loading Models');
+
   files.forEach(file => {
     let modelName = file.split(".")[0];
     client.models[modelName] = require(`./models/${file}`)(client, Sequelize);
@@ -50,22 +55,25 @@ fs.readdir("./models/", (err, files) => {
   });
 
   // Associations
-  client.models.raidReserve.belongsTo(client.models.signup, {as: 'signup', foreignKey: 'signupID'});
-  client.models.raidReserve.belongsTo(client.models.reserveItem, {as: 'item', foreignKey: 'reserveItemID'});
-  console.log('Loaded ' + models.length + ' models. (' + models.join(', ') + ')');
+  client.models.raidReserve.belongsTo(client.models.signup, { as: 'signup', foreignKey: 'signupID' });
+  client.models.raidReserve.belongsTo(client.models.reserveItem, { as: 'item', foreignKey: 'reserveItemID' });
+
+  console.log('    > ' + models.join(', '));
 })
 
 // Add the events from the /events folder
 let events = [];
 fs.readdir("./events/", (err, files) => {
   if (err) return console.error(err);
+
+  console.log('-- Loading Events');
   files.forEach(file => {
     const event = require(`./events/${file}`);
     let eventName = file.split(".")[0];
     events.push(eventName);
     client.on(eventName, event.bind(null, client));
   });
-  console.log('Loaded ' + events.length + ' events. (' + events.join(', ') + ')');
+  console.log('    > ' + events.join(', '));
 });
 
 // Add the commands from the /commands folder
@@ -75,6 +83,7 @@ let commandDir = './commands/';
 fs.readdir(commandDir, (err, files) => {
   if (err) return console.error(err);
   // Look for directories within the parent directory
+  console.log('-- Loading Commands');
   files.forEach(directory => {
     if (fs.lstatSync(commandDir + directory).isDirectory()) {
       fs.readdir(commandDir + directory, (err, subFiles) => {
@@ -87,26 +96,16 @@ fs.readdir(commandDir, (err, files) => {
           subcommands.push(commandName);
           client.commands.set(commandName, props);
         });
-        console.log('Loaded ' + subcommands.length + ' ' + directory + ' sub-commands. (' + subcommands.join(', ') + ')');
+        console.log('    > ' + directory.padEnd(10) + ' =>  ' + subcommands.join(', '));
       });
     }
   });
-
-  files.forEach(file => {
-    if (!file.endsWith(".js")) return;
-    let props = require(`./commands/${file}`);
-    let commandName = file.split(".")[0];
-    commands.push(commandName);
-    client.commands.set(commandName, props);
-  });
-  console.log('Loaded ' + commands.length + ' commands. (' + commands.join(', ') + ')');
 });
 
 // Add a reaction listener for sign-ups
 client.on('raw', packet => {
   client.reaction.rawEvent(client, packet);
 });
-
 
 client.on('ready', () => {
   // Add listener for set-up channels
