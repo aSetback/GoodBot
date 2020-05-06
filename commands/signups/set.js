@@ -29,7 +29,7 @@ exports.run = async function(client, message, args) {
 			return client.messages.errorMessage(message.channel, roleName + ' is not a valid role.  Valid roles are caster, dps, tank, healer.', 240);
 		} else {
 			// Completed successfully!
-			return client.messages.send(message.channel + ' has been set as ' + className + '/' + roleName + '.', 240);
+			return client.messages.send(message.channel, user + ' has been set as ' + className + '/' + roleName + '.', 240);
 		}
 	}
 };
