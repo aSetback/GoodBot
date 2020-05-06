@@ -7,7 +7,7 @@ exports.run = async function(client, message, args) {
 	}
     let oneWeek = new Date();
     oneWeek.setDate(oneWeek.getDate() + 7);
-    client.models.raid.findAll({where: {date: {[Op.between]: [new Date(), oneWeek]}, guildID: message.guild.id}}).then((raids) => {
+    client.models.raid.findAll({where: {date: {[Op.between]: [new Date(), oneWeek]}, guildID: message.guild.id}, 'order': [['date', 'ASC']]}).then((raids) => {
         let sortedRaids = [];
         let validRaids = ['MC', 'BWL', 'ZG', 'ONY', 'AQ20', 'AQ40', 'NAXX'];
 
