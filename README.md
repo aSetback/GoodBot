@@ -26,7 +26,8 @@
 * Set your guild's region: +setoption server US // (or EU, etc)
 
 ### Misc
-* Create a channel called 'server-logs' -- the bot will automatically all commands & sign-ups to this channel.
+* If you create a channel called 'server-logs', the bot will automatically log all commands & sign-ups to this channel.
+* If you create a channel called 'error-logs', the bot will automaticall log all command/signup errors to this channel.
 
 ## General Commands
 ```
@@ -164,7 +165,7 @@
 +gear Player
   Retrieve a player's gear from the last attended raid.  Server defaults to Mankrik, region defaults to US.
 
-+logs Guild Name // S[aces are alloweds
++logs Guild Name
   Display a list of the last 10 raids uploaded to WarcraftLogs for the guild
 
 +rankings Taunt ?role
