@@ -6,6 +6,11 @@ exports.run = async function(client, message, args) {
         return message.author.send("Soft reserve is not currently enabled for this raid.");
     }
 
+    let sendTo = message.author;
+	if (client.permission.manageChannel(message.member, message.channel) && args[0] == 'channel') {
+        sendTo = message.channel;
+    }
+
     let includes = [
         {model: client.models.signup, as: 'signup', foreignKey: 'signupID'},
         {model: client.models.reserveItem, as: 'item', foreignKey: 'reserveItemID'},
@@ -20,7 +25,7 @@ exports.run = async function(client, message, args) {
             }
         }
 
-
+        sendTo.send('```diff\n+ Raid: \n- ' + message.channel.name + '```');
         let returnMessage = '';
         reserves.sort((a, b) => {
             if (!a.signup || !b.signup) {
@@ -50,14 +55,14 @@ exports.run = async function(client, message, args) {
                 returnMessage += reserve.signup.player.padEnd(20) + reserve.item.name.padEnd(40) + moment(reserve.updatedAt).utcOffset(-240).format('h:mm A, L') + '\n';
                 if (returnMessage.length > 1800) {
                     returnMessage += '```';
-                    message.author.send(returnMessage);    
+                    sendTo.send(returnMessage);    
                     returnMessage = '';
                 }
             }
         });
         if (returnMessage.length) {
             returnMessage += '```';
-            message.author.send(returnMessage);    
+            sendTo.send(returnMessage);    
         }
     });
 };
