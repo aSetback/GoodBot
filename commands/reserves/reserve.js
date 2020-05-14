@@ -56,7 +56,7 @@ exports.run = async function (client, message, args) {
     if (!reserve) {
         return client.messages.errorMessage(message.channel, "I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**.", 240);
     } else {
-        return message.author.send('A reserve for **' + reserve.name + '** has been added for **' + client.general.ucfirst(player) + '** for raid **' + raid.raid.toUpperCase() + '**.');
+        message.author.send('```diff\n--- Reservation Info ---\n  Player:  ' + client.general.ucfirst(player) + '\n+ Raid:    ' + message.channel.name + '\n- Reserve: ' + reserve.name + '```');
     }
 }
 
