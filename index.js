@@ -57,6 +57,9 @@ fs.readdir("./models/", (err, files) => {
   // Associations
   client.models.raidReserve.belongsTo(client.models.signup, { as: 'signup', foreignKey: 'signupID' });
   client.models.raidReserve.belongsTo(client.models.reserveItem, { as: 'item', foreignKey: 'reserveItemID' });
+  client.models.raid.hasMany(client.models.signup, { as: 'signups', foreignKey: 'raidID', constraints: false });
+  client.models.signup.belongsTo(client.models.raid);
+  client.models.signup.hasOne(client.models.raidReserve, { as: 'reserve', foreignKey: 'signupID' });
 
   console.log('    > ' + models.join(', '));
 })

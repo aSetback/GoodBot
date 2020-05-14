@@ -2,6 +2,9 @@ exports.run = (client, message, args) => {
 
 	const altName = client.general.ucfirst(args.shift());
 	const mainName = client.general.ucfirst(args.shift());
+	if (!message.guild) {
+		return false;
+	}
 	
 	if (!altName || !mainName) {
 		return client.messages.send(message.channel, 'Invalid parameters.  Correct usage is: +alt altName mainName', 240);

@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 module.exports = {
     factionRequired(client, guild) {
         return parseInt(client.customOptions.get(guild, "factionrequired"));
@@ -88,6 +90,32 @@ module.exports = {
                 }
             }).then(() => {
                 resolve(true);
+            });
+        });
+        return promise;
+    },
+    getSignup(client, raid, player) {
+        let promise = new Promise((resolve, reject) => {
+            client.models.signup.findOne({ where: { raidID: raid.id, player: player } }).then((signup) => {
+                resolve(signup);
+            });
+        });
+        return promise;
+    },
+    getSignupsByName(client, names, guildID) {
+        let promise = new Promise((resolve, reject) => {
+            let includes = [
+                {model: client.models.raid, as: 'raid', foreignKey: 'raidID'},
+                {model: client.models.raidReserve, as: 'reserve', foreignKey: 'signupID', include: {
+                    model: client.models.reserveItem, as: 'item', foreignKey: 'raidReserveID'
+                }},
+            ];
+            let yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            let twoWeeks = new Date();
+            twoWeeks.setDate(twoWeeks.getDate() + 14);
+            client.models.signup.findAll({ where: {'$raid.date$': {[Op.between]: [yesterday, twoWeeks]}, guildID: guildID, player: {[Op.in]: names}}, include: includes}).then((signups) => {
+                resolve(signups);
             });
         });
         return promise;
