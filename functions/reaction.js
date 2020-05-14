@@ -31,13 +31,13 @@ module.exports = {
 							}
 					
 							if (emoji.name == "👍") {
-								client.signups.set('+', member.displayName, channel.name, message, client);
+								client.signups.set('+', member.displayName, channel.name, message, client, member);
 							}
 							if (emoji.name == "👎") {
-								client.signups.set('-', member.displayName, channel.name, message, client);
+								client.signups.set('-', member.displayName, channel.name, message, client, member);
 							}
 							if (emoji.name == "🤷") {
-								client.signups.set('m', member.displayName, channel.name, message, client);
+								client.signups.set('m', member.displayName, channel.name, message, client, member);
 							}
 						}
 					});
