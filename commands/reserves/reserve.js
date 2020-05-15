@@ -2,10 +2,10 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 exports.run = async function (client, message, args, noMsg) {
-    let raid = await client.signups.getRaid(client, message.channel);
-    if (!args[0]) {
+    if (!args[0] || !message.channel) {
         return;
     }
+    let raid = await client.signups.getRaid(client, message.channel);
     let player = args[0].toLowerCase();
 
     let signup = await findSignup(client, raid.id, player);
