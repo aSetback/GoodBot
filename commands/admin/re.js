@@ -15,11 +15,17 @@ exports.run = (client, message, args) => {
             let channel = events[3].split(' ')[0];
             args.shift();
             message.guild = client.guilds.find(g => g.id == reserve.guildID);
-            channel = message.guild.channels.find(c => c.name == channel);
-            message.channel = channel;
-            message.author = client.users.find(m => m.id == reserve.memberID);
-            message.content = reserveMsg;
-            await reserveCmd.run(client, message, args, true);
+            if (message.guild) {
+                channel = message.guild.channels.find(c => c.name == channel);
+                if (channel) {
+                    message.channel = channel;
+                    message.author = client.users.find(m => m.id == reserve.memberID);
+                    if (message.author) {
+                        message.content = reserveMsg;
+                        await reserveCmd.run(client, message, args, true);
+                    }
+                }
+            }
         }
     });
 
