@@ -6,7 +6,7 @@ module.exports = {
             let nexus = new Nexus;
             let itemList = await nexus.get('/wow-classic/v1/search?query=' + itemString);
             let item = itemList[0];
-            if (!item) {
+            if (item) {
                 let itemInfo = await nexus.get('/wow-classic/v1/item/' + item.itemId);
                 resolve(itemInfo);
             } else {
