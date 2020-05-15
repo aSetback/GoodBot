@@ -9,13 +9,13 @@ exports.run = (client, message, args) => {
     client.models.log.findAll({where: {event: {[Op.like]: '%+reserve %'}}, order: [['id', 'ASC']] }).then(async (reserves) => {
         for (key in reserves) {
             let reserve = reserves[key];
-            let events = reserve.event.split(': ');
+            let events = reserve.event ? reserve.event.split(': ') : [];
             let reserveMsg = events[1].split(' / ')[0];
             let args = reserveMsg.split(' ');
-            let channel = events[3].split(' ')[0];
+            let channel = events[3] ? events[3].split(' ')[0] : null;
             args.shift();
             message.guild = client.guilds.find(g => g.id == reserve.guildID);
-            if (message.guild) {
+            if (channel && message.guild) {
                 channel = message.guild.channels.find(c => c.name == channel);
                 if (channel) {
                     message.channel = channel;
