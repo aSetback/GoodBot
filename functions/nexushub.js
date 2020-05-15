@@ -7,13 +7,11 @@ module.exports = {
             let itemList = await nexus.get('/wow-classic/v1/search?query=' + itemString);
             let item = itemList[0];
             if (!item) {
+                let itemInfo = await nexus.get('/wow-classic/v1/item/' + item.itemId);
+                resolve(itemInfo);
+            } else {
                 resolve(false);
             }
-            let itemInfo = await nexus.get('/wow-classic/v1/item/' + item.itemId);
-            if (!itemInfo) {
-                resolve(false);
-            }
-            resolve(itemInfo);
         });
         return promise;
     },
