@@ -47,7 +47,7 @@ exports.run = async function (client, message, args, noMsg) {
 
     let reserve = await signupReserve(client, signup.id, raid, item);
     if (!reserve) {
-        if (item.length > 2) {
+        if (item.length > 2 && item.length < 100) {
             let itemInfo = await client.nexushub.item(item);
             if (itemInfo) {
                 reserve = await signupReserve(client, signup.id, raid, itemInfo.name);
