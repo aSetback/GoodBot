@@ -6,6 +6,9 @@ exports.run = async function (client, message, args, noMsg) {
         return;
     }
     let raid = await client.signups.getRaid(client, message.channel);
+    if (!raid) {
+        return false;
+    }
     let player = args[0].toLowerCase();
 
     let signup = await findSignup(client, raid.id, player);
