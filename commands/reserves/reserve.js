@@ -71,13 +71,14 @@ exports.run = async function (client, message, args, noMsg) {
         }
     }
     
-    if (!reserve) {
-        if (!noMsg)
+    if (!noMsg) {
+        if (!reserve) {
             client.messages.errorMessage(message.channel, "I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**.", 240);
-        return
-    } else {
-        message.author.send('```diff\n--- Reservation Info ---\n  Player:  ' + client.general.ucfirst(player) + '\n+ Raid:    ' + message.channel.name + '\n- Reserve: ' + reserve.name + '```');
+        } else {
+            message.author.send('```diff\n--- Reservation Info ---\n  Player:  ' + client.general.ucfirst(player) + '\n+ Raid:    ' + message.channel.name + '\n- Reserve: ' + reserve.name + '```');
+        }
     }
+    return
 }
 
 function likeSearch(client, raid, item) {
