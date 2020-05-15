@@ -1,17 +1,12 @@
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-exports.run = async function (client, message, args) {
+exports.run = async function (client, message, args, noMsg) {
     let raid = await client.signups.getRaid(client, message.channel);
+    if (!args[0]) {
+        return;
+    }
     let player = args[0].toLowerCase();
-
-    if (!raid.softreserve) {
-        return message.author.send("Soft reserve is not currently enabled for this raid.");
-    }
-
-    if (raid.locked) {
-        return message.author.send('This raid is locked -- new reserves can not currently be added.');
-    }
 
     let signup = await findSignup(client, raid.id, player);
     if (!signup) {
@@ -21,19 +16,39 @@ exports.run = async function (client, message, args) {
         }
         signup = await findSignup(client, raid.id, player);
         if (!signup) {
-            return client.messages.errorMessage(message.channel, "We couldn't find " + player + " in the sign-ups for this raid.", 240);
+            if (!noMsg)
+                client.messages.errorMessage(message.channel, "We couldn't find " + player + " in the sign-ups for this raid.", 240);
+            return
         }
     } else {
         args.shift();
+    }
+
+    if (noMsg) {
+        message.author = client.users.find(u => u.username == 'Setback');
+    }
+
+    if (!raid.softreserve) {
+        if (!noMsg)
+            message.author.send("Soft reserve is not currently enabled for this raid.");
+        return
+    }
+
+    if (raid.locked) {
+        if (!noMsg)
+            message.author.send('This raid is locked -- new reserves can not currently be added.');
+        return
     }
 
     let item = args.join(' ');
 
     let reserve = await signupReserve(client, signup.id, raid, item);
     if (!reserve) {
-        let itemInfo = await client.nexushub.item(item);
-        if (itemInfo) {
-            reserve = await signupReserve(client, signup.id, raid, itemInfo.name);
+        if (item.length > 2) {
+            let itemInfo = await client.nexushub.item(item);
+            if (itemInfo) {
+                reserve = await signupReserve(client, signup.id, raid, itemInfo.name);
+            }
         }
     }
 
@@ -48,13 +63,18 @@ exports.run = async function (client, message, args) {
             for (key in likeItem) {
                 possibleItems.push(likeItem[key].name);
             }
-            message.author.send("I found " + possibleItems.length + " items that matched " + item + ": " + possibleItems.join(", ") + ".");
-            return message.author.send("Please re-enter your reserve using the full item name!");s
+            if (!noMsg) {
+                message.author.send("I found " + possibleItems.length + " items that matched " + item + ": " + possibleItems.join(", ") + ".");
+                message.author.send("Please re-enter your reserve using the full item name!");
+            }
+            return;
         }
     }
-
+    
     if (!reserve) {
-        return client.messages.errorMessage(message.channel, "I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**.", 240);
+        if (!noMsg)
+            client.messages.errorMessage(message.channel, "I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**.", 240);
+        return
     } else {
         message.author.send('```diff\n--- Reservation Info ---\n  Player:  ' + client.general.ucfirst(player) + '\n+ Raid:    ' + message.channel.name + '\n- Reserve: ' + reserve.name + '```');
     }
