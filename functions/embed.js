@@ -7,7 +7,6 @@ module.exports = {
 
 		// Figure out our date
 		let raidDate = new Date(Date.parse(raid.date));
-		let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
 		let raidType = raid.raid
 		let raidName = '';
 
@@ -35,7 +34,7 @@ module.exports = {
 				pinnedMsg = list.last();
 				if (!pinnedMsg) { return false; }
 				currentContent = pinnedMsg.content;
-				let title = "Raid Signups for " + raidName + ", " + dateString;
+				let title = "Raid Signups for " + raidName;
 				let embed = updateEmbed(title, channel, client, pinnedMsg, raidType);		
 			});		
 	},
@@ -61,7 +60,9 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	let signups = await client.embed.getSignups(client, channel.id);
 	let characterList = await client.embed.getCharacters(client, channel.guild);
 	let raid = await client.signups.getRaid(client, channel);
-	
+	let raidDate = new Date(Date.parse(raid.date));
+	let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
+
 	let raidData = {};
 	raidData.color = raid.color ? raid.color : '#02a64f';
 	raidData.description = raid.description ? raid.description : 'To sign up for this raid, please click on one of the emojis directly below this post.'
@@ -118,8 +119,9 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		embed.addField('**Status**', '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*');
 	}
 
+	embed.addField('**Date**', dateString, true);
 	if (raid.time) {
-		embed.addField('**Time**', raid.time);
+		embed.addField('**Time**', raid.time, true);
 	}
 
 	if (raid.softreserve) {

@@ -94,6 +94,21 @@ module.exports = {
         });
         return promise;
     },
+    setDate(client, raid, raidDate) {
+        let promise = new Promise((resolve, reject) => {
+            let record = {
+                date: raidDate
+            };
+            client.models.raid.update(record, {
+                where: {
+                    id: raid.id,
+                }
+            }).then(() => {
+                resolve(true);
+            });
+        });
+        return promise;
+    },
     getSignup(client, raid, player) {
         let promise = new Promise((resolve, reject) => {
             client.models.signup.findOne({ where: { raidID: raid.id, player: player } }).then((signup) => {
