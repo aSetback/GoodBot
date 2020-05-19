@@ -19,16 +19,15 @@ exports.run = (client, message, args) => {
             }
             if (yesArray.length > 10) {
                 let yesString = yesArray.join(", ");
-                let macroString = "```lua\nfor key, member in pairs({" + yesString + "}) do InviteUnit(member) end```"
+                let macroString = "```lua\n/run for key, member in pairs({" + yesString + "}) do InviteUnit(member) end```"
                 message.author.send(macroString);
                 yesArray = [];
             }
         });
-        console.log(yesArray);
 
         if (yesArray.length) {
             let yesString = yesArray.join(", ");
-            let macroString = "```lua\nfor key, member in pairs({" + yesString + "}) do InviteUnit(member) end```"
+            let macroString = "```lua\n/run for key, member in pairs({" + yesString + "}) do InviteUnit(member) end```"
             message.author.send(macroString);
         }
 

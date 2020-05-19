@@ -18,7 +18,10 @@ module.exports = {
         });
     },
     handle: async (client, message) => {
-        let ignoreBots = await client.guildOption.getCached(client, message.guild.id, 'ignoreBots');
+        let ignoreBots = null;
+        if (message.guild) {
+            ignoreBots = await client.guildOption.getCached(client, message.guild.id, 'ignoreBots');
+        }
         if (ignoreBots == null || ignoreBots == 1) {
             // Ignore all bots
             if (message.author.bot) return;
