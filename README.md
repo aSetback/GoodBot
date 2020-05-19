@@ -28,6 +28,7 @@
 ### Misc
 * If you create a channel called 'server-logs', the bot will automatically log all commands & sign-ups to this channel.
 * If you create a channel called 'error-logs', the bot will automaticall log all command/signup errors to this channel.
+* If you want GoodBot to be able to respond to bot commands, you need to use `+option ignoreBots 0`
 
 ## General Commands
 ```
@@ -164,6 +165,9 @@
 
 +gear Player
   Retrieve a player's gear from the last attended raid.  Server defaults to Mankrik, region defaults to US.
+
++enchants Player
+  Lists all enchantable gear a player was wearing during the last raid, and which pieces are enchanted with what.
 
 +logs Guild Name
   Display a list of the last 10 raids uploaded to WarcraftLogs for the guild
