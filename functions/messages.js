@@ -17,9 +17,12 @@ module.exports = {
             }, seconds * 1000);
         });
     },
-    handle: (client, message) => {
-        // Ignore all bots
-        if (message.author.bot) return;
+    handle: async (client, message) => {
+        let ignoreBots = await client.guildOption.getCached(client, message.guild.id, 'ignoreBots');
+        if (ignoreBots == null || ignoreBots == 1) {
+            // Ignore all bots
+            if (message.author.bot) return;
+        }
 
         // Our standard argument/command name definition.
         let args = message.content.trim().split(/ +/g);

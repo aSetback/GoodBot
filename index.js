@@ -6,6 +6,9 @@ const client = new Discord.Client();
 // Our music
 client.queue = {};
 
+// Guild Options
+client.guildOptions = {};
+
 // Make our config available throughout all the files.
 client.config = require("./config.json");
 
