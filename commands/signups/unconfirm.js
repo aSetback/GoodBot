@@ -13,7 +13,7 @@ exports.run = async function(client, message, args) {
 
 	// Check permissions on the category
 	if (!client.permission.manageChannel(message.member, message.channel)) {
-		return message.channel.send('Unable to modify raid.  Please create a channel category called "Raid Signups" to use this command, or use +raidcategry to set a your category.');
+		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
 	
 	// Get the first parameter as either player, or player list.

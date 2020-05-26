@@ -31,7 +31,7 @@ exports.run = (client, message, args) => {
                     type: 'text'
                 })
                 .then((channel) => {
-                    let signupMessage = 'Please select your class';
+                    let signupMessage = 'Please select your class.';
                     channel.setParent(category.id)
                         .then((channel) => {
                             channel.lockPermissions()
