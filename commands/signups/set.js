@@ -9,7 +9,7 @@ exports.run = async function(client, message, args) {
 	}
 
 	if (!args[1] || !args[2]) {
-		return client.messages.errorMessage("Correct usage is:\n```+set PlayerName mage caster```");
+		return client.messages.errorMessage(message.channel, "Correct usage is:\n```+set PlayerName mage caster```", 60);
 	}
 
 	const classArg = args[1];
