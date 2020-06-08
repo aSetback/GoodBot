@@ -147,9 +147,10 @@ module.exports = {
         setTimeout(() => {
             message.delete().catch(O_o=>{}); 
         }, 1000);
+        
+        // Make sure the name is valid
         let newName = message.content.trim();
-        var reg = /^[a-zàâäåªæÆçÇœŒéèêëËƒíìîïÏñÑóòôöºúùûÜýÿ]+$/i;
-        if (!reg.test(newName)) {
+        if (!client.set.validName(message.guild, newName)) {
             return message.author.send('Unable to set your name.  Please use only letters.');
         }
 
