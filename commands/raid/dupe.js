@@ -48,16 +48,15 @@ exports.run = async (client, message, args) => {
         if (raid.rules) {
             client.models.raidRules.findOne({where: {name: raid.rules, guildID: message.guild.id}}).then((raidRules) => {
                 if (raidRules) {
-                    dupeChannel.send(raidRules.rules).then(() => {
-                        args = [message.channel.name];
-                        message = {
-                            channel: dupeChannel,
-                            guild: message.guild,
-                            member: message.member
-                        };
-                        const cmd = client.commands.get('unsigned');
-                        cmd.run(client, message, args);
-                    });
+                    await dupeChannel.send(raidRules.rules);
+                    args = [message.channel.name];
+                    message = {
+                        channel: dupeChannel,
+                        guild: message.guild,
+                        member: message.member
+                    };
+                    const cmd = client.commands.get('unsigned');
+                    cmd.run(client, message, args);
                 }
             });
         }
