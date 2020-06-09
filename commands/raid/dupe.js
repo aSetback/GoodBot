@@ -50,7 +50,11 @@ exports.run = async (client, message, args) => {
                 if (raidRules) {
                     dupeChannel.send(raidRules.rules).then(() => {
                         args = [message.channel.name];
-                        message.channel = dupeChannel;
+                        message = {
+                            channel: dupeChannel,
+                            guild: message.guild,
+                            member: message.member
+                        };
                         const cmd = client.commands.get('unsigned');
                         cmd.run(client, message, args);
                     });
