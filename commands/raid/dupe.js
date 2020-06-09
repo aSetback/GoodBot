@@ -1,10 +1,14 @@
 exports.run = async (client, message, args) => {
 
 	let raid = await client.raid.get(client, message.channel);
-    let ping = args.shift();
     if (!raid) {
         client.messages.errorMessage(message.channel, client.loc('dupeNoRaid', "This is not a valid raid channel, could not duplicated."), 240);
     }
+
+	let daysOut = parseInt(args.shift());
+	if (!daysOut) {
+		daysOut = 7;
+	}
 
 	// Retrieve our category
 	let category = client.customOptions.get(message.guild, 'raidcategory');
@@ -19,7 +23,7 @@ exports.run = async (client, message, args) => {
 	}
     
     let raidDate = new Date(raid.date);
-    raidDate.setDate(raidDate.getDate() + 7);
+    raidDate.setDate(raidDate.getDate() + daysOut);
     raid.dateString = raidDate.toLocaleString('en-us', { month: 'long' }).substring(0,3) + "-" + raidDate.getUTCDate();
 
 	client.models.raidCategory.findOne({ where: categoryParams}).then(async (raidCategory) => {
