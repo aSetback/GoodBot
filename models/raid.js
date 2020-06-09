@@ -1,13 +1,17 @@
 module.exports = (client, Sequelize) => {
     const model = client.sequelize.define('raid', {
         // attributes
-        // name: {
-        //     type: Sequelize.STRING,
-        //     allowNull: false
-        // },
+        name: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
         raid: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        rules: {
+            type: Sequelize.STRING,
+            allowNull: true
         },
         date: {
             type: Sequelize.DATEONLY,

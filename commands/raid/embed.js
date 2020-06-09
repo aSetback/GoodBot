@@ -4,8 +4,12 @@ exports.run = async function(client, message, args) {
 	if (!message.isAdmin) {
 		return false;
 	}
+    let raid = await client.signups.getRaid(client, message.channel);
+    if (!raid) {
+        return false;
+    }
 
-    let signupMessage = '-';
+    let signupMessage = 'embed';
     message.channel.send(signupMessage).then((botMsg) => {
         reactEmoji(botMsg);
         botMsg.pin().then(() => {

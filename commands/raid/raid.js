@@ -5,24 +5,26 @@ exports.run = (client, message, args) => {
 	if (!category) {
 		category = 'Raid Signups';
 	}
+	
+	let raid = {};
+	raid.raid = args.shift().toUpperCase();
+	raid.dateString = args.shift();
+	raid.name = args.shift();
+	raid.faction = args.shift();
 
-	let raid = args.shift().toUpperCase();
-	let raidDate = args.shift();
-	let name = args.shift();
-	let faction = args.shift();
-	let factionRequired = client.raid.factionRequired(client, message.guild);
-	if (factionRequired && !faction) {
+	factionRequired = client.raid.factionRequired(client, message.guild);
+	if (factionRequired && !raid.faction) {
 		return message.channel.send('You need to specify which faction this raid is for.\n usage: `+raid bwl mar-21 tagalong horde`');
 	}
 	
-	if (!name) {
-		name = raid;
+	if (!raid.name) {
+		raid.name = raid.raid;
 	}
 
 	// Check for overwrite for this raid type
-	let categoryParams = {'raid': raid, 'guildID': message.guild.id};
+	let categoryParams = {'raid': raid.raid, 'guildID': message.guild.id};
 	if (factionRequired) {
-		categoryParams.faction = faction;
+		categoryParams.faction = raid.faction;
 	}
 	
 	client.models.raidCategory.findOne({ where: categoryParams}).then((raidCategory) => {
@@ -43,72 +45,6 @@ exports.run = (client, message, args) => {
 			return message.channel.send('You do not have the manage channels permission for "' + category + '".  Unable to complete command.');
 		}
 
-		createRaidChannel(discordCategory);
-
+		client.raid.createRaidChannel(client, message, discordCategory, raid);
 	});
-
-
-	function createRaidChannel(category) {
-		if (!category) {
-			message.channel.send('Raid sign-up category __' + category + '__ does not exist.');
-			return false;
-		}
-
-		if (!raid || !name || !raidDate) {
-			return message.channel.send('Invalid parameters.  Please use the following format: +raid MC Oct-15 <name?>');
-		}
-
-		const raidName = raidDate + '-' + name;
-		message.guild.createChannel(raidName, {
-				type: 'text'
-			})
-			.then((channel) => {
-				let raidDateParts = raidDate.split('-');
-				
-				// Parse out our date
-				raidDate = new Date(Date.parse(raidDateParts[0] + " " + raidDateParts[1]));
-				raidDate.setFullYear(new Date().getFullYear());
-				
-				// If 'date' appears to be in the past, assume it's for the next calendar year (used for the dec => jan swapover)
-				if (raidDate.getTime() < new Date().getTime()) {
-					raidDate.setFullYear(raidDate.getFullYear() + 1);
-				}
-
-				// Set up our sql record
-				let record = {
-					'raid': raid,
-					'date': raidDate,
-					'faction': faction ? faction.toLowerCase() : null,
-					'color': '#02a64f',
-					'description': null,
-					'channelID': channel.id,
-					'guildID': channel.guild.id,
-					'memberID': message.author.id
-				};
-				client.models.raid.create(record).then((raid) => {
-					let signupMessage = '-';
-					channel.setParent(category.id)
-						.then((channel) => {
-							channel.lockPermissions()
-								.then(() => console.log('Successfully synchronized permissions with parent channel'))
-								.catch(console.error);
-						});
-	
-					channel.send(signupMessage).then((botMsg) => {
-						reactEmoji(botMsg);
-						botMsg.pin().then(() => {
-							client.embed.update(client, botMsg, raid);
-						});
-					});
-				});
-			});
-	}
-
-	async function reactEmoji(msg) {
-		const emojis = ["👍", "🤷", "👎"];
-		for (i = 0; i < emojis.length; i++) {
-			await msg.react(emojis[i]);
-		}
-	}
-
 }

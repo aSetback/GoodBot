@@ -40,6 +40,7 @@ exports.run = async function(client, message, args) {
 		}
 	}
 	let mentions = await client.notify.makeList(client, message.guild, unsigned);
+	message.channel.send("Players who were signed up for " + message.channel + ": ");
 	message.channel.send(mentions);
 
 }
