@@ -10,10 +10,12 @@ exports.run = async function(client, message, args) {
     }
     for (key in parsedList) {        
         let item = parsedList[key];
+
         let record = {
             'itemID': item[0],
             'raid': item[1],
-            'name': item[2]
+            'name': item[2],
+            'alias': item[3]
         }
         client.models.reserveItem.findOne({where: {name: record.name}}).then((item) => {
             if (!item)  {
