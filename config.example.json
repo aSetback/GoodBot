@@ -11,6 +11,7 @@
 	"epgpBackupFolder": "F:\\epgp\\",
 	"warcraftlogs": "XXXXXXXXXXXXXXXXXXXXXXXXXXX",
 	"db": {
+		"name": "GoodBotDev",
 		"ip": "localhost",
 		"user": "root",
 		"pass": ""

@@ -1,7 +1,5 @@
 const Youtube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
-const youtubeAPI = require('../google.json');
-const youtube = new Youtube(youtubeAPI.private_key);
 
 module.exports = {
     play: async function(song, guild, client) {
