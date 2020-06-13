@@ -1,18 +1,25 @@
 { 
-	"botname": "GoodBot",
+	"botname": "GoodBot Dev",
 	"botactivity": "World of Warcraft: Classic",
-	"token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-	"userId": 525115228686516244,
+	"token": "DISCORD-BOT-TOKEN-GOES-HERE",
+	"userId": 653758861689487391,
 	"prefix" : "+",
 	"owner" : 93398761979514880,
-	"googleProjectId": "api-project-XXXXXXXXXXXXXXXXXXXXX",
+	"googleProjectId": "api-project-483394155093",
 	"bankFile": "F:\\World of Warcraft\\_classic_\\WTF\\Account\\SITUATIONSOAP\\SavedVariables\\GoodBank.lua",
 	"epgpFile": "F:\\World of Warcraft\\_classic_\\WTF\\Account\\LAD\\SavedVariables\\GoodEPGP.lua",
-	"epgpBackupFolder": "F:\\epgp\\",
-	"warcraftlogs": "XXXXXXXXXXXXXXXXXXXXXXXXXXX",
+	"epgpBackupFolder": ".\\data\\epgp",
+	"warcraftlogs": "WARCRAFT-LOGS-TOKEN-GOES-HERE",
 	"db": {
 		"ip": "localhost",
 		"user": "root",
-		"pass": ""
+		"pass": "",
+		"name": "GoodBot"
+	},
+	"validSpecs": ["Protection", "Fury", "Arms", "Demonology", "Affliction", "Destruction", "Holy", "Discipline", "Shadow", "Feral", "Restoration", "Balance", "Retribution", "Subtlety", "Combat", "Assassination", "Fire", "Frost", "Arcane", "Survival", "Beast Mastery", "Marksmanship", "Elemental", "Enhancement"],
+	"validClasses": ["Warrior", "Paladin", "Hunter", "Shaman", "Rogue", "Druid", "Priest", "Mage", "Warlock"],
+	"WCL": { 
+		"id": "id-goes-here",
+		"secret": "secret-goes-here"
 	}
 }
