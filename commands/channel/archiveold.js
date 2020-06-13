@@ -1,9 +1,9 @@
 exports.run = async (client, message, args) => {
-
-	if (!client.permission.manageChannel(message.member, message.channel)) {
-		return message.channel.send('You need permission to manage this channel to be able to archive it.')
-	}
-
+	
+	if (!message.isAdmin) {
+		return false;
+    }
+    
 	let category = message.guild.channels.find(c => c.name == "Archives" && c.type == "category");
 	if (category) {
 		let newArchives = category.clone();
