@@ -99,6 +99,7 @@ exports.run = async function (client, message, args, noMsg) {
     return
 }
 
+// Search for name or alias
 function likeSearch(client, raid, item) {
     let promise = new Promise((resolve, reject) => {
         client.models.reserveItem.findAll(

@@ -9,6 +9,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
+        alias: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
         itemID: {
             type: Sequelize.STRING,
             allowNull: true

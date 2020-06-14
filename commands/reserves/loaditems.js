@@ -20,7 +20,7 @@ exports.run = async function(client, message, args) {
         client.models.reserveItem.findOne({where: {name: record.name}}).then((item) => {
             if (!item)  {
                 client.models.reserveItem.create(record);
-                console.log('Item created: ' + record.name);
+                console.log('Item created: ' + record.name); 
             }
         });
     
