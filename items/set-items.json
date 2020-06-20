@@ -1,0 +1,11 @@
+[
+    ["BWL", "(T2 WARRIOR) Battlegear of Wrath","generic warrior t2",[16959,16960,16965,16966,16964,16961],"Warrior"],
+    ["BWL", "(T2 HUNTER) Dragonstalker Armor","generic hunter t2",[16903,16898,16904,16897,16899,16902],"Hunter"],
+    ["BWL", "(T2 SHAMAN) The Ten Storms","generic shaman t2",[16943,16944,16945,16949,16950,16948],"Shaman"],
+    ["BWL", "(T2 PRIEST) Vestments of Transcendence","generic priest t2",[16925,16919,16920,16923,16924,16926],"Priest"],
+    ["BWL", "(T2 PALADIN) Judgement Armor","generic paladin t2",[16951,16952,16953,16957,16958,16956],"Paladin"],
+    ["BWL", "(T2 MAGE) Netherwind Regalia","generic mage t2",[16918,16818,16912,16917,16913,16916],"Mage"],
+    ["BWL", "(T2 WARLOCK) Nemesis Raiment","generic warlock t2",[16934,16933,16927,16928,16932,16932],"Warlock"],
+    ["BWL", "(T2 ROGUE) Bloodfang Armor","generic rogue t2",[16905,16907,16832,16910,16911,16906],"Rogue"],
+    ["BWL", "(T2 DRUID) Stormrage Raiment","generic druid t2",[16904,16903,16898,16897,16899,16902],"Druid"]
+]

@@ -12,8 +12,8 @@ client.guildOptions = {};
 // Make our config available throughout all the files.
 client.config = require("./config.json");
 
-client.loc = function (text) {
-  return text;
+client.loc = function (key, defaultText) {
+  return defaultText;
 };
 
 const Sequelize = require('sequelize');
@@ -84,7 +84,6 @@ fs.readdir("./events/", (err, files) => {
 
 // Add the commands from the /commands folder
 client.commands = new Enmap();
-let commands = [];
 let commandDir = './commands/';
 fs.readdir(commandDir, (err, files) => {
   if (err) return console.error(err);

@@ -1,13 +1,17 @@
 module.exports = (client, Sequelize) => {
     const model = client.sequelize.define('raid', {
         // attributes
-        // name: {
-        //     type: Sequelize.STRING,
-        //     allowNull: false
-        // },
+        name: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
         raid: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        rules: {
+            type: Sequelize.STRING,
+            allowNull: true
         },
         date: {
             type: Sequelize.DATEONLY,
@@ -39,7 +43,13 @@ module.exports = (client, Sequelize) => {
         },
         softreserve: {
             type: Sequelize.BOOLEAN,
-            allowNull: true
+            allowNull: true,
+            defaultValue: false
+        },
+        genericTierReserve: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true,
+            defaultValue: false
         },
         locked: {
             type: Sequelize.BOOLEAN,

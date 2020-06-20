@@ -1,0 +1,35 @@
+{
+  "name": "goodbot",
+  "version": "1.0.0",
+  "description": "GoodBot",
+  "main": "index.js",
+  "dependencies": {
+    "@google-cloud/storage": "^4.3.1",
+    "async": "^3.1.1",
+    "discord.js": "^11.5.1",
+    "enmap": "^5.2.4",
+    "google-spreadsheet": "^3.0.11",
+    "mariadb": "^2.1.5",
+    "nexushub-client": "^1.2.0",
+    "node-opus": "^0.3.3",
+    "request": "^2.88.0",
+    "sequelize": "^5.21.3",
+    "simple-youtube-api": "^5.2.1",
+    "twilio": "^3.39.3",
+    "ytdl-core": "^1.0.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://davedehaan@github.com/davedehaan/GoodBot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davedehaan/GoodBot/issues"
+  },
+  "homepage": "https://github.com/davedehaan/GoodBot#readme"
+}

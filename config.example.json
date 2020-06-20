@@ -1,16 +1,16 @@
 { 
 	"botname": "GoodBot",
 	"botactivity": "World of Warcraft: Classic",
-	"token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-	"userId": 525115228686516244,
+	"token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+	"userId": 721420612400316456,
 	"prefix" : "+",
 	"owner" : 93398761979514880,
 	"googleProjectId": "api-project-XXXXXXXXXXXXXXXXXXXXX",
 	"bankFile": "F:\\World of Warcraft\\_classic_\\WTF\\Account\\SITUATIONSOAP\\SavedVariables\\GoodBank.lua",
 	"epgpFile": "F:\\World of Warcraft\\_classic_\\WTF\\Account\\LAD\\SavedVariables\\GoodEPGP.lua",
-	"epgpBackupFolder": "F:\\epgp\\",
 	"warcraftlogs": "XXXXXXXXXXXXXXXXXXXXXXXXXXX",
 	"db": {
+		"name": "GoodBotDev",
 		"ip": "localhost",
 		"user": "root",
 		"pass": ""

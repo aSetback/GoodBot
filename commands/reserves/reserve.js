@@ -5,14 +5,10 @@ exports.run = async function (client, message, args, noMsg) {
     if (!args[0] || !message.channel) {
         return;
     }
-
-    // Get the raid ID
     let raid = await client.signups.getRaid(client, message.channel);
     if (!raid) {
         return false;
     }
-
-    // Get the player ID
     let player = args[0].toLowerCase();
 
     let signup = await findSignup(client, raid.id, player);
@@ -35,27 +31,21 @@ exports.run = async function (client, message, args, noMsg) {
         message.author = client.users.find(u => u.username == 'Setback');
     }
 
-    // Check if soft reserve is available
     if (!raid.softreserve) {
         if (!noMsg)
             message.author.send("Soft reserve is not currently enabled for this raid.");
         return
     }
 
-    // Check if the raid is locked
     if (raid.locked) {
         if (!noMsg)
             message.author.send('This raid is locked -- new reserves can not currently be added.');
         return
     }
 
-
     let item = args.join(' ');
 
-    // try to reserve
     let reserve = await signupReserve(client, signup.id, raid, item);
-
-    // If can´t find the item, check nexushub
     if (!reserve) {
         if (item.length > 2 && item.length < 100) {
             let itemInfo = await client.nexushub.item(item);
@@ -65,17 +55,12 @@ exports.run = async function (client, message, args, noMsg) {
         }
     }
 
-    // If still can't find, perform a like search
     if (!reserve) {
         let likeItem = await likeSearch(client, raid, item);
-
-        // if one item is found, reserve it
         if (likeItem.length == 1) {
             let itemInfo = likeItem.shift();
             reserve = await signupReserve(client, signup.id, raid, itemInfo.name);
         }
-
-        // if more than one is found, present a list of available choices
         if (likeItem.length > 1) {
             let possibleItems = [];
             for (key in likeItem) {
@@ -99,19 +84,18 @@ exports.run = async function (client, message, args, noMsg) {
     return
 }
 
-// Search for name or alias
 function likeSearch(client, raid, item) {
     let promise = new Promise((resolve, reject) => {
-        client.models.reserveItem.findAll(
-            {where:
-                {raid: raid.raid},
-                [Op.or]:
-                [
-                    {name: {[Op.like]:['%' + item + '%']}},
-                    {alias: {[Op.like]:['%' + item + '%']}}
-                ]
+        client.models.reserveItem.findAll({where: { name: {[Op.like]: '%' + item + '%'}, raid: raid.raid}}).then((items) => {
+            
+            if ((items[0].itemID.length > 1)&&(!raid.genericTierReserve)){
+                console.log(items + " - " + raid.genericTierReserve);
+                resolve(false);
             }
-        ).then((items) => {
+
+            //wark reserve Battlegear of
+            console.log(items);
+
             resolve(items);
         });
     });
@@ -131,15 +115,17 @@ function findSignup(client, raidID, player) {
 }
 
 function signupReserve(client, signupID, raid, item) {
-    
     let promise = new Promise((resolve, reject) => {
-        client.models.reserveItem.findOne({ where: { raid: raid.raid, [Op.or]: [{name: item},{alias: item}] } }).then(async (reserveItem) => {
+        client.models.reserveItem.findOne({ where: { raid: raid.raid, name: item } }).then(async (reserveItem) => {
             if (reserveItem) {
                 record = {
                     raidID: raid.id,
                     reserveItemID: reserveItem.id,
                     signupID: signupID
                 };
+                
+                // Check if the item is a set item and the Generic Tier Reserve is not available
+                if ((reserveItem.itemID.length > 1)&&(!raid.genericTierReserve)) resolve(false);
 
                 // Check if the player already has an existing reserve
                 client.models.raidReserve.findOne({ where: { signupID: signupID, raidID: raid.id } }).then((raidReserve) => {

@@ -9,16 +9,16 @@ exports.run = async function(client, message, args) {
 
 	client.models.raid.update(
 		{
-			softreserve: !raid.softreserve
+			genericTierReserve: !raid.genericTierReserve
 		},
 		{
 		where: {
 			id: raid.id
 		}
 	}).then(() => {
-		// Update our embed
-		console.log("Soft Reserve Toggled " + (!raid.softreserve ? 'ON' : 'OFF' ));
-		message.author.send("Soft Reserve Toggled " + (!raid.softreserve ? 'ON' : 'OFF' ));
+        // Update our embed
+        console.log("Generic Tier Reserve Toggled " + (!raid.genericTierReserve ? 'ON' : 'OFF' ));
+        message.author.send("Generic Tier Reserve Toggled " + (!raid.genericTierReserve ? 'ON' : 'OFF' ));
 		client.embed.update(client, message, raid);
 	});
 

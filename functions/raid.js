@@ -94,6 +94,36 @@ module.exports = {
         });
         return promise;
     },
+    setRules(client, raid, rules) {
+        let promise = new Promise((resolve, reject) => {
+            let record = {
+                rules: rules
+            };
+            client.models.raid.update(record, {
+                where: {
+                    id: raid.id,
+                }
+            }).then(() => {
+                resolve(true);
+            });
+        });
+        return promise;
+    },
+    setName(client, raid, name) {
+        let promise = new Promise((resolve, reject) => {
+            let record = {
+                name: name
+            };
+            client.models.raid.update(record, {
+                where: {
+                    id: raid.id,
+                }
+            }).then(() => {
+                resolve(true);
+            });
+        });
+        return promise;
+    },
     setDate(client, raid, raidDate) {
         let promise = new Promise((resolve, reject) => {
             let record = {
@@ -142,5 +172,76 @@ module.exports = {
             });
         });
         return promise;
-    }
+    },
+    createRaidChannel: async (client, message, category, raid) => {
+        let promise = new Promise((resolve, reject) => {
+            if (!category) {
+                message.channel.send('Raid sign-up category __' + category + '__ does not exist.');
+                return false;
+            }
+
+            if (!raid.dateString || !raid.raid) {
+                return message.channel.send('Invalid parameters.  Please use the following format: +raid MC Oct-15 <name?>');
+            }
+
+            let channelName = raid.dateString + '-' + raid.name;
+            message.guild.createChannel(channelName, {
+                    type: 'text'
+                })
+                .then((channel) => {
+                    let raidDateParts = raid.dateString.split('-');
+                    // Parse out our date
+                    raid.parsedDate = new Date(Date.parse(raidDateParts[0] + " " + raidDateParts[1]));
+                    raid.parsedDate.setFullYear(new Date().getFullYear());
+                    
+                    // If 'date' appears to be in the past, assume it's for the next calendar year (used for the dec => jan swapover)
+                    if (raid.parsedDate.getTime() < new Date().getTime()) {
+                        raid.parsedDate.setFullYear(raid.parsedDate.getFullYear() + 1);
+                    }
+
+                    // Set up our sql record
+                    let record = {
+                        'name': raid.name ? raid.name : raid.raid,
+                        'raid': raid.raid,
+                        'date': raid.parsedDate,
+                        'title': raid.title ? raid.title : null,
+                        'faction': raid.faction ? raid.faction.toLowerCase() : null,
+                        'color': raid.color ? raid.color : '#02a64f',
+                        'description': raid.description ? raid.description : null,
+                        'rules': raid.rules ? raid.rules : null,
+                        'time': raid.time ? raid.time : null,
+                        'channelID': channel.id,
+                        'guildID': channel.guild.id,
+                        'memberID': message.author.id,
+                        'softreserve': raid.softreserve,
+                        'confirmation': raid.confirmation
+                    };
+                    client.models.raid.create(record).then((raid) => {
+                        let signupMessage = 'If you can see this, please enable embeds to sign up.';
+                        channel.setParent(category.id)
+                            .then((channel) => {
+                                channel.lockPermissions()
+                                    .then(() => console.log('Successfully synchronized permissions with parent channel'))
+                                    .catch(console.error);
+                            });
+        
+                        channel.send(signupMessage).then((botMsg) => {
+                            client.raid.reactEmoji(botMsg);
+                            botMsg.pin().then(() => {
+                                client.embed.update(client, botMsg, raid);
+                                resolve(channel);
+                            });
+                        });
+                    });
+                });
+        });
+        return promise;
+	},
+	reactEmoji: async (msg) => {
+		const emojis = ["👍", "🤷", "👎"];
+		for (i = 0; i < emojis.length; i++) {
+			await msg.react(emojis[i]);
+		}
+	}
+
 }

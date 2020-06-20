@@ -65,6 +65,12 @@
 +joinmessage message
   Sets a message that will be sent to all new players when they join your discord server.
 
++archiveold
+  Clones the current 'Archives' category (complete with all permissions), then renames the current 'Archives' to 'Archives-Old'
+
++deletecategory Category Name
+  Deletes a channel category and all sub-channels.  **BE VERY CAREFUL WITH THIS, THERE IS NO UNDO BUTTON*
+
 ```
 
 ## Raid Sign-up Commands
