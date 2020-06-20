@@ -93,9 +93,6 @@ function likeSearch(client, raid, item) {
                 resolve(false);
             }
 
-            //wark reserve Battlegear of
-            console.log(items);
-
             resolve(items);
         });
     });

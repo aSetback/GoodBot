@@ -21,5 +21,4 @@ exports.run = async function(client, message, args) {
         message.author.send("Generic Tier Reserve Toggled " + (!raid.genericTierReserve ? 'ON' : 'OFF' ));
 		client.embed.update(client, message, raid);
 	});
-
 };

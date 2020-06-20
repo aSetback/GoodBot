@@ -21,5 +21,4 @@ exports.run = async function(client, message, args) {
 		message.author.send("Soft Reserve Toggled " + (!raid.softreserve ? 'ON' : 'OFF' ));
 		client.embed.update(client, message, raid);
 	});
-
 };
