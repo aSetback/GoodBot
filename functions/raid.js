@@ -109,6 +109,21 @@ module.exports = {
         });
         return promise;
     },
+    setLeader(client, raid, memberID) {
+        let promise = new Promise((resolve, reject) => {
+            let record = {
+                memberID: memberID
+            };
+            client.models.raid.update(record, {
+                where: {
+                    id: raid.id,
+                }
+            }).then(() => {
+                resolve(true);
+            });
+        });
+        return promise;
+    },
     setName(client, raid, name) {
         let promise = new Promise((resolve, reject) => {
             let record = {
