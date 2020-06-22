@@ -119,15 +119,23 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		embed.addField('**Status**', '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*');
 	}
 
+	let leader = channel.guild.members.find(member => member.id == raid.memberID);
+	if (!leader) {
+		leader = "-";
+	}
+	embed.addField('**Raid Leader**', leader, true);
+	
+
 	embed.addField('**Date**', dateString, true);
 	if (raid.time) {
-		embed.addField('**Time**', raid.time, true);
+		raid.time = '-';
 	}
+	embed.addField('**Time**', raid.time, true);
+
 
 	if (raid.softreserve) {
 		embed.addField('**Soft Reserve**', "To reserve an item, use `+reserve PlayerName Full Item Name`\nTo see all current reserves, use `+reservelist`\nTo view items eligible for reserving, use `+reserveitems`");
 	}
-
 
 	const roles = {
 		'tank': [
