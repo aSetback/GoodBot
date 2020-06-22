@@ -42,10 +42,13 @@ exports.run = async function (client, message, args) {
         if (signup.raid.softreserve) { 
             reserve = signup.reserve ? signup.reserve.item.name : 'not set';
         }
+
+        let channelName = channel.name.length > 19 ? channel.name.substr(0, 19) + '..' : channel.name;
+
         signupInfo.push({
             date: signup.raid.date,
             player: signup.player,
-            name: channel.name,
+            name: channelName,
             signup: signup.signup,
             confirmed: confirmed,
             reserve: reserve
