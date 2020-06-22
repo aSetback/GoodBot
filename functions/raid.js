@@ -217,7 +217,7 @@ module.exports = {
                         'confirmation': raid.confirmation
                     };
                     client.models.raid.create(record).then((raid) => {
-                        let signupMessage = 'If you can see this, please enable embeds to sign up.';
+                        let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
                         channel.setParent(category.id)
                             .then((channel) => {
                                 channel.lockPermissions()
