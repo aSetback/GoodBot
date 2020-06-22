@@ -106,14 +106,20 @@
 +rules RulesName
   Have the bot display rules with the name of "RulesName"
 
-+setdescription New description
-  Alter the raid description in the embed
-  
-+settime Time
-  Set the time for the raid start
-
 +setcolor #hexCode
   Set the color of the sidebar of the embed
+
++setdate Date
+  Sets the date of the raid
+
++setdescription New description
+  Alter the raid description in the embed
+
++setleader Leader
+  Sets the raid leader of the raid
+
++settime Time
+  Set the time for the raid start
 
 +settitle New title
   Alter the raid title in the embed
