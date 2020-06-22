@@ -5,6 +5,9 @@ module.exports = {
 	run: (client) => {
 		// Watch the upload folder
 		let fsTimeout = null;
+		if (!client.config.epgpBackupFolder) {
+			return false;
+		}
 		let uploadPath = client.config.epgpBackupFolder + '/upload/';
 		fs.watch(uploadPath, {interval: 5000}, (eventType, fileName) => {
 			if (!fsTimeout) {
