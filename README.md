@@ -53,6 +53,9 @@
 +quote remove ID
   Remove the quote with the specified ID
 
++removeallpins
+  Unpin all current pins in the current channel.
+
 +serverid
   The bot will DM you the server's ID
 
