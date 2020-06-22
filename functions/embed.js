@@ -127,7 +127,7 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	
 
 	embed.addField('**Date**', dateString, true);
-	if (raid.time) {
+	if (!raid.time) {
 		raid.time = '-';
 	}
 	embed.addField('**Time**', raid.time, true);
