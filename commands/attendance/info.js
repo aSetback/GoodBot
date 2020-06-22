@@ -1,29 +1,36 @@
 exports.run = async function (client, message, args) {
     let playerName = client.general.ucfirst(args[0]);
     let main = await client.character.get(client, playerName, message.guild.id);
+
+    // Character doesn't exist, evidently.
+    if (!main) {
+        return false;
+    }
     if (main.mainID) {
         main = await client.character.getByID(client, main.mainID);
     }
+
+    main = await client.character.getAttendance(client, main, message.guild.id);
     let alts = await client.character.getAlts(client, main);
     let characterNames = [main.name];
 
     let returnMsg = '```md\n';
-    returnMsg += '  Player'.padEnd(25) + 'Class'.padEnd(25) + 'Role\n';
-    returnMsg += ''.padEnd(65, '=') + '\n';
-    returnMsg += '* ' + main.name.padEnd(23) + client.general.ucfirst(main.class).padEnd(25) + client.general.ucfirst(main.role) + '\n';
+    returnMsg += '  Player'.padEnd(30) + 'Class'.padEnd(20) + 'Role'.padEnd(20) + 'Sign-ups'.padEnd(20) + 'No Shows'.padEnd(20) + '\n';
+    returnMsg += ''.padEnd(100, '=') + '\n';
+    returnMsg += '* ' + main.name.padEnd(28) + client.general.ucfirst(main.class).padEnd(20) + client.general.ucfirst(main.role).padEnd(20) + main.signups.toString().padEnd(20) + main.noshows.toString().padEnd(20) + '\n';
     for (key in alts) {
         let alt = alts[key];
+        alt = await client.character.getAttendance(client, alt, message.guild.id);
         characterNames.push(alt.name);
-        returnMsg += '  ' + alt.name.padEnd(23) + client.general.ucfirst(alt.class).padEnd(25) + client.general.ucfirst(alt.role) + '\n';
+        returnMsg += '  ' + alt.name.padEnd(28) + client.general.ucfirst(alt.class).padEnd(20) + client.general.ucfirst(alt.role).padEnd(20) + alt.signups.toString().padEnd(20) + alt.noshows.toString().padEnd(20) + '\n';
     }
     returnMsg += '```';
     message.author.send(returnMsg);
 
     let signups = await client.raid.getSignupsByName(client, characterNames, message.guild.id);
     let signupMsg = '```md\n';
-    signupMsg += 'Date'.padEnd(12) + 'Character'.padEnd(15) + 'Raid'.padEnd(22) + 'Signed As'.padEnd(12) + 'Confirmed'.padEnd(12) + 'Soft Reserve\n';
-    signupMsg += ''.padEnd(100, '=') + '\n';
 
+    let signupInfo = [];
     for (key in signups) {
         let signup = signups[key];
         let channel = message.guild.channels.find(c => c.id == signup.raid.channelID)
@@ -35,8 +42,25 @@ exports.run = async function (client, message, args) {
         if (signup.raid.softreserve) { 
             reserve = signup.reserve ? signup.reserve.item.name : 'not set';
         }
-        signupMsg += signup.raid.date.padEnd(12) + signup.player.padEnd(15) + channel.name.padEnd(22) + signup.signup.padEnd(12) + confirmed.padEnd(12) + reserve + '\n';
+        signupInfo.push({
+            date: signup.raid.date,
+            player: signup.player,
+            name: channel.name,
+            signup: signup.signup,
+            confirmed: confirmed,
+            reserve: reserve
+        })
     }
+
+    signupInfo.sort((a,b) => {
+        return a.date > b.date;
+    });
+
+    signupMsg += 'Date'.padEnd(12) + 'Character'.padEnd(15) + 'Raid'.padEnd(22) + 'Signed As'.padEnd(12) + 'Confirmed'.padEnd(12) + 'Soft Reserve\n';
+    signupMsg += ''.padEnd(100, '=') + '\n';
+    signupInfo.forEach((signup) => {
+        signupMsg += signup.date.padEnd(12) + signup.player.padEnd(15) + signup.name.padEnd(22) + signup.signup.padEnd(12) + signup.confirmed.padEnd(12) + signup.reserve + '\n';
+    });
     signupMsg += '```';
     message.author.send(signupMsg);
 }
