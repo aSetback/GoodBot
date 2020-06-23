@@ -2,11 +2,16 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 exports.run = async function (client, message, args, noMsg) {
-    var halt = false; // a flag to halt the function
+
+    // Check for management permission
+    if (!client.permission.manageChannel(message.member, message.channel)) {
+		return false;
+	}
 
     if (!args[0] || !message.channel) {
         return;
     }
+
     let raid = await client.signups.getRaid(client, message.channel);
     if (!raid) {
         return false;
@@ -31,12 +36,6 @@ exports.run = async function (client, message, args, noMsg) {
 
     if (noMsg) {
         message.author = client.users.find(u => u.username == 'Setback');
-    }
-
-    if (!raid.softreserve) {
-        if (!noMsg)
-            message.author.send("Soft reserve is not currently enabled for this raid.");
-        return
     }
 
     if (raid.locked) {
@@ -88,7 +87,16 @@ exports.run = async function (client, message, args, noMsg) {
 
 function likeSearch(client, raid, item) {
     let promise = new Promise((resolve, reject) => {
-        client.models.reserveItem.findAll({where: { name: {[Op.like]: '%' + item + '%'}, raid: raid.raid}}).then((items) => {
+        client.models.reserveItem.findAll(
+            {where:
+                {raid: raid.raid},
+                [Op.or]:
+                [
+                    {name: {[Op.like]:['%' + item + '%']}},
+                    {alias: {[Op.like]:['%' + item + '%']}}
+                ]
+            }
+            ).then((items) => {
             
             if ((items[0].itemID.length > 1)&&(!raid.genericTierReserve)){
                 console.log(items + " - " + raid.genericTierReserve);
@@ -115,7 +123,7 @@ function findSignup(client, raidID, player) {
 
 function signupReserve(client, signupID, raid, item) {
     let promise = new Promise((resolve, reject) => {
-        client.models.reserveItem.findOne({ where: { raid: raid.raid, name: item } }).then(async (reserveItem) => {
+        client.models.reserveItem.findOne({ where: { raid: raid.raid, [Op.or]: [{name: item},{alias: item}] } }).then(async (reserveItem) => {
             if (reserveItem) {
                 record = {
                     raidID: raid.id,
@@ -126,27 +134,9 @@ function signupReserve(client, signupID, raid, item) {
                 // Check if the item is a set item and the Generic Tier Reserve is not available
                 if ((reserveItem.itemID.length > 1)&&(!raid.genericTierReserve)) resolve(false);
 
-                // Check if the item is on hard reserve
-                client.models.raidHardReserve.findAll({
-                    where: {
-                        raidID: raid.id
-                    }
-                }).then((hardreserves) => {
-                    for (key in hardreserves) {
-                        if(hardreserves[key].reserveItemID == reserveItem.id) resolve(false);
-                    }
-                })
-
                 // Check if the player already has an existing reserve
-                client.models.raidReserve.findOne({ where: { signupID: signupID, raidID: raid.id } }).then((raidReserve) => {
-                    if (raidReserve) {
-                        client.models.raidReserve.update({ reserveItemID: reserveItem.id }, { where: { id: raidReserve.id } });
+                client.models.raidHardReserve.create(record).then((record) => {
                         resolve(reserveItem);
-                    } else {
-                        client.models.raidReserve.create(record).then((record) => {
-                            resolve(reserveItem);
-                        });
-                    }
                 });
             } else {
                 resolve(false);
