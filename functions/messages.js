@@ -99,7 +99,10 @@ module.exports = {
         // Send the client object along with the message
         message.client = client;
 
+        
         // Run the command
-        cmd.run(client, message, args);
+        if (message.guild) {
+            cmd.run(client, message, args);
+        }
     }
 }

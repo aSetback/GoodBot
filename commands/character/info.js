@@ -1,5 +1,12 @@
 exports.run = async function (client, message, args) {
-    let playerName = client.general.ucfirst(args[0]);
+    let playerName = args[0];
+    if (!playerName) {
+        playerName = message.member.nickname;
+        if (!playerName) {
+            playerName = message.author.username;
+        }
+    }
+    playerName = client.general.ucfirst(playerName);
     let main = await client.character.get(client, playerName, message.guild.id);
 
     // Character doesn't exist, evidently.
@@ -14,8 +21,8 @@ exports.run = async function (client, message, args) {
     let alts = await client.character.getAlts(client, main);
     let characterNames = [main.name];
 
-    let returnMsg = '```md\n';
-    returnMsg += '  Player'.padEnd(30) + 'Class'.padEnd(20) + 'Role'.padEnd(20) + 'Sign-ups'.padEnd(20) + 'No Shows'.padEnd(20) + '\n';
+    let returnMsg = '**Characters**\n```md\n';
+    returnMsg += '  Character'.padEnd(30) + 'Class'.padEnd(20) + 'Role'.padEnd(20) + 'Sign-ups'.padEnd(20) + 'No Shows'.padEnd(20) + '\n';
     returnMsg += ''.padEnd(100, '=') + '\n';
     returnMsg += '* ' + main.name.padEnd(28) + client.general.ucfirst(main.class).padEnd(20) + client.general.ucfirst(main.role).padEnd(20) + main.signups.toString().padEnd(20) + main.noshows.toString().padEnd(20) + '\n';
     for (key in alts) {
@@ -28,7 +35,7 @@ exports.run = async function (client, message, args) {
     message.author.send(returnMsg);
 
     let signups = await client.raid.getSignupsByName(client, characterNames, message.guild.id);
-    let signupMsg = '```md\n';
+    let signupMsg = '**Sign-Ups**\n```md\n';
 
     let signupInfo = [];
     for (key in signups) {
@@ -42,17 +49,18 @@ exports.run = async function (client, message, args) {
         if (signup.raid.softreserve) { 
             reserve = signup.reserve ? signup.reserve.item.name : 'not set';
         }
+        if (channel) {
+            let channelName = channel.name.length > 19 ? channel.name.substr(0, 19) + '..' : channel.name;
 
-        let channelName = channel.name.length > 19 ? channel.name.substr(0, 19) + '..' : channel.name;
-
-        signupInfo.push({
-            date: signup.raid.date,
-            player: signup.player,
-            name: channelName,
-            signup: signup.signup,
-            confirmed: confirmed,
-            reserve: reserve
-        })
+            signupInfo.push({
+                date: signup.raid.date,
+                player: signup.player,
+                name: channelName,
+                signup: signup.signup,
+                confirmed: confirmed,
+                reserve: reserve
+            });
+        }
     }
 
     signupInfo.sort((a,b) => {
@@ -66,4 +74,12 @@ exports.run = async function (client, message, args) {
     });
     signupMsg += '```';
     message.author.send(signupMsg);
+
+    let resistMsg = '**Resistances**\n';
+    resistMsg += '```md\n'; 
+    resistMsg += 'Character'.padEnd(20) + 'Fire'.padEnd(20) + 'Frost'.padEnd(20) + 'Nature'.padEnd(20) + 'Shadow'.padEnd(20) + '\n';
+    resistMsg += ''.padEnd(100, '=') + '\n';
+    resistMsg += main.name.padEnd(21) + main.fireResist.toString().padEnd(20) +  main.frostResist.toString().padEnd(20) +  main.natureResist.toString().padEnd(20) +  main.shadowResist.toString().padEnd(20);
+    resistMsg += '```';
+    message.author.send(resistMsg);
 }
