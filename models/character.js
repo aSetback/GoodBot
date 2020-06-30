@@ -26,19 +26,19 @@ module.exports = (client, Sequelize) => {
         },
         shadowResist: {
             type: Sequelize.BIGINT(20),
-            allowNull: false
+            allowNull: true
         },
         natureResist: {
             type: Sequelize.BIGINT(20),
-            allowNull: false
+            allowNull: true
         },
         fireResist: {
             type: Sequelize.BIGINT(20),
-            allowNull: false
+            allowNull: true
         },
         frostResist: {
             type: Sequelize.BIGINT(20),
-            allowNull: false
+            allowNull: true
         }        
     }, {
     // options
