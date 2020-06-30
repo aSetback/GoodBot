@@ -76,11 +76,26 @@
 
 ```
 
-## Raid Sign-up Commands
+## Character Management Commands
 ```
 +alt altName mainName
   Set a character as an alt of your main character (for pinging purposes)
-  
+
++info character
+  Returns the main and all alts attached to this character, along with signed up raid and resistances.
+
++resist character type amount
+  Set a player's resistance of a type (fire, frost, shadow, nature) to a number for export on spreadsheet.
+
++set Player class role
+  Manually set a player's class and role.  Valid roles are DPS, Tank, Healer, Caster.
+
+
+```
+
+## Raid Sign-up Commands
+```
+ 
 +confirmation
   Toggle 'confirmation mode' for a raid
 
@@ -123,9 +138,6 @@
 
 +settitle New title
   Alter the raid title in the embed
-
-+set Player class role
-  Manually set a player's class and role.  Valid roles are DPS, Tank, Healer, Caster.
 
 +unconfirm Player
   Unconfirms player for the raid (Confirmation mode must be enabled!)
