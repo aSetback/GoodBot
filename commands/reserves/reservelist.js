@@ -2,6 +2,9 @@ const moment = require('moment');
 
 exports.run = async function(client, message, args) {
 	let raid = await client.signups.getRaid(client, message.channel);
+    if (!raid) {
+        return message.author.send("This command is only usable from a raid channel.");
+    }
     if (!raid.softreserve) {
         return message.author.send("Soft reserve is not currently enabled for this raid.");
     }
