@@ -5,7 +5,11 @@ exports.run = async function(client, message, args) {
 	}	
 
 
-	let sheetID = client.customOptions.get(message.guild, 'sheet').trim();
+	let sheetID = client.customOptions.get(message.guild, 'sheet');
+	if (sheetID) {
+		sheedID = sheetID.trim();
+	}
+	
 	if (args[0]) {
 		sheetID = args[0];
 	}
