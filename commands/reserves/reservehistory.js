@@ -29,7 +29,7 @@ exports.run = async function(client, message, args) {
             }
         });
         returnMessage += '```';
-        message.channel.send(returnMessage)
+        message.author.send(returnMessage)
         
         returnMessage = '```md\n';
         returnMessage += 'Item Name'.padEnd(50) + 'Times Reserved' + '\n';
@@ -38,7 +38,7 @@ exports.run = async function(client, message, args) {
             returnMessage += item.name.padEnd(50) + item.count + '\n';
         });
         returnMessage += '```';
-        message.channel.send(returnMessage)
+        message.author.send(returnMessage)
     });
 
 };
