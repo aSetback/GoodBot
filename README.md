@@ -72,14 +72,14 @@
   Clones the current 'Archives' category (complete with all permissions), then renames the current 'Archives' to 'Archives-Old'
 
 +deletecategory Category Name
-  Deletes a channel category and all sub-channels.  **BE VERY CAREFUL WITH THIS, THERE IS NO UNDO BUTTON*
+  Deletes a channel category and all sub-channels.  **BE VERY CAREFUL WITH THIS, THERE IS NO UNDO BUTTON**
 
 ```
 
 ## Character Management Commands
 ```
 +alt altName mainName
-  Set a character as an alt of your main character (for pinging purposes)
+  Set a character as an alt of your main character.
 
 +info character
   Returns the main and all alts attached to this character, along with signed up raid and resistances.
@@ -90,7 +90,8 @@
 +set Player class role
   Manually set a player's class and role.  Valid roles are DPS, Tank, Healer, Caster.
 
-
++reservehistory character
+  Returns a complete history of all items this player has reserved.
 ```
 
 ## Raid Sign-up Commands

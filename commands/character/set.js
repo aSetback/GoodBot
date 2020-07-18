@@ -12,24 +12,20 @@ exports.run = async function(client, message, args) {
 		return client.messages.errorMessage(message.channel, "Correct usage is:\n```+set PlayerName mage caster```", 60);
 	}
 
-	const classArg = args[1];
-	const roleArg = args[2]
-	const className = classArg.charAt(0).toUpperCase() + classArg.slice(1).toLowerCase();
-	const roleName = roleArg.charAt(0).toUpperCase() + roleArg.slice(1).toLowerCase();
-	const user = args[0] ? args[0] : message.member.displayName;
-	const characterName = user.charAt(0).toUpperCase() + user.slice(1).toLowerCase();
+	const characterName = client.general.ucfirst(args[0]);
+	const className = client.general.ucfirst(args[1]);
+	const roleName = client.general.ucfirst(args[2]);
 
 	let characterClass = await client.set.characterClass(client, message.guild, message.member, characterName, className);
 	if (!characterClass) {
 		return client.messages.errorMessage(message.channel, className + ' is not a valid class.', 240);
-	} else {
-		let characterRole = await client.set.characterRole(client, message.guild, message.member, characterName, roleName);
-		// Only execute this once character class has been set to prevent race conditions
-		if (!characterRole) {
-			return client.messages.errorMessage(message.channel, roleName + ' is not a valid role.  Valid roles are caster, dps, tank, healer.', 240);
-		} else {
-			// Completed successfully!
-			return client.messages.send(message.channel, user + ' has been set as ' + className + '/' + roleName + '.', 240);
-		}
 	}
+	
+	let characterRole = await client.set.characterRole(client, message.guild, message.member, characterName, roleName);
+	if (!characterRole) {
+		return client.messages.errorMessage(message.channel, roleName + ' is not a valid role.  Valid roles are caster, dps, tank, healer.', 240);
+	}
+	
+	// Completed successfully!
+	return client.messages.send(message.channel, characterName + ' has been set as ' + className + '/' + roleName + '.', 240);
 };

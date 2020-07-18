@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 module.exports = {
-    characterClass: (client, guild, member, characterName, className) => {
+    characterClass: async (client, guild, member, characterName, className) => {
         const validClasses = ['priest', 'paladin', 'druid', 'warrior', 'rogue', 'hunter', 'mage', 'warlock', 'shaman', 'dk'];
         className = className.toLowerCase();
 
@@ -21,31 +21,24 @@ module.exports = {
             guildID: guildID
         };
     
-        let promise = new Promise((resolve, reject) => {
-            if (validClasses.indexOf(className) < 0) {
-                resolve(false);
-            }
+        if (validClasses.indexOf(className) < 0) {
+            return false;
+        }
     
-            client.models.character.findOne({ where: {'name': characterName, 'guildID': guildID}}).then((character) => {
-                if (!character) {
-                    client.models.character.create(record).then((character) => {
-                        resolve(character.id);
-                    });
-
-                } else {
-                    client.models.character.update(record, {
-                        where: {
-                            id: character.id
-                        }
-                    });
-                    resolve(character.id);
+        let character = await client.models.character.findOne({ where: {'name': characterName, 'guildID': guildID}});
+        if (!character) {
+            character = await client.models.character.create(record);
+        } else {
+            await client.models.character.update(record, {
+                where: {
+                    id: character.id
                 }
             });
-        });
+        }
         
-        return promise;
+        return character.id;
     },
-    characterRole: (client, guild, member, characterName, roleName) => {
+    characterRole: async (client, guild, member, characterName, roleName) => {
         const validRoles = ['tank', 'healer', 'dps', 'caster'];
         roleName = roleName.toLowerCase();
        
@@ -57,37 +50,29 @@ module.exports = {
         if (typeof member == 'object')
             memberID = member.id;
     
-
+        if (validRoles.indexOf(roleName) < 0) {
+            return false;
+        }
+    
         let record = {
             name: client.general.ucfirst(characterName),
             role: roleName,
             memberID: memberID,
             guildID: guildID
         };
-        
-        let promise = new Promise((resolve, reject) => {
-            if (validRoles.indexOf(roleName) < 0) {
-                resolve(false);
-            }
-    
-            client.models.character.findOne({ where: {'name': characterName, 'guildID': guildID}}).then((character) => {
-                if (!character) {
-                    client.models.character.create(record).then((character) => {
-                        resolve(character.id);
-                    });
-
-                } else {
-                    client.models.character.update(record, {
-                        where: {
-                            id: character.id
-                        }
-                    });
-                    resolve(character.id);
+            
+        let character = await client.models.character.findOne({ where: {'name': characterName, 'guildID': guildID}});
+        if (!character) {
+            character = await client.models.character.create(record);
+        } else {
+            await client.models.character.update(record, {
+                where: {
+                    id: character.id
                 }
             });
-        });
+        }
         
-        return promise;
+        return character.id;
     },
     hasClass: (client, guild, player) => {
         let promise = new Promise((resolve, reject) => {

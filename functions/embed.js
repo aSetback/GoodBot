@@ -1,5 +1,5 @@
-const fs = require("fs");
 const Discord = require("discord.js");
+const { Op } = require('sequelize');
 
 module.exports = {
 	update: (client, message, raid) => {
@@ -38,9 +38,29 @@ module.exports = {
 				let embed = updateEmbed(title, channel, client, pinnedMsg, raidType);		
 			});		
 	},
-	getCharacters: async function(client, guild) {
+	getCharacters: async function(client, guild, signups) {
+		characterNames = [];
+		for (key in signups) {
+			characterNames.push(signups[key].player);
+		}
+		console.log(characterNames);
 		let characterList = new Promise((resolve, reject) => {
-			client.models.character.findAll({where: {'guildID': guild.id}}).then((characterList) => {
+			client.models.character.findAll(
+				{
+					attributes: [
+						[client.sequelize.fn('DISTINCT', client.sequelize.col('name')), 'name'], 'class', 'role'
+					], 
+					where: {
+						'guildID': guild.id, 
+						name: { 
+							[Op.in]: characterNames 
+						}
+					},
+					orderBy: {
+						updatedAt: 'DESC'
+					}
+				}
+			).then((characterList) => {
 				resolve(characterList);
 			});
 		});
@@ -58,7 +78,7 @@ module.exports = {
 
 async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	let signups = await client.embed.getSignups(client, channel.id);
-	let characterList = await client.embed.getCharacters(client, channel.guild);
+	let characterList = await client.embed.getCharacters(client, channel.guild, signups);
 	let raid = await client.signups.getRaid(client, channel);
 	let raidDate = new Date(Date.parse(raid.date));
 	let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
@@ -111,9 +131,9 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 
 	let icon = 'http://softball.setback.me/goodbot/icons/' + raidType + '.png';
 	let embed = new Discord.RichEmbed()
-	.setTitle(raidData.title)
-	.setColor(raidData.color)
-	.setThumbnail(icon);
+		.setTitle(raidData.title)
+		.setColor(raidData.color)
+		.setThumbnail(icon);
 
 	if (raid.locked) {
 		embed.addField('**Status**', '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*');
