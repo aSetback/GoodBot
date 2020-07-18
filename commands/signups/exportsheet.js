@@ -49,7 +49,7 @@ exports.run = async function(client, message, args) {
 	} else {
 		signups = await client.signups.getSignups(client, raid);
 	}
-	let characterList = await client.embed.getCharacters(client, message.channel.guild);
+	let characterList = await client.embed.getCharacters(client, message.channel.guild, signups);
 	let lineup = [];
 
 	signups.forEach((signup) => {

@@ -43,7 +43,7 @@ module.exports = {
 		for (key in signups) {
 			characterNames.push(signups[key].player);
 		}
-		console.log(characterNames);
+
 		let characterList = new Promise((resolve, reject) => {
 			client.models.character.findAll(
 				{
