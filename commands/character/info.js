@@ -75,19 +75,17 @@ exports.run = async function (client, message, args) {
     signupMsg += '```';
     message.author.send(signupMsg);
 
-    if (main.fireResist) {
-        let resistMsg = '**Resistances**\n';
-        resistMsg += '```md\n'; 
-        resistMsg += 'Character'.padEnd(20) + 'Fire'.padEnd(20) + 'Frost'.padEnd(20) + 'Nature'.padEnd(20) + 'Shadow'.padEnd(20) + '\n';
-        resistMsg += ''.padEnd(100, '=') + '\n';
-        resistMsg += main.name.padEnd(20) + main.fireResist.toString().padEnd(20) +  main.frostResist.toString().padEnd(20) +  main.natureResist.toString().padEnd(20) +  main.shadowResist.toString().padEnd(20) + '\n';
-        for (key in alts) {
-            let alt = alts[key];
-            resistMsg += alt.name.padEnd(20) + alt.fireResist.toString().padEnd(20) +  alt.frostResist.toString().padEnd(20) +  alt.natureResist.toString().padEnd(20) +  alt.shadowResist.toString().padEnd(20) + '\n';
-        }
-        
-        resistMsg += '```';
-        message.author.send(resistMsg);
+    let resistMsg = '**Resistances**\n';
+    resistMsg += '```md\n'; 
+    resistMsg += 'Character'.padEnd(20) + 'Fire'.padEnd(20) + 'Frost'.padEnd(20) + 'Nature'.padEnd(20) + 'Shadow'.padEnd(20) + '\n';
+    resistMsg += ''.padEnd(100, '=') + '\n';
+    resistMsg += main.name.padEnd(20) + main.fireResist.toString().padEnd(20) +  main.frostResist.toString().padEnd(20) +  main.natureResist.toString().padEnd(20) +  main.shadowResist.toString().padEnd(20) + '\n';
+    for (key in alts) {
+        let alt = alts[key];
+        resistMsg += alt.name.padEnd(20) + alt.fireResist.toString().padEnd(20) +  alt.frostResist.toString().padEnd(20) +  alt.natureResist.toString().padEnd(20) +  alt.shadowResist.toString().padEnd(20) + '\n';
     }
-
+    
+    resistMsg += '```';
+    message.author.send(resistMsg);
+ 
 }
