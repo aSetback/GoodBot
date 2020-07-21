@@ -9,24 +9,37 @@ module.exports = {
 		let raidDate = new Date(Date.parse(raid.date));
 		let raidType = raid.raid
 		let raidName = '';
-
-		if (raidType.toLowerCase() == 'mc') {
-			raidName = 'Molten Core';
-		} else if (raidType.toLowerCase() == 'ony') {
-			raidName = 'Onyxia';
-		} else if (raidType.toLowerCase() == 'aq40') {
-			raidName = 'Temple of Ahn\'Qiraj';
-		} else if (raidType.toLowerCase() == 'aq20') {
-			raidName = 'Ruins of Ahn\'Qiraj';
-		} else if (raidType.toLowerCase() == 'naxx') {
-			raidName = 'Naxxramas';
-		} else if (raidType.toLowerCase() == 'bwl') {
-			raidName = 'Blackwing Lair';
-		} else if (raidType.toLowerCase() == 'zg') {
-			raidName = 'Zul\'Gurub';
+		
+		let raids = {
+			'mc': 'Molten Core',
+			'ony': 'Onyxia',
+			'aq40': 'Temple of Ahn\'Qiraj',
+			'aq20': 'Ruins of Ahn\'Qiraj',
+			'naxx': 'Naxxramas',
+			'bwl': 'Blackwing Lair',
+			'zg': 'Zul\'Gurub',
+			'kz': 'Karazhan',
+			'gruul': 'Gruul\'s Lair',
+			'ssc': 'Serpentshrine Cavern',
+			'tk': 'Tempest Keep',
+			'sw': 'Sunwell',
+			'bt': 'Black Temple',
+			'voa': 'Vault of Archavon',
+			'os': 'Obsidian Sanctum',
+			'eoe': 'Eye of Eternity',
+			'uld': 'Ulduar',
+			'toc': 'Trial of the Crusader',
+			'icc': 'Icecrown Citadel'
+		}
+		if (raids[raid.raid.toLowerCase()]) {
+			raidName = raids[raid.raid.toLowerCase()];
 		} else {
 			category = channel.parent;
-			raidName = raidName.charAt(0).toUpperCase() + raidName.slice(1).toLowerCase();
+			raidName = raid.raid.charAt(0).toUpperCase() + raid.raid.slice(1).toLowerCase();
+		}
+
+		if (raid.name) {
+			raidName = raid.name;
 		}
 
 		channel.fetchPinnedMessages()
