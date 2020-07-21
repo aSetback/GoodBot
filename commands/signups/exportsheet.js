@@ -38,11 +38,24 @@ exports.run = async function(client, message, args) {
 		'paladin-tank': 14,
 		'shaman-dps': 15,
 		'shaman-caster': 16,
-		'shaman-healer': 17,
-		'dk-dps': 18,
-		'dk-tank': 19
+		'shaman-healer': 17
 	};
-	
+
+	let expansion = client.guildOptions.expansion(client, message.guild.id);
+	if (expansion >= 2) {
+		sheetCols['dk-dps'] = 18;
+		sheetCols['dk-tank'] = 19;
+	}
+	if (expansion >= 4) {
+		sheetCols['monk-dps'] = 20;
+		sheetCols['monk-tank'] = 21;
+		sheetCols['monk-healer'] = 22;
+	}
+	if (expansion >= 6) {
+		sheetCols['dk-dps'] = 23;
+		sheetCols['dk-tank'] = 24;
+	}
+
 	let signups = {}
 	if (raid.confirmation) {
 		signups = await client.signups.getConfirmed(client, raid);		

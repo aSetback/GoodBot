@@ -2,7 +2,7 @@ const fs = require("fs");
 
 module.exports = {
     characterClass: async (client, guild, member, characterName, className) => {
-        const validClasses = ['priest', 'paladin', 'druid', 'warrior', 'rogue', 'hunter', 'mage', 'warlock', 'shaman', 'dk'];
+        const validClasses = ['priest', 'paladin', 'druid', 'warrior', 'rogue', 'hunter', 'mage', 'warlock', 'shaman', 'dk', 'monk', 'dh'];
         className = className.toLowerCase();
 
         let guildID = guild
@@ -146,7 +146,12 @@ module.exports = {
             'shaman-caster',
             'shaman-healer',
             'dk-dps',
-            'dk-tank'
+            'dk-tank',
+            'monk-dps',
+            'monk-tank',
+            'monk-healer',
+            'dh-dps',
+            'dh-tank'
         ];
 
         let playerCombo = character.class.toLowerCase() + '-' + character.role.toLowerCase();

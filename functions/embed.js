@@ -117,16 +117,18 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	lineup.reverse();
 
 	const emojis = {
-		"warrior": client.emojis.find(emoji => emoji.name === "warrior"),
-		"druid": client.emojis.find(emoji => emoji.name === "druid"),
-		"paladin": client.emojis.find(emoji => emoji.name === "paladin"),
-		"priest": client.emojis.find(emoji => emoji.name === "priest"),
-		"mage": client.emojis.find(emoji => emoji.name === "mage"),
-		"warlock": client.emojis.find(emoji => emoji.name === "warlock"),
-		"rogue": client.emojis.find(emoji => emoji.name === "rogue"),
-		"hunter": client.emojis.find(emoji => emoji.name === "hunter"),
-		"shaman": client.emojis.find(emoji => emoji.name === "shaman"),
-		"dk": client.emojis.find(emoji => emoji.name === "DK")
+		"warrior": client.emojis.find(emoji => emoji.name === "GBwarrior"),
+		"druid": client.emojis.find(emoji => emoji.name === "GBdruid"),
+		"paladin": client.emojis.find(emoji => emoji.name === "GBpaladin"),
+		"priest": client.emojis.find(emoji => emoji.name === "GBpriest"),
+		"mage": client.emojis.find(emoji => emoji.name === "GBmage"),
+		"warlock": client.emojis.find(emoji => emoji.name === "GBwarlock"),
+		"rogue": client.emojis.find(emoji => emoji.name === "GBrogue"),
+		"hunter": client.emojis.find(emoji => emoji.name === "GBhunter"),
+		"shaman": client.emojis.find(emoji => emoji.name === "GBshaman"),
+		"dk": client.emojis.find(emoji => emoji.name === "GBdk"),
+		"monk": client.emojis.find(emoji => emoji.name === "GBmonk"),
+		"dh": client.emojis.find(emoji => emoji.name === "GBdh")
 	}
 
 	let icon = 'http://softball.setback.me/goodbot/icons/' + raidType + '.png';
@@ -162,13 +164,16 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 			'warrior',
 			'druid',
 			'paladin',
-			'dk'
+			'dk',
+			'monk',
+			'dh'
 		],
 		'healer': [
 			'priest', 
 			'paladin',
 			'druid',
-			'shaman'
+			'shaman',
+			'monk'
 		],
 		'dps': [
 			'rogue',
@@ -177,7 +182,9 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 			'paladin',
 			'hunter',
 			'shaman',
-			'dk'
+			'dk',
+			'monk',
+			'dh'
 		],
 		'caster': [
 			'mage',
@@ -219,6 +226,13 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 			});
 			if (classList.length) {
 				playerClass = playerClass.charAt(0).toUpperCase() + playerClass.slice(1).toLowerCase();
+				if (playerClass == 'Dh') {
+					playerClass = 'Demon Hunter';
+				}
+
+				if (playerClass == 'Dk') {
+					playerClass = 'Death Knight';
+				}
 				embed.addField('**' + playerClass + ' (' + key + ')**', classList, true);
 			}
 		});
@@ -228,17 +242,23 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		roleName = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
 		roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
 	} 
+	console.log(embed);
 	embed.addField('**Total Sign-ups**', total);
 	if (raid.confirmation) {
 		embed.addField('**Confirmed Sign-ups**', confirmCount);
 	}
-	embed.addField('**Group Composition**', roleField, false);
-
-	if (maybeList.length) {
-		embed.addField('**Maybe**', maybeList.join(', '));
+	if (embed.fields.length < 25) {
+		embed.addField('**Group Composition**', roleField, false);
 	}
-	if (noList.length) {
-		embed.addField('**No**', noList.join(', '));
+
+
+	if (embed.fields.length < 25) {
+		if (maybeList.length) {
+			embed.addField('**Maybe**', maybeList.join(', '));
+		}
+		if (noList.length) {
+			embed.addField('**No**', noList.join(', '));
+		}
 	}
 	if (raid.confirmation) {
 		embed.addField('**Please Note:**', "Confirmation mode has been enabled.  The players with **bold** names are currently confirmed for the raid.  *Italicized* names may or may not be brought to this raid.");

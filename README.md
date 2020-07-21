@@ -282,6 +282,11 @@ Columns:
 		shaman healer => 17
 		dk dps => 18
 		dk tank => 19
+    monk dps => 20
+    monk tank => 21
+    monk healer => 22
+    dh dps => 23
+    dh tank => 24
 ```
 To set up your spreadsheet:
 * The sheet must be shared with discord@api-project-483394155093.iam.gserviceaccount.com																								
