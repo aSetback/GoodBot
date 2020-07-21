@@ -242,7 +242,6 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		roleName = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
 		roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
 	} 
-	console.log(embed);
 	embed.addField('**Total Sign-ups**', total);
 	if (raid.confirmation) {
 		embed.addField('**Confirmed Sign-ups**', confirmCount);
