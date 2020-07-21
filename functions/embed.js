@@ -137,23 +137,28 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		.setColor(raidData.color)
 		.setThumbnail(icon);
 
+	let fields = 0;
 	if (raid.locked) {
 		embed.addField('**Status**', '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*');
+		fields ++;
 	}
 
 	let leader = channel.guild.members.find(member => member.id == raid.memberID);
 	if (!leader) {
 		leader = "-";
 	}
+	fields ++;
 	embed.addField('**Raid Leader**', leader, true);
 	
 
+	fields ++;
 	embed.addField('**Date**', dateString, true);
 	if (!raid.time) {
 		raid.time = '-';
 	}
-	embed.addField('**Time**', raid.time, true);
 
+	fields ++;
+	embed.addField('**Time**', raid.time, true);
 
 	if (raid.softreserve) {
 		embed.addField('**Soft Reserve**', "To reserve an item, use `+reserve PlayerName Full Item Name`\nTo see all current reserves, use `+reservelist`\nTo view items eligible for reserving, use `+reserveitems`");
@@ -233,6 +238,7 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 				if (playerClass == 'Dk') {
 					playerClass = 'Death Knight';
 				}
+				fields ++;
 				embed.addField('**' + playerClass + ' (' + key + ')**', classList, true);
 			}
 		});
@@ -243,15 +249,19 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
 	} 
 	embed.addField('**Total Sign-ups**', total);
+	fields ++;
+
 	if (raid.confirmation) {
 		embed.addField('**Confirmed Sign-ups**', confirmCount);
+		fields ++;
 	}
-	if (embed.fields.length < 25) {
+	if (fields < 25) {
 		embed.addField('**Group Composition**', roleField, false);
+		fields ++;
 	}
 
 
-	if (embed.fields.length < 25) {
+	if (fields < 23) {
 		if (maybeList.length) {
 			embed.addField('**Maybe**', maybeList.join(', '));
 		}
