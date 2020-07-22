@@ -61,7 +61,7 @@ module.exports = {
 			client.models.character.findAll(
 				{
 					attributes: [
-						[client.sequelize.fn('DISTINCT', client.sequelize.col('name')), 'name'], 'class', 'role'
+						[client.sequelize.fn('DISTINCT', client.sequelize.col('name')), 'name'], 'class', 'role', 'fireResist', 'frostResist', 'shadowResist', 'natureResist'
 					], 
 					where: {
 						'guildID': guild.id, 
