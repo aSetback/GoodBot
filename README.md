@@ -116,6 +116,9 @@
 +raid RaidName Mar-21 (title?) (faction?)
   Create a new raid channel under the raid category called mar-21-RaidName
 
++resistlist
+  Sends a DM to the player with the resistances of all signed up players
+
 +rules add RulesName Rules go here
   Add a rule to be displayed later with a name of "RulesName"
 
@@ -157,6 +160,9 @@
 
   +reservelist
     The bot will DM the user a list of all reserves that have been made for this raid, ordered by item name
+
+  +reservelist channel
+    The bot will list all reserves that have been made for this raid in the channel
 
   +reserveitems
     The bot will DM the user a list of all items that are available for reserve for this raid
