@@ -41,7 +41,7 @@ exports.run = async function(client, message, args) {
 		'shaman-healer': 17
 	};
 
-	let expansion = client.guildOptions.expansion(client, message.guild.id);
+	let expansion = client.guildOption.expansion(client, message.guild.id);
 	if (expansion >= 2) {
 		sheetCols['dk-dps'] = 18;
 		sheetCols['dk-tank'] = 19;
