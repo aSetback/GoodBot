@@ -11,7 +11,7 @@ exports.run = async function (client, message, args) {
 
     // Character doesn't exist, evidently.
     if (!main) {
-        return false;
+        return message.author.send("Could not find player: **" + playerName + "**");
     }
     if (main.mainID) {
         main = await client.character.getByID(client, main.mainID);
