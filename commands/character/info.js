@@ -82,7 +82,13 @@ exports.run = async function (client, message, args) {
     resistMsg += main.name.padEnd(20) + main.fireResist.toString().padEnd(20) +  main.frostResist.toString().padEnd(20) +  main.natureResist.toString().padEnd(20) +  main.shadowResist.toString().padEnd(20) + '\n';
     for (key in alts) {
         let alt = alts[key];
-        resistMsg += alt.name.padEnd(20) + alt.fireResist.toString().padEnd(20) +  alt.frostResist.toString().padEnd(20) +  alt.natureResist.toString().padEnd(20) +  alt.shadowResist.toString().padEnd(20) + '\n';
+        let resists = {
+            fire: alt.fireResist ? alt.fireResist : 0,
+            frost: alt.frostResist ? alt.frostResist : 0,
+            nature: alt.natureResist ? alt.natureResist : 0,
+            shadow: alt.shadowResist ? alt.shadowResist : 0,
+        }
+        resistMsg += alt.name.padEnd(20) + resists.fire.toString().padEnd(20) + resists.frost.toString().padEnd(20) +  resists.nature.toString().padEnd(20) +  resists.shadow.toString().padEnd(20) + '\n';
     }
     
     resistMsg += '```';
