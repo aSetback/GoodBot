@@ -6,7 +6,13 @@ module.exports = {
         let validTypes = ['guild', 'gm', 'officer'];
         let validActions = ['add', 'remove'];
         let validFactions = ['horde', 'alliance'];
-        let actionType = args.shift().toLowerCase();
+        
+        // Get our action
+        let actionType = args.shift();
+        if (!actionType) { 
+            return client.messages.errorMessage(message.channel, "Please use the following format: +guild guild|gm|officer add|remove name", 240);
+        }
+        actionType = actionType.toLowerCase(); 
 
         // Find a single guild
         if (actionType == 'find') {
@@ -22,7 +28,7 @@ module.exports = {
 
         // List all guilds, either for a single faction or all
         if (actionType == 'list') {
-            return client.wowguild.listGuilds(client, action, message.channel);
+            return client.wowguild.listGuilds(client, action, message.channel, args.shift());
         }
 
         // Check if our type is valid
@@ -39,7 +45,7 @@ module.exports = {
             let faction;
             if (action == 'add') {
                 faction = args.shift().toLowerCase();
-                if (validFactions.includes(faction)) {
+                if (!validFactions.includes(faction)) {
                     return client.messages.errorMessage(message.channel, faction + ' is not a valid faction. (Alliance, Horde)', 240);
                 }
             }
@@ -47,8 +53,10 @@ module.exports = {
 
             return (action == 'add') ? client.wowguild.addGuild(client, guildName, faction, message.channel) : client.wow.guild.removeGuild(client, argString, message.channel);
         }
+
+        let wowGuildID = args.shift();
         if (actionType == 'officer') {
-            return (action == 'add') ? client.wowguild.addOfficer(client, wowGuildID, args, message.channel) : client.wowguild.removeOfficer(client, wowGuildID, args, message.channel);
+            return (action == 'add') ? client.wowguild.addOfficers(client, wowGuildID, args, message.channel) : client.wowguild.removeOfficers(client, wowGuildID, args, message.channel);
         }
         if (actionType == 'gm') {
             return (action == 'add') ? client.wowguild.addGM(client, wowGuildID, args, message.channel) : client.wowguild.removeGM(client, wowGuildID, args, message.channel);

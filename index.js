@@ -63,7 +63,8 @@ fs.readdir("./models/", (err, files) => {
   client.models.raid.hasMany(client.models.signup, { as: 'signups', foreignKey: 'raidID', constraints: false });
   client.models.signup.belongsTo(client.models.raid);
   client.models.signup.hasOne(client.models.raidReserve, { as: 'reserve', foreignKey: 'signupID' });
-
+  client.models.wowGuild.hasMany(client.models.wowGuildMaster, { as: 'gm', foreignKey: 'wowGuildID'});
+  client.models.wowGuild.hasMany(client.models.wowOfficer, { as: 'officer', foreignKey: 'wowGuildID'});
   console.log('    > ' + models.join(', '));
 })
 
