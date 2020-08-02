@@ -3,6 +3,10 @@ module.exports = {
         return 'Add/Edit/Remove a Guild, Guild Officer, or Guild Master';
     },
     run: (client, message, args) => {
+        if (!message.isAdmin) {
+            return false;
+        }
+        
         let validTypes = ['guild', 'gm', 'officer'];
         let validActions = ['add', 'remove'];
         let validFactions = ['horde', 'alliance'];
