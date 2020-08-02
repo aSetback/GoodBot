@@ -260,6 +260,34 @@
   Displays the current queue
 ```
 
+## Guild Listings
+```
++guild guild add <faction> <guild name>
+  Add a guild
+
++guild guild remove <faction> <guild name>
+  Remove a guild
+
++guild gm add <guildID> <gm1> <gm2?> ...
+  Add a guild master
+
++guild gm remove <guildID> <gm1> <gm2?> ...
+  Remove a guild master
+
++guild officer add <guildID> <officer1> <officer2?> ...
+  Add officer(s)
+
++guild officer remove <guildID> <officer1> <officer2?> ...
+  Remove officer(s)
+
++guild info <guild name>
+  Retrieve a guild's ID
+
++guild list <faction?> <serverID?>
+  Display a guild listing, including both factions or a single one.  
+  ServerID can be used to retrieve listings from another discord server.
+```
+
 ## Spreadsheets
 ```
 Spreadsheet export can be set up by providing the bot access to a Google Sheet.
