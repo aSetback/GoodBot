@@ -97,7 +97,7 @@ module.exports = {
             for (key in guilds) {
                 if (returnMessage.length > 1700) {
                     returnMessage += '```';
-                    client.messages.send(channel, returnMessage, 240);
+                    channel.message.send(returnMessage);
                     returnMessage = '```diff\n';
                 }
 
@@ -115,7 +115,7 @@ module.exports = {
                 returnMessage += '- Officers: ' + officers.join(', ') + '\n\n';
             }
             returnMessage += '```';
-            return client.messages.send(channel, returnMessage, 240);
+            channel.message.send(returnMessage);
         });
     }
 }
