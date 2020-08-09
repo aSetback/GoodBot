@@ -22,12 +22,12 @@ module.exports = {
     addOfficers: (client, wowGuildID, officers, channel) => {
         officers.forEach((officerName) => {
             officerName = client.general.ucfirst(officerName);
-            client.models.wowOfficer.findOne({where: {id: wowGuildID, name: officerName}}).then((officerInfo) => {
+            client.models.wowOfficer.findOne({where: {name: officerName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((officerInfo) => {
                 if (officerInfo) { 
-                    return client.messages.errorMessage(channel, 'Officer **' + officerName + '** already exists for this guild.', 240);
+                    return client.messages.errorMessage(channel, 'Officer **' + officerName + '** already exists for this guild.  (ID: ' + wowGuildID+ ')', 240);
                 }
                 client.models.wowOfficer.create({'name': officerName, wowGuildID: wowGuildID, guildID: channel.guild.id}).then(() => {
-                    return client.messages.send(channel, 'Officer **' + officerName + '** has been added.', 240);
+                    return client.messages.send(channel, 'Officer **' + officerName + '** has been added. (ID: ' + wowGuildID+ ')', 240);
                 });
             });
         });
@@ -37,10 +37,10 @@ module.exports = {
             officerName = client.general.ucfirst(officerName);
             client.models.wowOfficer.findOne({where: {name: officerName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((officerInfo) => {
                 if (!officerInfo) {
-                    return client.messages.errorMessage(channel, 'Officer **' + officerName + '** does not exist.', 240);
+                    return client.messages.errorMessage(channel, 'Officer **' + officerName + '** does not exist.  (ID: ' + wowGuildID+ ')', 240);
                 }
                 client.models.wowOfficer.destroy({'where': {'id': officerInfo.id}}).then(() => {
-                    return client.messages.send(channel, 'Officer **' + officerName + '** has been removed.', 240);
+                    return client.messages.send(channel, 'Officer **' + officerName + '** has been removed.  (ID: ' + wowGuildID+ ')', 240);
                 });
             });
         });
@@ -48,12 +48,12 @@ module.exports = {
     addGM: (client, wowGuildID, GMs, channel) => {
         GMs.forEach((guildMasterName) => {
             guildMasterName = client.general.ucfirst(guildMasterName);
-            client.models.wowGuildMaster.findOne({where: {id: wowGuildID, name: guildMasterName, guildID: channel.guild.id}}).then((officerInfo) => {
-                if (officerInfo) { 
-                    return client.messages.errorMessage(channel, 'Guild Master **' + guildMasterName + '** already exists for this guild.', 240);
+            client.models.wowGuildMaster.findOne({where: {name: guildMasterName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((gmInfo) => {
+                if (gmInfo) { 
+                    return client.messages.errorMessage(channel, 'Guild Master **' + guildMasterName + '** already exists for this guild.  (ID: ' + wowGuildID+ ')', 240);
                 }
                 client.models.wowGuildMaster.create({'name': guildMasterName, wowGuildID: wowGuildID, guildID: channel.guild.id}).then(() => {
-                    return client.messages.send(channel, 'Guild Master **' + guildMasterName + '** has been added.', 240);
+                    return client.messages.send(channel, 'Guild Master **' + guildMasterName + '** has been added.  (ID: ' + wowGuildID+ ')', 240);
                 });
             });
         });
@@ -61,12 +61,12 @@ module.exports = {
     removeGM: (client, wowGuildID, GMs, channel) => {
         GMs.forEach((guildMasterName) => {
             guildMasterName = client.general.ucfirst(guildMasterName);
-            client.models.wowGuildMaster.findOne({where: {name: guildMasterName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((officerInfo) => {
-                if (!officerInfo) {
-                    return client.messages.errorMessage(channel, 'Guild Master **' + guildMasterName + '** does not exist.', 240);
+            client.models.wowGuildMaster.findOne({where: {name: guildMasterName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((gmInfo) => {
+                if (!gmInfo) {
+                    return client.messages.errorMessage(channel, 'Guild Master **' + guildMasterName + '** does not exist.  (ID: ' + wowGuildID+ ')', 240);
                 }
-                client.models.wowGuildMaster.destroy({'where': {'id': officerInfo.id}}).then(() => {
-                    return client.messages.send(channel, 'Guild Master **' + guildMasterName + '** has been removed.', 240);
+                client.models.wowGuildMaster.destroy({'where': {'id': gmInfo.id}}).then(() => {
+                    return client.messages.send(channel, 'Guild Master **' + guildMasterName + '** has been removed.  (ID: ' + wowGuildID+ ')', 240);
                 });
             });
         });
@@ -84,7 +84,7 @@ module.exports = {
             {model: client.models.wowGuildMaster, as: 'gm', foreignKey: 'wowGuildID'},
             {model: client.models.wowOfficer, as: 'officer', foreignKey: 'wowGuildID'},
         ];
-        let guildID = serverID ? serverID : channel.guild.id;
+        let guildID: = serverID: ? serverID: : channel.guild.id;
         let where = {     
             guildID: guildID
         };
