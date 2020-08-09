@@ -37,7 +37,7 @@ module.exports = {
             officerName = client.general.ucfirst(officerName);
             client.models.wowOfficer.findOne({where: {name: officerName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((officerInfo) => {
                 if (!officerInfo) {
-                    return client.messages.errorMessage(channel, 'Officer **' + name + '** does not exist.', 240);
+                    return client.messages.errorMessage(channel, 'Officer **' + officerName + '** does not exist.', 240);
                 }
                 client.models.wowOfficer.destroy({'where': {'id': officerInfo.id}}).then(() => {
                     return client.messages.send(channel, 'Officer **' + officerName + '** has been removed.', 240);
