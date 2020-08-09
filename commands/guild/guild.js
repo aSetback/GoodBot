@@ -3,7 +3,7 @@ module.exports = {
         return 'Add/Edit/Remove a Guild, Guild Officer, or Guild Master';
     },
     run: (client, message, args) => {
-        if (!message.isAdmin) {
+        if (!client.permission.manageChannel(message.member, message.channel)) {
             return false;
         }
         
