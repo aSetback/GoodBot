@@ -18,6 +18,16 @@ module.exports = {
         });
     },
     handle: async (client, message) => {
+        // Special escape character to handle multiple commands at once
+        if (message.content.indexOf('|~|') > 0) {
+            let multiCommand = message.content.split('|~|');
+            for (key in multiCommand) {
+                message.content = multiCommand[key].trim();
+                await client.messages.handle(client, message);
+            }
+            return;
+        }
+
         let ignoreBots = null;
         if (message.guild) {
             ignoreBots = await client.guildOption.getCached(client, message.guild.id, 'ignoreBots');
@@ -64,8 +74,8 @@ module.exports = {
 
         // Check if the message starts with our command trigger -- if so, pop off first element and check if it's a command.
         var command = '';
-        if (message.content.indexOf(client.config.prefix) == 0) {
-            args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
+        if (args[0] && args[0].indexOf(client.config.prefix) == 0) {
+            args = message.content.trim().slice(client.config.prefix.length).trim().split(/ +/g);
             command = args.shift().toLowerCase();
         };
 
