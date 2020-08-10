@@ -21,7 +21,7 @@ module.exports = {
     },
     addOfficers: (client, wowGuildID, officers, channel) => {
         officers.forEach((officerName) => {
-            officerName = client.general.ucfirst(officerName);
+            officerName = client.general.ucfirst(officerName).replace(',', '');
             client.models.wowOfficer.findOne({where: {name: officerName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((officerInfo) => {
                 if (officerInfo) { 
                     return client.messages.errorMessage(channel, 'Officer **' + officerName + '** already exists for this guild.  (ID ' + wowGuildID+ ')', 240);
@@ -34,7 +34,7 @@ module.exports = {
     },
     removeOfficers: (client, wowGuildID, officers, channel) => {
         officers.forEach((officerName) => {
-            officerName = client.general.ucfirst(officerName);
+            officerName = client.general.ucfirst(officerName).replace(',', '');
             client.models.wowOfficer.findOne({where: {name: officerName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((officerInfo) => {
                 if (!officerInfo) {
                     return client.messages.errorMessage(channel, 'Officer **' + officerName + '** does not exist.  (ID ' + wowGuildID+ ')', 240);
@@ -47,7 +47,7 @@ module.exports = {
     },
     addGM: (client, wowGuildID, GMs, channel) => {
         GMs.forEach((guildMasterName) => {
-            guildMasterName = client.general.ucfirst(guildMasterName);
+            guildMasterName = client.general.ucfirst(guildMasterName).replace(',', '');
             client.models.wowGuildMaster.findOne({where: {name: guildMasterName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((gmInfo) => {
                 if (gmInfo) { 
                     return client.messages.errorMessage(channel, 'Guild Master **' + guildMasterName + '** already exists for this guild.  (ID ' + wowGuildID+ ')', 240);
@@ -60,7 +60,7 @@ module.exports = {
     },
     removeGM: (client, wowGuildID, GMs, channel) => {
         GMs.forEach((guildMasterName) => {
-            guildMasterName = client.general.ucfirst(guildMasterName);
+            guildMasterName = client.general.ucfirst(guildMasterName).replace(',', '');
             client.models.wowGuildMaster.findOne({where: {name: guildMasterName, wowGuildID: wowGuildID, guildID: channel.guild.id}}).then((gmInfo) => {
                 if (!gmInfo) {
                     return client.messages.errorMessage(channel, 'Guild Master **' + guildMasterName + '** does not exist.  (ID ' + wowGuildID+ ')', 240);
