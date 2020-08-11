@@ -31,7 +31,7 @@ exports.run = (client, message, args) => {
   gearCheck(player, server, region, 0);
 
   function gearCheck(player, server, region, logKey) {
-    let searchUrl = "https://classic.warcraftlogs.com:443/v1/parses/character/" + player + "/" + server + "/" + region + "?api_key=" + client.config.warcraftlogs;
+    let searchUrl = "https://classic.warcraftlogs.com:443/v1/parses/character/" + player + "/" + server + "/" + region + "?zone=1002&api_key=" + client.config.warcraftlogs;
     if (!player) {
       return message.channel.send('Please add a valid player name, eg "+gear Taunt"');
     }
