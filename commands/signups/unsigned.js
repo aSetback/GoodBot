@@ -16,7 +16,7 @@ exports.run = async function(client, message, args) {
 		return message.channel.send('Proper usage is: +unsigned mar-21-tagalong');
 	}
 
-	let oldChannel = message.guild.channels.find(channel => channel.name == oldRaidChannel);
+	oldChannel = await client.general.getChannel(oldRaidChannel, message.guild);
 	if (!oldChannel) {
 		return message.channel.send('Unable to find channel: ' + oldRaidChannel);
 	}

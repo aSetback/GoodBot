@@ -70,20 +70,42 @@ module.exports = {
             }
         }
     },
-    selectClass: (client, emoji, member, channel, action) => {
+    selectClass: async (client, emoji, member, channel, action) => {
         if (action != 'add') {
             return false;
         }
 
+        let emojiName = emoji.name;
+        if (emojiName.substring(0, 2) == 'GB') {
+            emojiName = emojiName.substring(2, emojiName.length);
+        }
+
         // Check if a discord role exists for this emoji
-        let role = channel.guild.roles.find(role => role.name.toLowerCase() === emoji.name.toLowerCase());
+        let role = channel.guild.roles.find(role => role.name.toLowerCase() === emojiName.toLowerCase());
+
+        // Make an array of role objects for each of the classes
+        let classes = ['warrior', 'paladin', 'shaman', 'hunter', 'rogue', 'druid', 'priest', 'warlock', 'mage'];
+        let expansion = await client.guildOption.expansion(client, channel.guild.id);
+        if (expansion >= 2) {
+            classes.push('dk');
+        }
+        if (expansion >= 4) {
+            classes.push('monk');
+        }
+        if (expansion >= 6) {
+            classes.push('dh');
+        }
+
+        if (!classes.includes(emojiName.toLowerCase())) {
+            console.log('Invalid emoji: ' + emojiName);
+            return;
+        }
 
         // Tag the player with the selected role, if it exists.
         if (role) {
-            // Make an array of role objects for each of the classes
-            let classes = ['warrior', 'paladin', 'shaman', 'hunter', 'rogue', 'druid', 'priest', 'warlock', 'mage'];
             // Remove the selected role from the remove list
             classes.splice(classes.indexOf(role.name.toLowerCase()), 1);
+
             // Remove all other roles
             classes.forEach((memberClass) => {
                 let memberRole = channel.guild.roles.find(role => role.name.toLowerCase() === memberClass.toLowerCase());
@@ -96,13 +118,12 @@ module.exports = {
                 client.setup.checkCompleteness(client, member);
             });
         }
-
-        client.set.characterClass(client, channel.guild, member, member.displayName, emoji.name);
+        client.set.characterClass(client, channel.guild, member, member.displayName, emojiName);
         if (!role) {
             client.setup.checkCompleteness(client, member);
         }
 
-        client.log.write(client, member, channel, 'Class Set: ' + emoji.name.toLowerCase());
+        client.log.write(client, member, channel, 'Class Set: ' + client.general.ucfirst(emojiName));
 
     },
     selectRole: (client, emoji, member, channel, action) => {
@@ -110,13 +131,23 @@ module.exports = {
             return false;
         }
 
+        let emojiName = emoji.name;
+        if (emojiName.substring(0, 2) == 'GB') {
+            emojiName = emojiName.substring(2, emojiName.length);
+        }
+
+        // Make an array of role objects for each of the roles
+        let roles = ['healer', 'tank', 'dps', 'caster'];
+
+        if (!roles.includes(emojiName.toLowerCase())) {
+            return;
+        }
+
         // Check if a discord role exists for this emoji
-        let role = channel.guild.roles.find(role => role.name.toLowerCase() === emoji.name.toLowerCase());
+        let role = channel.guild.roles.find(role => role.name.toLowerCase() === emojiName.toLowerCase());
 
         // Tag the player with the selected role, if it exists.
         if (member && role) {
-            // Make an array of role objects for each of the roles
-            let roles = ['healer', 'tank', 'dps', 'caster'];
             // Remove the selected role from the remove list
             roles.splice(roles.indexOf(role.name.toLowerCase()), 1);
 
@@ -135,12 +166,12 @@ module.exports = {
 
         }
 
-        client.set.characterRole(client, channel.guild, member, member.displayName, emoji.name);
+        client.set.characterRole(client, channel.guild, member, member.displayName, emojiName);
         if (!role) {
             client.setup.checkCompleteness(client, member);
         }
 
-        client.log.write(client, member, channel, 'Role Set: ' + emoji.name.toLowerCase());
+        client.log.write(client, member, channel, 'Role Set: ' + client.general.ucfirst(emojiName));
 
     },
     nick: (client, message) => {
@@ -149,7 +180,7 @@ module.exports = {
         }, 1000);
         
         // Make sure the name is valid
-        let newName = message.content.trim();
+        let newName = client.general.ucfirst(message.content.trim());
         if (!client.set.validName(message.guild, newName)) {
             return message.author.send('Unable to set your name.  Please use only letters.');
         }
@@ -157,10 +188,10 @@ module.exports = {
         client.log.write(client, message.member, message.channel, 'Set Nick: ' + newName);
 
         // UCFirst
-        newName = newName.charAt(0).toUpperCase() + newName.slice(1).toLowerCase();
         let result = message.guild.members.get(message.author.id).setNickname(newName);  
         result.catch((e) => {
             message.author.send('Unable to set your name: ' + e.message);
+            message.author.send('This generally happens when a player has a higher role than the bot - please note that the bot will never be able to change the nickname of the server owner.');
         });
         client.setup.checkCompleteness(client, message.member);
     },

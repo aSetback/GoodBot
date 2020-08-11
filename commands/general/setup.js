@@ -1,9 +1,11 @@
-exports.run = (client, message, args) => {
+exports.run = async (client, message, args) => {
 
     if (!message.isAdmin) {
 		return false;
     }
     
+    let expansion = await client.guildOption.expansion(client, message.guild.id);
+
     // Create Category
     message.guild.createChannel('Get Started', {
             'type': 'category'
@@ -39,7 +41,7 @@ exports.run = (client, message, args) => {
                         });
 
                     channel.send(signupMessage).then((botMsg) => {
-                        reactClasses(botMsg);
+                        reactClasses(botMsg, expansion);
                     });
                 });
 
@@ -51,10 +53,10 @@ exports.run = (client, message, args) => {
                 .then((channel) => {
                     let signupMessage = 'Please select your role. \n';
                     let emojis = {
-                        'tank': client.emojis.find(emoji => emoji.name === "TANK"),
-                        'healer': client.emojis.find(emoji => emoji.name === "HEALER"),
-                        'dps': client.emojis.find(emoji => emoji.name === "DPS"),
-                        'caster': client.emojis.find(emoji => emoji.name === "CASTER"),
+                        'tank': client.emojis.find(emoji => emoji.name === "GBtank"),
+                        'healer': client.emojis.find(emoji => emoji.name === "GBhealer"),
+                        'dps': client.emojis.find(emoji => emoji.name === "GBdps"),
+                        'caster': client.emojis.find(emoji => emoji.name === "GBcaster"),
                     }
                     for (role in emojis) {
                         signupMessage += emojis[role] + ' for ' + role + '\n';
@@ -67,23 +69,34 @@ exports.run = (client, message, args) => {
                         });
 
                     channel.send(signupMessage).then((botMsg) => {
-                        reactRoles(botMsg);
+                        reactRoles(botMsg, expansion);
                     });
                 });
         });
 
-    async function reactClasses(msg) {
+    async function reactClasses(msg, expansion) {
+        
         let emojis = [
-            client.emojis.find(emoji => emoji.name === "warrior"),
-            client.emojis.find(emoji => emoji.name === "paladin"),
-            client.emojis.find(emoji => emoji.name === "shaman"),
-            client.emojis.find(emoji => emoji.name === "hunter"),
-            client.emojis.find(emoji => emoji.name === "rogue"),
-            client.emojis.find(emoji => emoji.name === "druid"),
-            client.emojis.find(emoji => emoji.name === "priest"),
-            client.emojis.find(emoji => emoji.name === "warlock"),
-            client.emojis.find(emoji => emoji.name === "mage")
+            client.emojis.find(emoji => emoji.name === "GBwarrior"),
+            client.emojis.find(emoji => emoji.name === "GBpaladin"),
+            client.emojis.find(emoji => emoji.name === "GBshaman"),
+            client.emojis.find(emoji => emoji.name === "GBhunter"),
+            client.emojis.find(emoji => emoji.name === "GBrogue"),
+            client.emojis.find(emoji => emoji.name === "GBdruid"),
+            client.emojis.find(emoji => emoji.name === "GBpriest"),
+            client.emojis.find(emoji => emoji.name === "GBwarlock"),
+            client.emojis.find(emoji => emoji.name === "GBmage")
         ];
+
+        if (expansion >= 2) {
+            emojis.push(client.emojis.find(emoji => emoji.name === "GBdk"));
+        }
+        if (expansion >= 4) {
+            emojis.push(client.emojis.find(emoji => emoji.name === "GBmonk"));
+        }
+        if (expansion >= 6) {
+            emojis.push(client.emojis.find(emoji => emoji.name === "GBdh"));
+        }
         for (key in emojis) {
             await msg.react(emojis[key]);
         }
@@ -91,10 +104,10 @@ exports.run = (client, message, args) => {
 
     async function reactRoles(msg) {
         let emojis = [
-            client.emojis.find(emoji => emoji.name === "TANK"),
-            client.emojis.find(emoji => emoji.name === "HEALER"),
-            client.emojis.find(emoji => emoji.name === "DPS"),
-            client.emojis.find(emoji => emoji.name === "CASTER"),
+            client.emojis.find(emoji => emoji.name === "GBtank"),
+            client.emojis.find(emoji => emoji.name === "GBhealer"),
+            client.emojis.find(emoji => emoji.name === "GBdps"),
+            client.emojis.find(emoji => emoji.name === "GBcaster"),
         ];
         for (key in emojis) {
             await msg.react(emojis[key]);

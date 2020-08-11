@@ -2,7 +2,7 @@ module.exports = {
     errorMessage: (channel, message, seconds) => {
         channel.send(message).then((sentMessage) => {
             setTimeout(() => {
-                sentMessage.delete();
+                sentMessage.delete().catch(O_o => { });
             }, seconds * 1000);
         });
         let errorChannel = channel.guild ? channel.guild.channels.find(c => c.name == "error-logs") : null;
@@ -13,11 +13,21 @@ module.exports = {
     send: (channel, message, seconds) => {
         channel.send(message).then((sentMessage) => {
             setTimeout(() => {
-                sentMessage.delete();
+                sentMessage.delete().catch(O_o => { });
             }, seconds * 1000);
         });
     },
     handle: async (client, message) => {
+        // Special escape character to handle multiple commands at once
+        if (message.content.indexOf('|~|') > 0) {
+            let multiCommand = message.content.split('|~|');
+            for (key in multiCommand) {
+                message.content = multiCommand[key].trim();
+                await client.messages.handle(client, message);
+            }
+            return;
+        }
+
         let ignoreBots = null;
         if (message.guild) {
             ignoreBots = await client.guildOption.getCached(client, message.guild.id, 'ignoreBots');
@@ -64,8 +74,8 @@ module.exports = {
 
         // Check if the message starts with our command trigger -- if so, pop off first element and check if it's a command.
         var command = '';
-        if (message.content.indexOf(client.config.prefix) == 0) {
-            args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
+        if (args[0] && args[0].indexOf(client.config.prefix) == 0) {
+            args = message.content.trim().slice(client.config.prefix.length).trim().split(/ +/g);
             command = args.shift().toLowerCase();
         };
 
@@ -99,7 +109,10 @@ module.exports = {
         // Send the client object along with the message
         message.client = client;
 
+        
         // Run the command
-        cmd.run(client, message, args);
+        if (message.guild) {
+            cmd.run(client, message, args);
+        }
     }
 }

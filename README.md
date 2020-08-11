@@ -53,6 +53,9 @@
 +quote remove ID
   Remove the quote with the specified ID
 
++removeallpins
+  Unpin all current pins in the current channel.
+
 +serverid
   The bot will DM you the server's ID
 
@@ -69,15 +72,31 @@
   Clones the current 'Archives' category (complete with all permissions), then renames the current 'Archives' to 'Archives-Old'
 
 +deletecategory Category Name
-  Deletes a channel category and all sub-channels.  **BE VERY CAREFUL WITH THIS, THERE IS NO UNDO BUTTON*
+  Deletes a channel category and all sub-channels.  **BE VERY CAREFUL WITH THIS, THERE IS NO UNDO BUTTON**
 
+```
+
+## Character Management Commands
+```
++alt altName mainName
+  Set a character as an alt of your main character.
+
++info character
+  Returns the main and all alts attached to this character, along with signed up raid and resistances.
+
++resist character type amount
+  Set a player's resistance of a type (fire, frost, shadow, nature) to a number for export on spreadsheet.
+
++set Player class role
+  Manually set a player's class and role.  Valid roles are DPS, Tank, Healer, Caster.
+
++reservehistory character
+  Returns a complete history of all items this player has reserved.
 ```
 
 ## Raid Sign-up Commands
 ```
-+alt altName mainName
-  Set a character as an alt of your main character (for pinging purposes)
-  
+ 
 +confirmation
   Toggle 'confirmation mode' for a raid
 
@@ -97,26 +116,32 @@
 +raid RaidName Mar-21 (title?) (faction?)
   Create a new raid channel under the raid category called mar-21-RaidName
 
++resistlist
+  Sends a DM to the player with the resistances of all signed up players
+
 +rules add RulesName Rules go here
   Add a rule to be displayed later with a name of "RulesName"
 
 +rules RulesName
   Have the bot display rules with the name of "RulesName"
 
-+setdescription New description
-  Alter the raid description in the embed
-  
-+settime Time
-  Set the time for the raid start
-
 +setcolor #hexCode
   Set the color of the sidebar of the embed
 
++setdate Date
+  Sets the date of the raid
+
++setdescription New description
+  Alter the raid description in the embed
+
++setleader Leader
+  Sets the raid leader of the raid
+
++settime Time
+  Set the time for the raid start
+
 +settitle New title
   Alter the raid title in the embed
-
-+set Player class role
-  Manually set a player's class and role.  Valid roles are DPS, Tank, Healer, Caster.
 
 +unconfirm Player
   Unconfirms player for the raid (Confirmation mode must be enabled!)
@@ -135,6 +160,9 @@
 
   +reservelist
     The bot will DM the user a list of all reserves that have been made for this raid, ordered by item name
+
+  +reservelist channel
+    The bot will list all reserves that have been made for this raid in the channel
 
   +reserveitems
     The bot will DM the user a list of all items that are available for reserve for this raid
@@ -232,6 +260,34 @@
   Displays the current queue
 ```
 
+## Guild Listings
+```
++guild guild add <faction> <guild name>
+  Add a guild
+
++guild guild remove <faction> <guild name>
+  Remove a guild
+
++guild gm add <guildID> <gm1> <gm2?> ...
+  Add a guild master
+
++guild gm remove <guildID> <gm1> <gm2?> ...
+  Remove a guild master
+
++guild officer add <guildID> <officer1> <officer2?> ...
+  Add officer(s)
+
++guild officer remove <guildID> <officer1> <officer2?> ...
+  Remove officer(s)
+
++guild info <guild name>
+  Retrieve a guild's ID
+
++guild list <faction?> <serverID?>
+  Display a guild listing, including both factions or a single one.  
+  ServerID can be used to retrieve listings from another discord server.
+```
+
 ## Spreadsheets
 ```
 Spreadsheet export can be set up by providing the bot access to a Google Sheet.
@@ -260,6 +316,11 @@ Columns:
 		shaman healer => 17
 		dk dps => 18
 		dk tank => 19
+    monk dps => 20
+    monk tank => 21
+    monk healer => 22
+    dh dps => 23
+    dh tank => 24
 ```
 To set up your spreadsheet:
 * The sheet must be shared with discord@api-project-483394155093.iam.gserviceaccount.com																								

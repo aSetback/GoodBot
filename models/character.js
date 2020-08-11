@@ -23,7 +23,23 @@ module.exports = (client, Sequelize) => {
         memberID: {
             type: Sequelize.BIGINT(20),
             allowNull: false
-        }
+        },
+        shadowResist: {
+            type: Sequelize.BIGINT(20),
+            allowNull: true
+        },
+        natureResist: {
+            type: Sequelize.BIGINT(20),
+            allowNull: true
+        },
+        fireResist: {
+            type: Sequelize.BIGINT(20),
+            allowNull: true
+        },
+        frostResist: {
+            type: Sequelize.BIGINT(20),
+            allowNull: true
+        }        
     }, {
     // options
     });

@@ -26,7 +26,7 @@ module.exports = {
 					.then((message) => {
 						if (message.author.id == client.config.userId && action == 'add') {
 							// Ignore the bot's emojis
-							if (message.author.id == member.id) {
+							if (!member || message.author.id == member.id) {
 								return false;
 							}
 					

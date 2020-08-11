@@ -30,13 +30,28 @@ module.exports = {
             };
             client.models.guildOption.findOne({where: record}).then((option) => {
                 if (option) {
-                    resolve(option);
+                    resolve(option.value);
                 } else {
                     resolve(false);
                 }
             });
         });
         return promise;
+    },
+    async expansion(client, guildID) {
+        let expansions = [
+            'classic',
+            'tbc',
+            'wotlk',
+            'cata',
+            'mop',
+            'wod',
+            'legion',
+            'boa',
+            'sl'   
+        ];
+        let expacKey = await client.guildOption.get(client, guildID, 'expansion');
+        return expansions.indexOf(expacKey);
     },
     cache(client, guildID) {
         let promise = new Promise((resolve, reject) => {

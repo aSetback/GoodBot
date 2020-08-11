@@ -33,7 +33,7 @@ exports.run = (client, message, args) => {
 		}
 
 		// Retrieve our category from the discord API
-		let discordCategory = message.guild.channels.find(c => c.name == category.trim() && c.type == "category");
+		let discordCategory = message.guild.channels.find(c => c.name.toLowerCase() == category.toLowerCase().trim() && c.type == "category");
 
 		if (!discordCategory) {
 			return message.channel.send('Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.');

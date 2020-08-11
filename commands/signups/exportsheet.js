@@ -5,7 +5,11 @@ exports.run = async function(client, message, args) {
 	}	
 
 
-	let sheetID = client.customOptions.get(message.guild, 'sheet').trim();
+	let sheetID = client.customOptions.get(message.guild, 'sheet');
+	if (sheetID) {
+		sheedID = sheetID.trim();
+	}
+	
 	if (args[0]) {
 		sheetID = args[0];
 	}
@@ -16,8 +20,6 @@ exports.run = async function(client, message, args) {
 	await doc.useServiceAccountAuth(creds);
 	await doc.loadInfo();
 	let raid = await client.signups.getRaid(client, message.channel);
-	let reserves = await client.reserves.byRaid(client, raid);
-	await exportReserves(reserves);
 
 	const sheetCols = {
 		'warrior-tank': 1,
@@ -36,18 +38,31 @@ exports.run = async function(client, message, args) {
 		'paladin-tank': 14,
 		'shaman-dps': 15,
 		'shaman-caster': 16,
-		'shaman-healer': 17,
-		'dk-dps': 18,
-		'dk-tank': 19
+		'shaman-healer': 17
 	};
-	
+
+	let expansion = client.guildOption.expansion(client, message.guild.id);
+	if (expansion >= 2) {
+		sheetCols['dk-dps'] = 18;
+		sheetCols['dk-tank'] = 19;
+	}
+	if (expansion >= 4) {
+		sheetCols['monk-dps'] = 20;
+		sheetCols['monk-tank'] = 21;
+		sheetCols['monk-healer'] = 22;
+	}
+	if (expansion >= 6) {
+		sheetCols['dk-dps'] = 23;
+		sheetCols['dk-tank'] = 24;
+	}
+
 	let signups = {}
 	if (raid.confirmation) {
 		signups = await client.signups.getConfirmed(client, raid);		
 	} else {
 		signups = await client.signups.getSignups(client, raid);
 	}
-	let characterList = await client.embed.getCharacters(client, message.channel.guild);
+	let characterList = await client.embed.getCharacters(client, message.channel.guild, signups);
 	let lineup = [];
 
 	signups.forEach((signup) => {
@@ -57,7 +72,13 @@ exports.run = async function(client, message, args) {
 					lineup.push({
 						name: signup.player,
 						class: characterListItem.class,
-						role: characterListItem.role
+						role: characterListItem.role,
+						resists: {
+							fire: characterListItem.fireResist ? characterListItem.fireResist : 0,
+							frost: characterListItem.frostResist ? characterListItem.frostResist : 0,
+							nature: characterListItem.natureResist ? characterListItem.natureResist : 0,
+							shadow: characterListItem.shadowResist ? characterListItem.shadowResist : 0,
+						}
 					});					
 				}
 			});
@@ -88,6 +109,48 @@ exports.run = async function(client, message, args) {
 	}
 	setCells(cellData);
 
+	let reserves = await client.reserves.byRaid(client, raid);
+	await exportReserves(reserves);
+	await exportResists(signups);
+
+	function exportResists(signups) {
+		return new Promise(async (resolve, reject) => {
+			let sheet = null;
+			for (key in doc.sheetsById) {
+				if (doc.sheetsById[key].title == 'Resistances') {
+					sheet = doc.sheetsById[key];
+				}
+			}
+			if (!sheet) {
+				return resolve(false);
+			}
+
+			await sheet.loadCells('A2:E60');
+			for (row = 1; row < 60; row++) {
+				for (col = 0; col <  3; col++) {
+					sheet.getCell(row, col).value = '';
+				}
+			}
+			let outputRow = 1;
+			for (key in lineup) {
+				let signup = lineup[key];
+				let cell = sheet.getCell(outputRow, 0);
+				cell.value = signup.name;
+				cell = sheet.getCell(outputRow, 1);
+				cell.value = signup.resists.nature;
+				cell = sheet.getCell(outputRow, 2);
+				cell.value = signup.resists.shadow;
+				cell = sheet.getCell(outputRow, 3);
+				cell.value = signup.resists.fire;
+				cell = sheet.getCell(outputRow, 4);
+				cell.value = signup.resists.frost;
+				outputRow++;
+			}
+			await sheet.saveUpdatedCells();
+			resolve(true)
+		});
+	}
+
 	function exportReserves(reserves) {
 		return new Promise(async (resolve, reject) => {
 			let sheet = null;
@@ -97,7 +160,7 @@ exports.run = async function(client, message, args) {
 				}
 			}
 			if (!sheet) {
-				resolve(false);
+				return resolve(false);
 			}
 
 			await sheet.loadCells('A2:C60');

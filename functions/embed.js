@@ -1,5 +1,5 @@
-const fs = require("fs");
 const Discord = require("discord.js");
+const { Op } = require('sequelize');
 
 module.exports = {
 	update: (client, message, raid) => {
@@ -9,24 +9,37 @@ module.exports = {
 		let raidDate = new Date(Date.parse(raid.date));
 		let raidType = raid.raid
 		let raidName = '';
-
-		if (raidType.toLowerCase() == 'mc') {
-			raidName = 'Molten Core';
-		} else if (raidType.toLowerCase() == 'ony') {
-			raidName = 'Onyxia';
-		} else if (raidType.toLowerCase() == 'aq40') {
-			raidName = 'Temple of Ahn\'Qiraj';
-		} else if (raidType.toLowerCase() == 'aq20') {
-			raidName = 'Ruins of Ahn\'Qiraj';
-		} else if (raidType.toLowerCase() == 'naxx') {
-			raidName = 'Naxxramas';
-		} else if (raidType.toLowerCase() == 'bwl') {
-			raidName = 'Blackwing Lair';
-		} else if (raidType.toLowerCase() == 'zg') {
-			raidName = 'Zul\'Gurub';
+		
+		let raids = {
+			'mc': 'Molten Core',
+			'ony': 'Onyxia',
+			'aq40': 'Temple of Ahn\'Qiraj',
+			'aq20': 'Ruins of Ahn\'Qiraj',
+			'naxx': 'Naxxramas',
+			'bwl': 'Blackwing Lair',
+			'zg': 'Zul\'Gurub',
+			'kz': 'Karazhan',
+			'gruul': 'Gruul\'s Lair',
+			'ssc': 'Serpentshrine Cavern',
+			'tk': 'Tempest Keep',
+			'sw': 'Sunwell',
+			'bt': 'Black Temple',
+			'voa': 'Vault of Archavon',
+			'os': 'Obsidian Sanctum',
+			'eoe': 'Eye of Eternity',
+			'uld': 'Ulduar',
+			'toc': 'Trial of the Crusader',
+			'icc': 'Icecrown Citadel'
+		}
+		if (raids[raid.raid.toLowerCase()]) {
+			raidName = raids[raid.raid.toLowerCase()];
 		} else {
 			category = channel.parent;
-			raidName = raidName.charAt(0).toUpperCase() + raidName.slice(1).toLowerCase();
+			raidName = raid.raid.charAt(0).toUpperCase() + raid.raid.slice(1).toLowerCase();
+		}
+
+		if (raid.name) {
+			raidName = raid.name;
 		}
 
 		channel.fetchPinnedMessages()
@@ -38,9 +51,29 @@ module.exports = {
 				let embed = updateEmbed(title, channel, client, pinnedMsg, raidType);		
 			});		
 	},
-	getCharacters: async function(client, guild) {
+	getCharacters: async function(client, guild, signups) {
+		characterNames = [];
+		for (key in signups) {
+			characterNames.push(signups[key].player);
+		}
+
 		let characterList = new Promise((resolve, reject) => {
-			client.models.character.findAll({where: {'guildID': guild.id}}).then((characterList) => {
+			client.models.character.findAll(
+				{
+					attributes: [
+						[client.sequelize.fn('DISTINCT', client.sequelize.col('name')), 'name'], 'class', 'role', 'fireResist', 'frostResist', 'shadowResist', 'natureResist'
+					], 
+					where: {
+						'guildID': guild.id, 
+						name: { 
+							[Op.in]: characterNames 
+						}
+					},
+					orderBy: {
+						updatedAt: 'DESC'
+					}
+				}
+			).then((characterList) => {
 				resolve(characterList);
 			});
 		});
@@ -58,7 +91,7 @@ module.exports = {
 
 async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	let signups = await client.embed.getSignups(client, channel.id);
-	let characterList = await client.embed.getCharacters(client, channel.guild);
+	let characterList = await client.embed.getCharacters(client, channel.guild, signups);
 	let raid = await client.signups.getRaid(client, channel);
 	let raidDate = new Date(Date.parse(raid.date));
 	let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
@@ -97,50 +130,68 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 	lineup.reverse();
 
 	const emojis = {
-		"warrior": client.emojis.find(emoji => emoji.name === "warrior"),
-		"druid": client.emojis.find(emoji => emoji.name === "druid"),
-		"paladin": client.emojis.find(emoji => emoji.name === "paladin"),
-		"priest": client.emojis.find(emoji => emoji.name === "priest"),
-		"mage": client.emojis.find(emoji => emoji.name === "mage"),
-		"warlock": client.emojis.find(emoji => emoji.name === "warlock"),
-		"rogue": client.emojis.find(emoji => emoji.name === "rogue"),
-		"hunter": client.emojis.find(emoji => emoji.name === "hunter"),
-		"shaman": client.emojis.find(emoji => emoji.name === "shaman"),
-		"dk": client.emojis.find(emoji => emoji.name === "DK")
+		"warrior": client.emojis.find(emoji => emoji.name === "GBwarrior"),
+		"druid": client.emojis.find(emoji => emoji.name === "GBdruid"),
+		"paladin": client.emojis.find(emoji => emoji.name === "GBpaladin"),
+		"priest": client.emojis.find(emoji => emoji.name === "GBpriest"),
+		"mage": client.emojis.find(emoji => emoji.name === "GBmage"),
+		"warlock": client.emojis.find(emoji => emoji.name === "GBwarlock"),
+		"rogue": client.emojis.find(emoji => emoji.name === "GBrogue"),
+		"hunter": client.emojis.find(emoji => emoji.name === "GBhunter"),
+		"shaman": client.emojis.find(emoji => emoji.name === "GBshaman"),
+		"dk": client.emojis.find(emoji => emoji.name === "GBdk"),
+		"monk": client.emojis.find(emoji => emoji.name === "GBmonk"),
+		"dh": client.emojis.find(emoji => emoji.name === "GBdh")
 	}
 
 	let icon = 'http://softball.setback.me/goodbot/icons/' + raidType + '.png';
 	let embed = new Discord.RichEmbed()
-	.setTitle(raidData.title)
-	.setColor(raidData.color)
-	.setThumbnail(icon);
+		.setTitle(raidData.title)
+		.setColor(raidData.color)
+		.setThumbnail(icon);
 
+	let fields = 0;
 	if (raid.locked) {
 		embed.addField('**Status**', '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*');
+		fields ++;
 	}
 
-	embed.addField('**Date**', dateString, true);
-	if (raid.time) {
-		embed.addField('**Time**', raid.time, true);
+	let leader = channel.guild.members.find(member => member.id == raid.memberID);
+	if (!leader) {
+		leader = "-";
 	}
+	fields ++;
+	embed.addField('**Raid Leader**', leader, true);
+	
+
+	fields ++;
+	embed.addField('**Date**', dateString, true);
+	if (!raid.time) {
+		raid.time = '-';
+	}
+
+	fields ++;
+	embed.addField('**Time**', raid.time, true);
 
 	if (raid.softreserve) {
 		embed.addField('**Soft Reserve**', "To reserve an item, use `+reserve PlayerName Full Item Name`\nTo see all current reserves, use `+reservelist`\nTo view items eligible for reserving, use `+reserveitems`");
 	}
-
 
 	const roles = {
 		'tank': [
 			'warrior',
 			'druid',
 			'paladin',
-			'dk'
+			'dk',
+			'monk',
+			'dh'
 		],
 		'healer': [
 			'priest', 
 			'paladin',
 			'druid',
-			'shaman'
+			'shaman',
+			'monk'
 		],
 		'dps': [
 			'rogue',
@@ -149,7 +200,9 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 			'paladin',
 			'hunter',
 			'shaman',
-			'dk'
+			'dk',
+			'monk',
+			'dh'
 		],
 		'caster': [
 			'mage',
@@ -191,6 +244,14 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 			});
 			if (classList.length) {
 				playerClass = playerClass.charAt(0).toUpperCase() + playerClass.slice(1).toLowerCase();
+				if (playerClass == 'Dh') {
+					playerClass = 'Demon Hunter';
+				}
+
+				if (playerClass == 'Dk') {
+					playerClass = 'Death Knight';
+				}
+				fields ++;
 				embed.addField('**' + playerClass + ' (' + key + ')**', classList, true);
 			}
 		});
@@ -201,16 +262,25 @@ async function updateEmbed(title, channel, client, pinnedMsg, raidType) {
 		roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
 	} 
 	embed.addField('**Total Sign-ups**', total);
+	fields ++;
+
 	if (raid.confirmation) {
 		embed.addField('**Confirmed Sign-ups**', confirmCount);
+		fields ++;
 	}
-	embed.addField('**Group Composition**', roleField, false);
+	if (fields < 25) {
+		embed.addField('**Group Composition**', roleField, false);
+		fields ++;
+	}
 
-	if (maybeList.length) {
-		embed.addField('**Maybe**', maybeList.join(', '));
-	}
-	if (noList.length) {
-		embed.addField('**No**', noList.join(', '));
+
+	if (fields < 23) {
+		if (maybeList.length) {
+			embed.addField('**Maybe**', maybeList.join(', '));
+		}
+		if (noList.length) {
+			embed.addField('**No**', noList.join(', '));
+		}
 	}
 	if (raid.confirmation) {
 		embed.addField('**Please Note:**', "Confirmation mode has been enabled.  The players with **bold** names are currently confirmed for the raid.  *Italicized* names may or may not be brought to this raid.");

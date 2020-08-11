@@ -109,6 +109,21 @@ module.exports = {
         });
         return promise;
     },
+    setLeader(client, raid, memberID) {
+        let promise = new Promise((resolve, reject) => {
+            let record = {
+                memberID: memberID
+            };
+            client.models.raid.update(record, {
+                where: {
+                    id: raid.id,
+                }
+            }).then(() => {
+                resolve(true);
+            });
+        });
+        return promise;
+    },
     setName(client, raid, name) {
         let promise = new Promise((resolve, reject) => {
             let record = {
@@ -173,6 +188,40 @@ module.exports = {
         });
         return promise;
     },
+    getReserveHistory: async (client, guildID, raid) => {
+        let promise = new Promise((resolve, reject) => {
+            let includes = [
+                {model: client.models.raidReserve, as: 'reserve', foreignKey: 'signupID', include: {
+                    model: client.models.reserveItem, as: 'item', foreignKey: 'raidReserveID'
+                }}
+            ];
+            let timesReserved = {};
+            let signupNames = [];
+            client.models.signup.findAll({where: {raidID: raid.id}}).then((signups) => {
+                for (key in signups) { 
+                    signupNames.push(signups[key].player);
+                }
+                client.models.signup.findAll({ where: {guildID: guildID, player: {[Op.in]: signupNames}}, include: includes}).then((signups) => {
+                    signups.forEach((signup) => {
+                        if (signup.reserve && signup.reserve.item) {
+                            if (timesReserved[signup.player]) {
+                                if (timesReserved[signup.player][signup.reserve.item.id]) {
+                                    timesReserved[signup.player][signup.reserve.item.id].count++;
+                                } else {
+                                    timesReserved[signup.player][signup.reserve.item.id] = {count: 1, name: signup.reserve.item.name};
+                                }
+                            } else {
+                                timesReserved[signup.player] = [];
+                                timesReserved[signup.player][signup.reserve.item.id] = {count: 1, name: signup.reserve.item.name};
+                            }
+                        }
+                    });
+                    resolve(timesReserved);
+                });
+            });
+        });
+        return promise;
+    },
     createRaidChannel: async (client, message, category, raid) => {
         let promise = new Promise((resolve, reject) => {
             if (!category) {
@@ -217,7 +266,7 @@ module.exports = {
                         'confirmation': raid.confirmation
                     };
                     client.models.raid.create(record).then((raid) => {
-                        let signupMessage = 'If you can see this, please enable embeds to sign up.';
+                        let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
                         channel.setParent(category.id)
                             .then((channel) => {
                                 channel.lockPermissions()
