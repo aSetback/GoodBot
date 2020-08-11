@@ -11,13 +11,15 @@ exports.run = (client, message, args) => {
     }
   });
 
-  let zones = [1002, 1003, 1000, 1001];
+  let zones = [1005, 1002, 1004, 1003, 1000, 1001];
   if (zone) {
     zoneObj = {
       'mc': [1000],
       'bwl': [1002],
       'ony': [1001],
-      'zg': [1003]
+      'zg': [1003],
+      'aq40': [1004],
+      'aq20': [1005]
     };
     if (zoneObj[zone]) {
       zones = zoneObj[zone]

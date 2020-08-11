@@ -77,7 +77,7 @@ function getPlayer(client, reportID, player) {
 
 function getReportID(client, player, server, region) {
     return new Promise((resolve, reject) => {
-        let searchUrl = "https://classic.warcraftlogs.com:443/v1/parses/character/" + player + "/" + server + "/" + region + "?api_key=" + client.config.warcraftlogs;
+        let searchUrl = "https://classic.warcraftlogs.com:443/v1/parses/character/" + player + "/" + server + "/" + region + "?zone=1002&api_key=" + client.config.warcraftlogs;
         reqOpts = {
             url: encodeURI(searchUrl)
         };
