@@ -289,17 +289,19 @@ module.exports = {
 				let playerClass = classes[classKey];
 				lineup.forEach(function (player, signupKey) {
 					if (player.role == key && player.class == playerClass && player.signup == 'yes') {
+						let number = parseInt(signupKey);
+						number++;
 						signups++;
 						roleCount[key]++;
 						if (raid.confirmation) {
 							if (player.confirmed) {
-								classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + signups + ']\n';
+								classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + number + ']\n';
 								confirmCount++;
 							} else {
-								classList += emojis[playerClass].toString() + ' *' + player.name + '* [' + signups + ']\n';
+								classList += emojis[playerClass].toString() + ' *' + player.name + '* [' + number + ']\n';
 							}
 						} else {
-							classList += emojis[playerClass].toString() + ' ' + player.name + ' [' + signups + ']\n';
+							classList += emojis[playerClass].toString() + ' ' + player.name + ' [' + number + ']\n';
 						}
 					}
 				});
