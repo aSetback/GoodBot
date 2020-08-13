@@ -72,7 +72,7 @@ module.exports = {
 			for (key in characterList) {
 				let characterListItem = characterList[key];
 				if (characterListItem.name == signup.player) {
-					match == true;
+					match = true;
 					lineup.push({
 						name: signup.player,
 						class: characterListItem.class,
