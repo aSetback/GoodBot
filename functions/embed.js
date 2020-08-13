@@ -14,20 +14,49 @@ module.exports = {
 		client.embed.updateEmbed(client, raidChannel, raid);
 
 	},
-	getCharacters: async (client, guild, signups) => {
+	getLineup: async (client, raid) => {
+		// Get a list of all of our sign-ups
+		let signups = {}
+		if (raid.confirmation) {
+			signups = await client.signups.getConfirmed(client, raid);
+		} else {
+			signups = await client.signups.getSignups(client, raid);
+		}
+
+		// Create an array of the character names signed up
 		characterNames = [];
 		for (key in signups) {
 			characterNames.push(signups[key].player);
 		}
 
-		let characterList = new Promise((resolve, reject) => {
-			client.models.character.findAll(
+		// Retrieve the raid's main cahnnel, attempt to retrieve information on all characters who signed up		
+		let channel = await client.channels.find(c => c.id == raid.channelID);
+		let characterList = await client.models.character.findAll(
+			{
+				attributes: [
+					[client.sequelize.fn('DISTINCT', client.sequelize.col('name')), 'name'], 'class', 'role', 'fireResist', 'frostResist', 'shadowResist', 'natureResist'
+				],
+				where: {
+					'guildID': channel.guild.id,
+					name: {
+						[Op.in]: characterNames
+					}
+				},
+				orderBy: {
+					updatedAt: 'DESC'
+				}
+			});
+
+		// If this raid is cross-posted, attempt to retrieve information from the second server as well
+		if (raid.crosspostID && raid.crosspostID.length) {
+			let crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
+			crosspostCharacterList = await client.models.character.findAll(
 				{
 					attributes: [
 						[client.sequelize.fn('DISTINCT', client.sequelize.col('name')), 'name'], 'class', 'role', 'fireResist', 'frostResist', 'shadowResist', 'natureResist'
 					],
 					where: {
-						'guildID': guild.id,
+						'guildID': crosspostChannel.guild.id,
 						name: {
 							[Op.in]: characterNames
 						}
@@ -35,12 +64,54 @@ module.exports = {
 					orderBy: {
 						updatedAt: 'DESC'
 					}
+				});
+		}
+
+		// Generate a line-up by looping through the signups
+		let lineup = [];
+		signups.forEach((signup) => {
+			let match = false;
+			for (key in characterList) {
+				let characterListItem = characterList[key];
+				if (characterListItem.name == signup.player) {
+					match == true;
+					lineup.push({
+						name: signup.player,
+						class: characterListItem.class,
+						role: characterListItem.role,
+						signup: signup.signup,
+						resists: {
+							fire: characterListItem.fireResist ? characterListItem.fireResist : 0,
+							frost: characterListItem.frostResist ? characterListItem.frostResist : 0,
+							nature: characterListItem.natureResist ? characterListItem.natureResist : 0,
+							shadow: characterListItem.shadowResist ? characterListItem.shadowResist : 0,
+						}
+					});
 				}
-			).then((characterList) => {
-				resolve(characterList);
-			});
+			}
+
+			if (!match) {
+				for (key in crosspostCharacterList) {
+					let characterListItem = crosspostCharacterList[key];
+					if (characterListItem.name == signup.player) {
+						lineup.push({
+							name: signup.player,
+							class: characterListItem.class,
+							role: characterListItem.role,
+							signup: signup.signup,
+							resists: {
+								fire: characterListItem.fireResist ? characterListItem.fireResist : 0,
+								frost: characterListItem.frostResist ? characterListItem.frostResist : 0,
+								nature: characterListItem.natureResist ? characterListItem.natureResist : 0,
+								shadow: characterListItem.shadowResist ? characterListItem.shadowResist : 0,
+							}
+						});
+					}
+				}
+			}
 		});
-		return characterList;
+
+		return lineup;
 	},
 	getSignups: async (client, raidID) => {
 		let signupList = new Promise((resolve, reject) => {
@@ -96,18 +167,7 @@ module.exports = {
 		}
 
 		let title = "Raid Signups for " + raidName;
-		let signups = await client.embed.getSignups(client, raid.id);
-		let characterList = await client.embed.getCharacters(client, channel.guild, signups);
-		let crosspostCharacterList = {};
-		if (raid.crosspostID && raid.crosspostID.length) {
-			if (channel.id == raid.crosspostID) {
-				let mainChannel = await client.channels.find(c => c.id == raid.channelID);
-				crosspostCharacterList = await client.embed.getCharacters(client, mainChannel.guild, signups);
-			} else {
-				let crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
-				crosspostCharacterList = await client.embed.getCharacters(client, crosspostChannel.guild, signups);
-			}
-		}
+		let lineup = await client.embed.getLineup(client, raid);
 		let raidDate = new Date(Date.parse(raid.date));
 		let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
 
@@ -118,47 +178,16 @@ module.exports = {
 
 		let maybeList = [];
 		let noList = [];
-		let lineup = [];
 
 		// De-duplicate the sign-ups
 		let total = 0;
-		signups.forEach((signup) => {
-			if (signup.signup == 'yes') {
-				let match = false;
-				total++;
-				characterList.forEach((characterListItem) => {
-					if (characterListItem.name == signup.player) {
-						match = true;
-						lineup.push({
-							name: signup.player,
-							class: characterListItem.class,
-							role: characterListItem.role,
-							confirmed: signup.confirmed
-						});
-					}
-				});
-				// The character class/spec isn't defined in the original discord, maybe it is in the crosspost.
-				if (!match) {
-					crosspostCharacterList.forEach((characterListItem) => {
-						if (characterListItem.name == signup.player) {
-							match = true;
-							lineup.push({
-								name: signup.player,
-								class: characterListItem.class,
-								role: characterListItem.role,
-								confirmed: signup.confirmed
-							});
-						}
-					});
-				}
-			} else if (signup.signup == 'maybe') {
-				maybeList.push(signup.player);
-			} else if (signup.signup == 'no') {
-				noList.push(signup.player);
+		lineup.forEach((player) => {
+			if  (player.signup == 'maybe') {
+				maybeList.push(player.name);
+			} else if (player.signup == 'no') {
+				noList.push(player.name);
 			}
 		});
-
-		lineup.reverse();
 
 		const emojis = {
 			"warrior": client.emojis.find(emoji => emoji.name === "GBwarrior"),
@@ -259,7 +288,7 @@ module.exports = {
 				let classList = "";
 				let playerClass = classes[classKey];
 				lineup.forEach(function (player, signupKey) {
-					if (player.role == key && player.class == playerClass) {
+					if (player.role == key && player.class == playerClass && player.signup == 'yes') {
 						roleCount[key]++;
 						if (raid.confirmation) {
 							if (player.confirmed) {

@@ -56,64 +56,39 @@ exports.run = async function(client, message, args) {
 		sheetCols['dk-tank'] = 24;
 	}
 
-	let signups = {}
-	if (raid.confirmation) {
-		signups = await client.signups.getConfirmed(client, raid);		
-	} else {
-		signups = await client.signups.getSignups(client, raid);
-	}
-	let characterList = await client.embed.getCharacters(client, message.channel.guild, signups);
-	let lineup = [];
-
-	signups.forEach((signup) => {
-		if (signup.signup == 'yes') {
-			characterList.forEach((characterListItem) => {
-				if (characterListItem.name == signup.player) {
-					lineup.push({
-						name: signup.player,
-						class: characterListItem.class,
-						role: characterListItem.role,
-						resists: {
-							fire: characterListItem.fireResist ? characterListItem.fireResist : 0,
-							frost: characterListItem.frostResist ? characterListItem.frostResist : 0,
-							nature: characterListItem.natureResist ? characterListItem.natureResist : 0,
-							shadow: characterListItem.shadowResist ? characterListItem.shadowResist : 0,
-						}
-					});					
-				}
-			});
-		}
-	});
+	let lineup = await client.embed.getLineup(client, raid)
 
 	cellData = [];
 	rowCounter = [];
 	for (key in lineup) {
 		player = lineup[key];
-		let playerType = player.class + '-' + player.role;
-		if (playerType == 'druid-tank') {
-			playerType = 'druid-dps';
-		}
-		col = sheetCols[playerType];			
-		if (col !== undefined) {
-			if (rowCounter[col] === undefined) {
-				rowCounter[col] = 2;
+		if (player.signup == 'yes') {
+			let playerType = player.class + '-' + player.role;
+			if (playerType == 'druid-tank') {
+				playerType = 'druid-dps';
 			}
-			cellData.push({
-				row: rowCounter[col], 
-				col: col, 
-				value: player.name
-			});
-
-			rowCounter[col]++;
+			col = sheetCols[playerType];			
+			if (col !== undefined) {
+				if (rowCounter[col] === undefined) {
+					rowCounter[col] = 2;
+				}
+				cellData.push({
+					row: rowCounter[col], 
+					col: col, 
+					value: player.name
+				});
+	
+				rowCounter[col]++;
+			}
 		}
 	}
 	setCells(cellData);
-
+	
 	let reserves = await client.reserves.byRaid(client, raid);
 	await exportReserves(reserves);
-	await exportResists(signups);
+	await exportResists(lineup);
 
-	function exportResists(signups) {
+	function exportResists(lineup) {
 		return new Promise(async (resolve, reject) => {
 			let sheet = null;
 			for (key in doc.sheetsById) {
