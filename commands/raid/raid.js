@@ -45,6 +45,6 @@ exports.run = (client, message, args) => {
 			return message.channel.send('You do not have the manage channels permission for "' + category + '".  Unable to complete command.');
 		}
 
-		client.raid.createRaidChannel(client, message, discordCategory, raid);
+		client.raid.createRaidChannel(client, message, discordCategory, raid, message.guild);
 	});
 }

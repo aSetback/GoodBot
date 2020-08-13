@@ -33,7 +33,10 @@ z           }
 
         // Check to make sure class & role is set
         let character = await client.set.getCharacter(client, message.guild, characterName);
-
+        if (!character && raid.crosspostID && raid.crosspostID.length) {
+            let crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
+            character = await client.set.getCharacter(client, crosspostChannel.guild, characterName);
+        }
         // Check if the player is avlid
         if (!client.set.validName(characterName)) {
             let playerMessage = 'Unable to sign "' + characterName + '" for this raid.  Please set your in-game name using +nick first.';

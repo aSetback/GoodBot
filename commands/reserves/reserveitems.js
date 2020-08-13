@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 exports.run = async function(client, message, args) {
-	let raid = await client.signups.getRaid(client, message.channel);
+	let raid = await client.raid.get(client, message.channel);
 	if (!raid) {
 		return message.author.send('This command is only usable in raid channels.');
 	}

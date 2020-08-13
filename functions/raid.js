@@ -239,7 +239,7 @@ module.exports = {
         });
         return promise;
     },
-    createRaidChannel: async (client, message, category, raid) => {
+    createRaidChannel: async (client, message, category, raid, guild) => {
         let promise = new Promise((resolve, reject) => {
             if (!category) {
                 message.channel.send('Raid sign-up category __' + category + '__ does not exist.');
@@ -250,7 +250,7 @@ module.exports = {
             }
 
             let channelName = raid.dateString + '-' + raid.name;
-            message.guild.createChannel(channelName, {
+            guild.createChannel(channelName, {
                 type: 'text'
             })
                 .then(async (channel) => {

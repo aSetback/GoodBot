@@ -98,6 +98,16 @@ module.exports = {
 		let title = "Raid Signups for " + raidName;
 		let signups = await client.embed.getSignups(client, raid.id);
 		let characterList = await client.embed.getCharacters(client, channel.guild, signups);
+		let crosspostCharacterList = {};
+		if (raid.crosspostID && raid.crosspostID.length) {
+			if (channel.id == raid.crosspostID) {
+				let mainChannel = await client.channels.find(c => c.id == raid.channelID);
+				crosspostCharacterList = await client.embed.getCharacters(client, mainChannel.guild, signups);
+			} else {
+				let crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
+				crosspostCharacterList = await client.embed.getCharacters(client, crosspostChannel.guild, signups);
+			}
+		}
 		let raidDate = new Date(Date.parse(raid.date));
 		let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
 
@@ -114,9 +124,11 @@ module.exports = {
 		let total = 0;
 		signups.forEach((signup) => {
 			if (signup.signup == 'yes') {
+				let match = false;
 				total++;
 				characterList.forEach((characterListItem) => {
 					if (characterListItem.name == signup.player) {
+						match = true;
 						lineup.push({
 							name: signup.player,
 							class: characterListItem.class,
@@ -125,6 +137,20 @@ module.exports = {
 						});
 					}
 				});
+				// The character class/spec isn't defined in the original discord, maybe it is in the crosspost.
+				if (!match) {
+					crosspostCharacterList.forEach((characterListItem) => {
+						if (characterListItem.name == signup.player) {
+							match = true;
+							lineup.push({
+								name: signup.player,
+								class: characterListItem.class,
+								role: characterListItem.role,
+								confirmed: signup.confirmed
+							});
+						}
+					});
+				}
 			} else if (signup.signup == 'maybe') {
 				maybeList.push(signup.player);
 			} else if (signup.signup == 'no') {
