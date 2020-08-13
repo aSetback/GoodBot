@@ -4,7 +4,7 @@ exports.run = async function(client, message, args) {
 	if (!message.isAdmin) {
 		return false;
 	}
-    let raid = await client.signups.getRaid(client, message.channel);
+    let raid = await client.raid.get(client, message.channel);
     if (!raid) {
         return false;
     }
@@ -13,7 +13,7 @@ exports.run = async function(client, message, args) {
     message.channel.send(signupMessage).then((botMsg) => {
         reactEmoji(botMsg);
         botMsg.pin().then(() => {
-            client.embed.update(client, botMsg, raid);
+            client.embed.update(client, message.channel);
         });
     });
 };

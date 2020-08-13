@@ -20,10 +20,10 @@ exports.run = async function(client, message, args) {
 	if (!oldChannel) {
 		return message.channel.send('Unable to find channel: ' + oldRaidChannel);
 	}
-	let oldRaid = await client.signups.getRaid(client, oldChannel);
+	let oldRaid = await client.raid.get(client, oldChannel);
 	let oldSignups = await client.signups.getSignups(client, oldRaid);
 
-	let newRaid = await client.signups.getRaid(client, message.channel);
+	let newRaid = await client.raid.get(client, message.channel);
 	let newSignups = await client.signups.getSignups(client, newRaid);
 
 	let unsigned = [];

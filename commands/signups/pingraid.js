@@ -11,7 +11,7 @@ exports.run = async function(client, message, args) {
 		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
 	
-	let raid = await client.signups.getRaid(client, message.channel);
+	let raid = await client.raid.get(client, message.channel);
 	let signups = await client.signups.getSignups(client, raid);
 	let pingList = [];
 	for (key in signups) {

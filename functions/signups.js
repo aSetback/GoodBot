@@ -68,37 +68,35 @@ z           }
         }
 
         // Save our sign-up to the db
-        client.models.raid.findOne({'where': {'guildID': message.guild.id, 'channelID': message.channel.id}}).then((raid) => {
-            if (raid) {
+        if (raid) {
 
-                let record = {
-                    'player': characterName,
-                    'signup': signValue,
-                    'raidID': raid.id,
-                    'channelID': raid.channelID,
-                    'guildID': raid.guildID,
-                    'memberID': message.author.id
-                };
+            let record = {
+                'player': characterName,
+                'signup': signValue,
+                'raidID': raid.id,
+                'channelID': raid.channelID,
+                'guildID': raid.guildID,
+                'memberID': message.author.id
+            };
 
-                client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['createdAt', 'DESC']], group: ['player']}).then((signup) => {
-                    if (!signup) {
-                        client.models.signup.create(record).then(() => {
-                            // Update embed
-                            client.embed.update(client, message, raid);
-                        });
-                    } else {
-                        client.models.signup.update(record, {
-                            where: {
-                                id: signup.id
-                            }
-                        }).then(() => {
-                            // Update embed
-                            client.embed.update(client, message, raid);
-                        });
-                    }
-                });
-            }
-        });
+            client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['createdAt', 'DESC']], group: ['player']}).then((signup) => {
+                if (!signup) {
+                    client.models.signup.create(record).then(() => {
+                        // Update embed
+                        client.embed.update(client, message.channel);
+                    });
+                } else {
+                    client.models.signup.update(record, {
+                        where: {
+                            id: signup.id
+                        }
+                    }).then(() => {
+                        // Update embed
+                        client.embed.update(client, message.channel);
+                    });
+                }
+            });
+        }
 
         let logMessage = 'Sign Up: ' + characterName + ' => ' + signValue;
         client.log.write(client, message.author, message.channel, logMessage);
@@ -157,14 +155,6 @@ z           }
                         resolve(true);
                     });
                 }
-            });
-        });
-        return promise;
-    },
-    getRaid(client, channel) {
-        let promise = new Promise((resolve, reject) => {
-            client.models.raid.findOne({ where: {'channelID': channel.id}}).then((raid) => {
-                resolve(raid);
             });
         });
         return promise;

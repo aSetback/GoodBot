@@ -10,5 +10,5 @@ exports.run = async function(client, message, args) {
 	await client.raid.setTime(client, raid, time)
 
 	// Update our embed
-	client.embed.update(client, message, raid);
+	client.embed.update(client, message.channel);
 };

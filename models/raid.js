@@ -49,6 +49,14 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.BOOLEAN,
             allowNull: true
         },
+        archived: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true
+        },
+        crosspostID: {
+            type: Sequelize.BIGINT(20),
+            allowNull: true
+        },
         channelID: {
             type: Sequelize.BIGINT(20),
             allowNull: false

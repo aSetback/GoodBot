@@ -19,7 +19,7 @@ exports.run = async function(client, message, args) {
 	var creds = require("../../google.json");
 	await doc.useServiceAccountAuth(creds);
 	await doc.loadInfo();
-	let raid = await client.signups.getRaid(client, message.channel);
+	let raid = await client.raid.get(client, message.channel);
 
 	const sheetCols = {
 		'warrior-tank': 1,

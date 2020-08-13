@@ -18,7 +18,7 @@ exports.run = async function(client, message, args) {
 	// Remove the first arg from the array.
 	let characterName = args.shift();
 
-	let raid = await client.signups.getRaid(client, message.channel);
+	let raid = await client.raid.get(client, message.channel);
 
 	// Remove the sign-up
 	let success = await client.signups.remove(client, raid.id, characterName);
@@ -31,5 +31,5 @@ exports.run = async function(client, message, args) {
 		client.messages.errorMessage(message.channel, errorNotFound, 240);
 	}
 
-	client.embed.update(client, message, raid);
+	client.embed.update(client, message.channel);
 }

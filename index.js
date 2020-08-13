@@ -23,7 +23,9 @@ client.sequelize = new Sequelize(client.config.db.name, client.config.db.user, c
   host: client.config.db.ip,
   dialect: 'mariadb',
   dialectOptions: {
-    timezone: "Etc/GMT-5"
+    timezone: "Etc/GMT-5",
+    bigNumberStrings: true,
+    supportBigNumbers: true
   },
   logging: false
 });

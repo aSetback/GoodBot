@@ -5,7 +5,7 @@ exports.run = async function (client, message, args, noMsg) {
     if (!args[0] || !message.channel) {
         return;
     }
-    let raid = await client.signups.getRaid(client, message.channel);
+    let raid = await client.raid.get(client, message.channel);
     if (!raid) {
         return false;
     }

@@ -9,5 +9,5 @@ exports.run = async function(client, message, args) {
 	let raidType = args.join(" ");
 	await client.raid.setRaid(client, raid, raidType);
 	raid.raid = raidType;
-	client.embed.update(client, message, raid);
+	client.embed.update(client, message.channel);
 };

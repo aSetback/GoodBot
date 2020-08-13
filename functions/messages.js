@@ -54,22 +54,21 @@ module.exports = {
         // If a message starts with +, - or m, and we're in a sign-up channel, treat it as a sign-up.
         if (["+", "-", "m"].includes(signupSymbol) && signupSymbol.length == 1) {
             // Check if this is a raid channel
-            client.models.raid.findOne({ where: { 'channelID': message.channel.id, 'guildID': message.channel.guild.id } }).then((raid) => {
-                if (raid) {
-                    if (!signupName) {
-                        signupName = message.member.displayName;
-                    }
-
-                    if (!signupSymbol) {
-                        return false;
-                    }
-
-                    client.signups.set(signupSymbol, signupName, message.channel.name, message, client);
-                    setTimeout(() => {
-                        message.delete().catch(O_o => { });
-                    }, 1000);
+            let raid = await client.raid.get(client, message.channel);
+            if (raid) {
+                if (!signupName) {
+                    signupName = message.member.displayName;
                 }
-            });
+
+                if (!signupSymbol) {
+                    return false;
+                }
+
+                client.signups.set(signupSymbol, signupName, message.channel.name, message, client);
+                setTimeout(() => {
+                    message.delete().catch(O_o => { });
+                }, 1000);
+            }
         }
 
         // Check if the message starts with our command trigger -- if so, pop off first element and check if it's a command.

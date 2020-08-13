@@ -10,5 +10,5 @@ exports.run = async function(client, message, args) {
 	await client.raid.setColor(client, raid, color)
 
 	// Update our embed
-	client.embed.update(client, message, raid);
+	client.embed.update(client, message.channel);
 };

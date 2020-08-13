@@ -23,7 +23,6 @@ exports.run = async function(client, message, args) {
     // Keep a record of which players are added
 	let signedPlayer = [];
 
-	let raid = await client.signups.getRaid(client, message.channel);
 	// Loop through the players to confirm
 	for (key in players) {
 		let player = players[key];
@@ -32,7 +31,7 @@ exports.run = async function(client, message, args) {
 	}
 
 	// Update our embed
-	client.embed.update(client, message, raid);
+	client.embed.update(client, message.channel);
 
 	// Notify the user which players were confirmed
 	message.author.send('Signed up players: ' + signedPlayer.join(', ') + ' for ' + message.channel.name + '.');

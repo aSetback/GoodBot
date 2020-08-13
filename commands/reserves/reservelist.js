@@ -12,7 +12,7 @@ exports.run = async function(client, message, args) {
             return client.messages.errorMessage(message.channel, "Could not find channel: **" + channelName + "**", 240);
         }
     }
-    let raid = await client.signups.getRaid(client, channel);
+    let raid = await client.raid.get(client, channel);
     let guildID = message.guild.id;
     if (!raid) {
         return message.author.send("This command is only usable from a raid channel.");

@@ -2,7 +2,7 @@ exports.run = async function(client, message, args) {
     
     let type = args.shift();
     if (type == 'confirmed') {
-        let raid = await client.signups.getRaid(client, message.channel);
+        let raid = await client.raid.get(client, message.channel);
         let confirmed = await client.signups.getConfirmed(client, raid);
         let pingList = [];
         for (key in confirmed) {

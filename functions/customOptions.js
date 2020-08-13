@@ -3,7 +3,10 @@ const Discord = require("discord.js");
 
 module.exports = {
 	get: (guild, optionName) => {
-
+		let guildID = guild;
+		if (guild.id) {
+			guildID = guild.id;
+		}
 		let fileName = 'data/' + guild.id + '-options.json';
 		let parsedList = {};
 		if (fs.existsSync(fileName)) {

@@ -5,7 +5,7 @@ exports.run = async function(client, message, args) {
 		return false;
 	}
 
-	let raid = await client.signups.getRaid(client, message.channel);
+	let raid = await client.raid.get(client, message.channel);
 	let softreserve = 1;
 	if (raid.softreserve) {
 		softreserve = 0;
@@ -21,7 +21,7 @@ exports.run = async function(client, message, args) {
 		}
 	}).then(() => {
 		// Update our embed
-		client.embed.update(client, message, raid);
+		client.embed.update(client, message.channel);
 	});
 
 };

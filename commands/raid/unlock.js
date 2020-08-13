@@ -7,7 +7,7 @@ exports.run = async function(client, message, args) {
     if (raid && raid.locked) {
         client.models.raid.update({locked: false}, {where: {id: raid.id}}).then(() => {
             // Update our embed
-            client.embed.update(client, message, raid);
+            client.embed.update(client, message.channel);
         });
     }
 
