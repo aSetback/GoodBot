@@ -17,11 +17,7 @@ module.exports = {
 	getLineup: async (client, raid) => {
 		// Get a list of all of our sign-ups
 		let signups = {}
-		if (raid.confirmation) {
-			signups = await client.signups.getConfirmed(client, raid);
-		} else {
-			signups = await client.signups.getSignups(client, raid);
-		}
+		signups = await client.signups.getSignups(client, raid);
 
 		// Create an array of the character names signed up
 		characterNames = [];
@@ -48,7 +44,7 @@ module.exports = {
 			});
 
 		let crosspostCharacterList = {};
-		
+
 		// If this raid is cross-posted, attempt to retrieve information from the second server as well
 		if (raid.crosspostID && raid.crosspostID.length) {
 			let crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
@@ -81,6 +77,7 @@ module.exports = {
 						name: signup.player,
 						class: characterListItem.class,
 						role: characterListItem.role,
+						confirmed: signup.confirmed,
 						signup: signup.signup,
 						resists: {
 							fire: characterListItem.fireResist ? characterListItem.fireResist : 0,
@@ -100,6 +97,7 @@ module.exports = {
 							name: signup.player,
 							class: characterListItem.class,
 							role: characterListItem.role,
+							confirmed: signup.confirmed,
 							signup: signup.signup,
 							resists: {
 								fire: characterListItem.fireResist ? characterListItem.fireResist : 0,
@@ -182,9 +180,8 @@ module.exports = {
 		let noList = [];
 
 		// De-duplicate the sign-ups
-		let total = 0;
 		lineup.forEach((player) => {
-			if  (player.signup == 'maybe') {
+			if (player.signup == 'maybe') {
 				maybeList.push(player.name);
 			} else if (player.signup == 'no') {
 				noList.push(player.name);
@@ -284,6 +281,7 @@ module.exports = {
 		};
 
 		let confirmCount = 0;
+		let signups = 0;
 		Object.keys(roles).forEach(function (key) {
 			let classes = roles[key];
 			Object.keys(classes).forEach(function (classKey) {
@@ -291,16 +289,17 @@ module.exports = {
 				let playerClass = classes[classKey];
 				lineup.forEach(function (player, signupKey) {
 					if (player.role == key && player.class == playerClass && player.signup == 'yes') {
+						signups++;
 						roleCount[key]++;
 						if (raid.confirmation) {
 							if (player.confirmed) {
-								classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + (parseInt(signupKey) + 1) + ']\n';
+								classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + signups + ']\n';
 								confirmCount++;
 							} else {
-								classList += emojis[playerClass].toString() + ' *' + player.name + '* [' + (parseInt(signupKey) + 1) + ']\n';
+								classList += emojis[playerClass].toString() + ' *' + player.name + '* [' + signups + ']\n';
 							}
 						} else {
-							classList += emojis[playerClass].toString() + ' ' + player.name + ' [' + (parseInt(signupKey) + 1) + ']\n';
+							classList += emojis[playerClass].toString() + ' ' + player.name + ' [' + signups + ']\n';
 						}
 					}
 				});
@@ -323,7 +322,7 @@ module.exports = {
 			roleName = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
 			roleField += '**' + roleName + '**: ' + roleCount[key] + '\n';
 		}
-		embed.addField('**Total Sign-ups**', total);
+		embed.addField('**Total Sign-ups**', signups);
 		fields++;
 
 		if (raid.confirmation) {
@@ -334,7 +333,6 @@ module.exports = {
 			embed.addField('**Group Composition**', roleField, false);
 			fields++;
 		}
-
 
 		if (fields < 23) {
 			if (maybeList.length) {

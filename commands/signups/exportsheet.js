@@ -62,7 +62,7 @@ exports.run = async function(client, message, args) {
 	rowCounter = [];
 	for (key in lineup) {
 		player = lineup[key];
-		if (player.signup == 'yes') {
+		if (player.signup == 'yes' && (!raid.confirmation || (raid.confirmation && player.confirmed))) {
 			let playerType = player.class + '-' + player.role;
 			if (playerType == 'druid-tank') {
 				playerType = 'druid-dps';
@@ -83,7 +83,7 @@ exports.run = async function(client, message, args) {
 		}
 	}
 	setCells(cellData);
-	
+
 	let reserves = await client.reserves.byRaid(client, raid);
 	await exportReserves(reserves);
 	await exportResists(lineup);
