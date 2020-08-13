@@ -47,6 +47,8 @@ module.exports = {
 				}
 			});
 
+		let crosspostCharacterList = {};
+		
 		// If this raid is cross-posted, attempt to retrieve information from the second server as well
 		if (raid.crosspostID && raid.crosspostID.length) {
 			let crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
