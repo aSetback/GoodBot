@@ -237,7 +237,6 @@ module.exports = {
 		if (raid.softreserve) {
 			let softReserveText = "To reserve an item, use `+reserve PlayerName Full Item Name`\nTo see all current reserves, use `+reservelist`\nTo view items eligible for reserving, use `+reserveitems`";
 			let raidHash = await client.models.raidHash.findOne({where: {memberID: raid.memberID, guildID: raid.guildID}});
-			console.log(raidHash);
 			if (raidHash) {
 				softReserveText += "\nYou can also manage your soft reserve at: http://mpugs.com/r/" + raid.id
 			}
