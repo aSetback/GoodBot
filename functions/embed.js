@@ -6,13 +6,21 @@ module.exports = {
 	update: async (client, channel) => {
 		// Confirm we have a raid
 		let raid = await client.raid.get(client, channel);
+		let raidChannel = await client.channels.find(c => c.id == raid.channelID);
+		let embed = await client.embed.updateEmbed(client, raidChannel, raid);
+		client.embed.edit(client, raidChannel, embed);
+
 		if (raid.crosspostID && raid.crosspostID.length) {
 			let crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
-			client.embed.updateEmbed(client, crosspostChannel, raid);
+			client.embed.edit(client, crosspostChannel, embed);
 		}
-		let raidChannel = await client.channels.find(c => c.id == raid.channelID);
-		client.embed.updateEmbed(client, raidChannel, raid);
 
+	},
+	edit: async (client, channel, embed) => {
+		let list = await channel.fetchPinnedMessages();
+		pinnedMsg = list.last();
+		if (!pinnedMsg) { return false; }
+		pinnedMsg.edit(embed);
 	},
 	getLineup: async (client, raid) => {
 		// Get a list of all of our sign-ups
@@ -128,11 +136,6 @@ module.exports = {
 		return signupList;
 	},
 	updateEmbed: async (client, channel, raid) => {
-		// Confirm we have a pinned message
-		let list = await channel.fetchPinnedMessages();
-		pinnedMsg = list.last();
-		if (!pinnedMsg) { return false; }
-
 		let raidName = '';
 		let raids = {
 			'mc': 'Molten Core',
@@ -158,7 +161,6 @@ module.exports = {
 		if (raids[raid.raid.toLowerCase()]) {
 			raidName = raids[raid.raid.toLowerCase()];
 		} else {
-			category = channel.parent;
 			raidName = raid.raid.charAt(0).toUpperCase() + raid.raid.slice(1).toLowerCase();
 		}
 
@@ -349,6 +351,6 @@ module.exports = {
 		}
 		embed.setTimestamp();
 
-		pinnedMsg.edit(embed);
+		return embed;
 	}
 };
