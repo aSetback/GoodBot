@@ -7,7 +7,7 @@ module.exports = {
 		if (guild.id) {
 			guildID = guild.id;
 		}
-		let fileName = 'data/' + guild.id + '-options.json';
+		let fileName = 'data/' + guildID + '-options.json';
 		let parsedList = {};
 		if (fs.existsSync(fileName)) {
 			currentList = fs.readFileSync(fileName, 'utf8');
