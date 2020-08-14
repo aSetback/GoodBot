@@ -24,7 +24,7 @@ exports.run = async (client, message, args) => {
     
     let raidDate = new Date(raid.date);
 	raidDate.setDate(raidDate.getDate() + daysOut);
-    raid.dateString = raidDate.toLocaleString('en-us', { month: 'long', timeZone: 'UTC' }).substring(0,3) + "-" + raidDate.getUTCDate();
+    raid.dateString = raidDate.toLocaleString('en-us', { month: 'short', timeZone: 'UTC' }) + "-" + raidDate.getUTCDate();
 	client.models.raidCategory.findOne({ where: categoryParams}).then(async (raidCategory) => {
 		if (raidCategory) {
 			category = raidCategory.category; 

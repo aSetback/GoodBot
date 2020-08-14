@@ -5,32 +5,31 @@ exports.run = async (client, message, args) => {
         return client.messages.errorMessage(message.channel, client.loc('dupeNoRaid', "This is not a valid raid channel, could not duplicated."), 240);
 	}
 	
-	// Retrieve our server ID
-	let serverID = args[0];
-	if (!serverID) {
-		return client.message.errorMessage(message.channel, client.loc('noServerID', "Please provide a valid server ID"), 240);
+	// Retrieve our server ID or name
+	let server = args.join(' ');
+	if (!server) {
+		return client.message.errorMessage(message.channel, client.loc('noServerID', "Please provide a valid server ID or name."), 240);
 	}
 
+	let crosspostGuild = client.guilds.find(g => g.id == server || g.name.toLowerCase() == server.toLowerCase());
+
 	// Retrieve the category
-    let category = client.customOptions.get(serverID, 'raidcategory');
+    let category = client.customOptions.get(crosspostGuild.id, 'raidcategory');
 	if (!category) {
 		category = 'Raid Signups';
     }
 
 	// Retrieve the whether or not the faction is required on the specified server.
-    factionRequired = client.raid.factionRequired(client, serverID);
+    factionRequired = client.raid.factionRequired(client, crosspostGuild.id);
 	if (factionRequired && !raid.faction) {
 		return message.channel.send('You need to specify which faction this raid is for.\n usage: `+raid bwl mar-21 tagalong horde`');
 	}
 
     // Check for overwrite for this raid type
-	let categoryParams = {'raid': raid.raid, 'guildID': serverID};
+	let categoryParams = {'raid': raid.raid, 'guildID': crosspostGuild.id};
 	if (factionRequired) {
 		categoryParams.faction = raid.faction;
     }
-	
-	
-	let crosspostGuild = client.guilds.find(g => g.id == serverID);
 	
 	let raidCategory = await client.models.raidCategory.findOne({ where: categoryParams});
 	if (raidCategory) {
@@ -50,7 +49,8 @@ exports.run = async (client, message, args) => {
 		return message.channel.send('You do not have the manage channels permission for "' + category + '".  Unable to complete command.');
 	}
 
-	raid.dateString = new Date(raid.date).toLocaleString('default', { month: 'short' }) + '-' + raid.date.split('-')[2];
+	let raidDate = new Date(raid.date);
+	raid.dateString = raidDate.toLocaleString('en-us', { month: 'short', timeZone: 'UTC' }) + "-" + raidDate.getUTCDate();
 	client.raid.createRaidChannel(client, message, discordCategory, raid, crosspostGuild);
 
 }

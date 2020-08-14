@@ -169,7 +169,7 @@ module.exports = {
 		let title = "Raid Signups for " + raidName;
 		let lineup = await client.embed.getLineup(client, raid);
 		let raidDate = new Date(Date.parse(raid.date));
-		let dateString = raidDate.toLocaleString('en-us', { month: 'long' }) + " " + raidDate.getUTCDate();
+		let dateString = raidDate.toLocaleString('en-us', { month: 'long', timeZone: 'UTC' }) + " " + raidDate.getUTCDate();
 
 		let raidData = {};
 		raidData.color = raid.color ? raid.color : '#02a64f';
