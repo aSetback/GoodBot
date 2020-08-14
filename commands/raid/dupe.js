@@ -23,9 +23,8 @@ exports.run = async (client, message, args) => {
 	}
     
     let raidDate = new Date(raid.date);
-    raidDate.setDate(raidDate.getDate() + daysOut);
-    raid.dateString = raidDate.toLocaleString('en-us', { month: 'long' }).substring(0,3) + "-" + raidDate.getUTCDate();
-
+	raidDate.setDate(raidDate.getDate() + daysOut);
+    raid.dateString = raidDate.toLocaleString('en-us', { month: 'long', timeZone: 'UTC' }).substring(0,3) + "-" + raidDate.getUTCDate();
 	client.models.raidCategory.findOne({ where: categoryParams}).then(async (raidCategory) => {
 		if (raidCategory) {
 			category = raidCategory.category; 
@@ -43,6 +42,7 @@ exports.run = async (client, message, args) => {
 		if (!permissions.has("MANAGE_CHANNELS")) {
 			return message.channel.send('You do not have the manage channels permission for "' + category + '".  Unable to complete command.');
 		}
+		delete raid.dataValues.id;
 
         let dupeChannel = await client.raid.createRaidChannel(client, message, discordCategory, raid);
         if (raid.rules) {
