@@ -235,7 +235,7 @@ module.exports = {
 		embed.addField('**Time**', raid.time, true);
 
 		if (raid.softreserve) {
-			embed.addField('**Soft Reserve**', "To reserve an item, use `+reserve PlayerName Full Item Name`\nTo see all current reserves, use `+reservelist`\nTo view items eligible for reserving, use `+reserveitems`");
+			embed.addField('**Soft Reserve**', "To reserve an item, use `+reserve PlayerName Full Item Name`\nTo see all current reserves, use `+reservelist`\nTo view items eligible for reserving, use `+reserveitems`\nYou can also manage your soft reserve at: http://mpugs.com/r/" + raid.id);
 		}
 
 		const roles = {
