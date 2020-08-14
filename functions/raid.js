@@ -250,6 +250,9 @@ module.exports = {
             }
 
             let channelName = raid.dateString + '-' + raid.name;
+            if (!guild) {
+                guild = message.guild;
+            }
             guild.createChannel(channelName, {
                 type: 'text'
             })
