@@ -55,7 +55,7 @@ module.exports = {
             }
             let guildName = args.join(' ');
 
-            return (action == 'add') ? client.wowguild.addGuild(client, guildName, faction, message.channel) : client.wow.guild.removeGuild(client, argString, message.channel);
+            return (action == 'add') ? client.wowguild.addGuild(client, guildName, faction, message.channel) : client.wowguild.removeGuild(client, guildName, message.channel);
         }
 
         let wowGuildID = args.shift();
