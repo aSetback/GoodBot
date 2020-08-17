@@ -21,8 +21,8 @@ const slots = {
 exports.run = async (client, message, args) => {
     // Retrieve our server/region.
     let character = args[0];
-    let server = client.customOptions.get(client, message.guild, 'server');
-    let region = client.customOptions.get(client, message.guild, 'region');
+    let server = await client.customOptions.get(client, message.guild, 'server');
+    let region = await client.customOptions.get(client, message.guild, 'region');
     if (!server) {
         server = 'Mankrik';
     }

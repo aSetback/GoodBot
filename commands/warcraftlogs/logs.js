@@ -2,10 +2,10 @@ var request = require('request');
 var moment = require('moment');
 const Discord = require("discord.js");
 
-exports.run = (client, message, args) => {
+exports.run = async (client, message, args) => {
   let guild = args.join(" ");
-  let server = client.customOptions.get(client, message.guild, 'server');
-  let region = client.customOptions.get(client, message.guild, 'region');
+  let server = await client.customOptions.get(client, message.guild, 'server');
+  let region = await client.customOptions.get(client, message.guild, 'region');
   if (!server) {
     server = 'Mankrik';
   }

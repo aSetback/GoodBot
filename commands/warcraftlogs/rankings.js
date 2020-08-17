@@ -1,7 +1,7 @@
 var request = require('request');
 var moment = require('moment');
 
-exports.run = (client, message, args) => {
+exports.run = async (client, message, args) => {
 
   let zone;
   args.forEach((arg, key) => {
@@ -27,8 +27,8 @@ exports.run = (client, message, args) => {
   }
 
   // Retrieve our server/region.
-  let server = client.customOptions.get(client, message.guild, 'server');
-  let region = client.customOptions.get(client, message.guild, 'region');
+  let server = await client.customOptions.get(client, message.guild, 'server');
+  let region = await client.customOptions.get(client, message.guild, 'region');
   if (!server) {
     server = 'Mankrik';
   }

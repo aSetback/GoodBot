@@ -208,8 +208,8 @@ module.exports = {
             client.setup.applyCompleteRole(client, member)
         }
     },
-    applyCompleteRole: (client, member) => {
-        let roleName = client.customOptions.get(client, member.guild, 'completerole');
+    applyCompleteRole: async (client, member) => {
+        let roleName = await client.customOptions.get(client, member.guild, 'completerole');
         if (!roleName) {
             return false;
         }

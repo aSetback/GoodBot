@@ -1,8 +1,9 @@
 const { Op } = require('sequelize');
 
 module.exports = {
-    factionRequired(client, guild) {
-        return parseInt(client.customOptions.get(client, guild, "factionrequired"));
+    async factionRequired(client, guild) {
+        let factionRequired = await client.customOptions.get(client, guild, "factionrequired");
+        return parseInt(factionRequired);
     },
     setTitle(client, raid, title) {
         let promise = new Promise((resolve, reject) => {

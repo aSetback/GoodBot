@@ -2,7 +2,7 @@ var request = require('request');
 var moment = require('moment');
 const Discord = require("discord.js");
 
-exports.run = (client, message, args) => {
+exports.run = async (client, message, args) => {
   let string = args.join(' ');
   let hidden = false;
   if (string.indexOf('-h') > -1) {
@@ -11,8 +11,8 @@ exports.run = (client, message, args) => {
     args = string.split(' ');
   }
 
-  let server = client.customOptions.get(client, message.guild, 'server');
-  let region = client.customOptions.get(client, message.guild, 'region');
+  let server = await client.customOptions.get(client, message.guild, 'server');
+  let region = await client.customOptions.get(client, message.guild, 'region');
   if (!server) {
     server = 'Mankrik';
   }
