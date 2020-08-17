@@ -25,6 +25,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.TEXT,
             allowNull: true
         },
+        raidcategory: {
+            type: Sequelize.STRING,
+            allowNull: true
+        }
     }, {
     // options
     });
