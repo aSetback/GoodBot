@@ -20,7 +20,7 @@ exports.run = async (client, message, args) => {
     }
 
 	// Retrieve the whether or not the faction is required on the specified server.
-	factionRequired = client.raid.factionRequired(client, crosspostGuild.id);
+	factionRequired = await client.raid.factionRequired(client, crosspostGuild.id);
 	if (factionRequired && !raid.faction) {
 		return message.channel.send('You need to specify which faction this raid is for.\n usage: `+raid bwl mar-21 tagalong horde`');
 	}

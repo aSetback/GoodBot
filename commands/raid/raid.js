@@ -12,7 +12,7 @@ exports.run = async (client, message, args) => {
 	raid.name = args.shift();
 	raid.faction = args.shift();
 
-	factionRequired = client.raid.factionRequired(client, message.guild);
+	factionRequired = await client.raid.factionRequired(client, message.guild);
 	if (factionRequired && !raid.faction) {
 		return message.channel.send('You need to specify which faction this raid is for.\n usage: `+raid bwl mar-21 tagalong horde`');
 	}
