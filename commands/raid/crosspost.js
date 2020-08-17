@@ -14,7 +14,7 @@ exports.run = async (client, message, args) => {
 	let crosspostGuild = client.guilds.find(g => g.id == server || g.name.toLowerCase() == server.toLowerCase());
 
 	// Retrieve the category
-    let category = client.customOptions.get(crosspostGuild.id, 'raidcategory');
+    let category = client.customOptions.get(client, crosspostGuild.id, 'raidcategory');
 	if (!category) {
 		category = 'Raid Signups';
     }

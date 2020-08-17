@@ -4,8 +4,8 @@ const Discord = require("discord.js");
 
 exports.run = (client, message, args) => {
   let guild = args.join(" ");
-  let server = client.customOptions.get(message.guild, 'server');
-  let region = client.customOptions.get(message.guild, 'region');
+  let server = client.customOptions.get(client, message.guild, 'server');
+  let region = client.customOptions.get(client, message.guild, 'region');
   if (!server) {
     server = 'Mankrik';
   }

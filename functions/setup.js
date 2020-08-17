@@ -209,7 +209,7 @@ module.exports = {
         }
     },
     applyCompleteRole: (client, member) => {
-        let roleName = client.customOptions.get(member.guild, 'completerole');
+        let roleName = client.customOptions.get(client, member.guild, 'completerole');
         if (!roleName) {
             return false;
         }

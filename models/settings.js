@@ -5,9 +5,25 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.BIGINT(20),
             allowNull: false
         },
+        faction: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
+        server: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
+        region: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
+        sheet: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
         welcomeMessage: {
             type: Sequelize.TEXT,
-            allowNull: false
+            allowNull: true
         },
     }, {
     // options

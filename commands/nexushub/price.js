@@ -3,8 +3,8 @@ const Discord = require("discord.js");
 exports.run = async function(client, message, args) {
     
     let itemString = args.join(' ');
-    let server = client.customOptions.get(message.guild, 'server');
-    let faction = client.customOptions.get(message.guild, 'faction');
+    let server = client.customOptions.get(client, message.guild, 'server');
+    let faction = client.customOptions.get(client, message.guild, 'faction');
     if (!faction) {
         faction = 'alliance';
     }

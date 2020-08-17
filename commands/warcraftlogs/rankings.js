@@ -27,8 +27,8 @@ exports.run = (client, message, args) => {
   }
 
   // Retrieve our server/region.
-  let server = client.customOptions.get(message.guild, 'server');
-  let region = client.customOptions.get(message.guild, 'region');
+  let server = client.customOptions.get(client, message.guild, 'server');
+  let region = client.customOptions.get(client, message.guild, 'region');
   if (!server) {
     server = 'Mankrik';
   }
