@@ -28,6 +28,10 @@ module.exports = (client, Sequelize) => {
         raidcategory: {
             type: Sequelize.STRING,
             allowNull: true
+        },
+        expansion: {
+            type: Sequelize.STRING,
+            allowNull: true
         }
     }, {
     // options

@@ -12,7 +12,6 @@ exports.run = async (client, message, args) => {
 
 	// Retrieve our category
 	let category = await client.customOptions.get(client, message.guild, 'raidcategory');
-	console.log(category);
 	if (!category) {
 		category = 'Raid Signups';
 	}

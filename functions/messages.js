@@ -32,8 +32,8 @@ module.exports = {
         if (message.guild) {
             ignoreBots = await client.guildOption.getCached(client, message.guild.id, 'ignoreBots');
         }
-        if (ignoreBots == null || ignoreBots == 1) {
-            // Ignore all bots
+        if ((ignoreBots == null || ignoreBots == 1) && message.author.id != client.config.userId) {
+            // Ignore all bots except GoodBot
             if (message.author.bot) return;
         }
 

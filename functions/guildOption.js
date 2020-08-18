@@ -50,7 +50,10 @@ module.exports = {
             'boa',
             'sl'   
         ];
-        let expacKey = await client.guildOption.get(client, guildID, 'expansion');
+        let expacKey = await client.customOptions.get(client, guildID, 'expansion');
+        if (!expacKey) {
+            expacKey = await client.guildOption.get(client, guildID, 'expansion');
+        }
         return expansions.indexOf(expacKey);
     },
     cache(client, guildID) {

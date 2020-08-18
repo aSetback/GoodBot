@@ -10,7 +10,6 @@ module.exports = (client, oldMember, newMember) => {
                 var vc = newUserChannel
                 var wav = joinwav.wav;
                 var filename = './wav/' + wav + '.wav';
-                console.log(filename);
                 fs.exists(filename, function (exists) {
                     if (exists) {
                         vc.join()
