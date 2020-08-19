@@ -9,13 +9,18 @@ exports.run = async function(client, message, args) {
         return false;
     }
 
-    let signupMessage = 'embed';
-    message.channel.send(signupMessage).then((botMsg) => {
-        reactEmoji(botMsg);
-        botMsg.pin().then(() => {
-            client.embed.update(client, message.channel);
+    if (args[0] && args[0] == 'refresh') {
+        client.embed.update(client, message.channel);
+    } else {
+        let signupMessage = 'embed';
+        message.channel.send(signupMessage).then((botMsg) => {
+            reactEmoji(botMsg);
+            botMsg.pin().then(() => {
+                client.embed.update(client, message.channel);
+            });
         });
-    });
+    }
+
 };
 
 async function reactEmoji(msg) {
