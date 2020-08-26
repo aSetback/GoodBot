@@ -15,7 +15,7 @@ exports.run = async function(client, message, args) {
             'raid': item[1],
             'name': item[2]
         }
-        client.models.reserveItem.findOne({where: {name: record.name}}).then((item) => {
+        client.models.reserveItem.findOne({where: {name: record.name, raid: record.raid}}).then((item) => {
             if (!item)  {
                 client.models.reserveItem.create(record);
                 console.log('Item created: ' + record.name);
