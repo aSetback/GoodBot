@@ -190,6 +190,21 @@ module.exports = {
 			}
 		});
 
+		const emojis = {
+			"warrior": client.emojis.find(emoji => emoji.name === "GBwarrior"),
+			"druid": client.emojis.find(emoji => emoji.name === "GBdruid"),
+			"paladin": client.emojis.find(emoji => emoji.name === "GBpaladin"),
+			"priest": client.emojis.find(emoji => emoji.name === "GBpriest"),
+			"mage": client.emojis.find(emoji => emoji.name === "GBmage"),
+			"warlock": client.emojis.find(emoji => emoji.name === "GBwarlock"),
+			"rogue": client.emojis.find(emoji => emoji.name === "GBrogue"),
+			"hunter": client.emojis.find(emoji => emoji.name === "GBhunter"),
+			"shaman": client.emojis.find(emoji => emoji.name === "GBshaman"),
+			"dk": client.emojis.find(emoji => emoji.name === "GBdk"),
+			"monk": client.emojis.find(emoji => emoji.name === "GBmonk"),
+			"dh": client.emojis.find(emoji => emoji.name === "GBdh")
+		}
+
 		let icon = 'http://softball.setback.me/goodbot/icons/' + raid.raid + '.png';
 		let embed = new Discord.RichEmbed()
 			.setTitle(raidData.title)
@@ -287,13 +302,13 @@ module.exports = {
 						roleCount[key]++;
 						if (raid.confirmation) {
 							if (player.confirmed) {
-								classList += ' **' + player.name + '** [' + number + ']\n';
+								classList += emojis[playerClass].toString() + ' **' + player.name + '** [' + number + ']\n';
 								confirmCount++;
 							} else {
-								classList += ' *' + player.name + '* [' + number + ']\n';
+								classList += emojis[playerClass].toString() + ' *' + player.name + '* [' + number + ']\n';
 							}
 						} else {
-							classList += ' ' + player.name + ' [' + number + ']\n';
+							classList += emojis[playerClass].toString() + ' ' + player.name + ' [' + number + ']\n';
 						}
 					}
 				});
