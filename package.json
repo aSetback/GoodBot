@@ -9,6 +9,7 @@
     "discord.js": "^11.5.1",
     "enmap": "^5.2.4",
     "google-spreadsheet": "^3.0.11",
+    "luaparse": "^0.3.0",
     "mariadb": "^2.1.5",
     "nexushub-client": "^1.2.0",
     "node-opus": "^0.3.3",
