@@ -159,19 +159,20 @@ module.exports = {
 			'icc': 'Icecrown Citadel'
 		}
 		if (raids[raid.raid.toLowerCase()]) {
-			raidName = raids[raid.raid.toLowerCase()];
+			instanceName = raids[raid.raid.toLowerCase()];
 		} else {
-			raidName = raid.raid.charAt(0).toUpperCase() + raid.raid.slice(1).toLowerCase();
+			instanceName = raid.raid.charAt(0).toUpperCase() + raid.raid.slice(1).toLowerCase();
 		}
 
-		if (raid.name) {
-			raidName = raid.name;
-		}
+		raidName = raid.name ? raid.name : instanceName;
 
 		let title = "Raid Signups for " + raidName;
 		let lineup = await client.embed.getLineup(client, raid);
 		let raidDate = new Date(Date.parse(raid.date));
 		let dateString = raidDate.toLocaleString('en-us', { month: 'long', timeZone: 'UTC' }) + " " + raidDate.getUTCDate();
+		if (raid.time.indexOf('PM')) {
+			
+		}
 
 		let raidData = {};
 		raidData.color = raid.color ? raid.color : '#02a64f';
@@ -190,21 +191,38 @@ module.exports = {
 			}
 		});
 
-		const emojis = {
-			"warrior": client.emojis.find(emoji => emoji.name === "GBwarrior"),
-			"druid": client.emojis.find(emoji => emoji.name === "GBdruid"),
-			"paladin": client.emojis.find(emoji => emoji.name === "GBpaladin"),
-			"priest": client.emojis.find(emoji => emoji.name === "GBpriest"),
-			"mage": client.emojis.find(emoji => emoji.name === "GBmage"),
-			"warlock": client.emojis.find(emoji => emoji.name === "GBwarlock"),
-			"rogue": client.emojis.find(emoji => emoji.name === "GBrogue"),
-			"hunter": client.emojis.find(emoji => emoji.name === "GBhunter"),
-			"shaman": client.emojis.find(emoji => emoji.name === "GBshaman"),
-			"dk": client.emojis.find(emoji => emoji.name === "GBdk"),
-			"monk": client.emojis.find(emoji => emoji.name === "GBmonk"),
-			"dh": client.emojis.find(emoji => emoji.name === "GBdh")
+		let emojis = {};
+		try {
+			emojis = {
+				"warrior": client.emojis.find(emoji => emoji.name === "GBwarrior"),
+				"druid": client.emojis.find(emoji => emoji.name === "GBdruid"),
+				"paladin": client.emojis.find(emoji => emoji.name === "GBpaladin"),
+				"priest": client.emojis.find(emoji => emoji.name === "GBpriest"),
+				"mage": client.emojis.find(emoji => emoji.name === "GBmage"),
+				"warlock": client.emojis.find(emoji => emoji.name === "GBwarlock"),
+				"rogue": client.emojis.find(emoji => emoji.name === "GBrogue"),
+				"hunter": client.emojis.find(emoji => emoji.name === "GBhunter"),
+				"shaman": client.emojis.find(emoji => emoji.name === "GBshaman"),
+				"dk": client.emojis.find(emoji => emoji.name === "GBdk"),
+				"monk": client.emojis.find(emoji => emoji.name === "GBmonk"),
+				"dh": client.emojis.find(emoji => emoji.name === "GBdh")
+			}
+		} catch (error) {
+			emojis = {
+				"warrior": "",
+				"druid": "",
+				"paladin": "",
+				"priest": "",
+				"mage": "",
+				"warlock": "",
+				"rogue": "",
+				"hunter": "",
+				"shaman": "",
+				"dk": "",
+				"monk": "",
+				"dh": ""
+			}
 		}
-
 		let icon = 'http://softball.setback.me/goodbot/icons/' + raid.raid + '.png';
 		let embed = new Discord.RichEmbed()
 			.setTitle(raidData.title)
@@ -224,8 +242,10 @@ module.exports = {
 		fields++;
 		embed.addField('**Raid Leader**', leader, true);
 
-
 		fields++;
+		// let subject = raidData.title ? raidData.title : raidName;
+		// let icsLink = 'http://ics.agical.io/?subject=' + subject + '&organizer=' + leader.user.username + '&reminder=45&location=' + instanceName + '&dtstart=' + raidDate.toISOString() + '&dtend=' + raidDate.toISOString();
+		// embed.addField('**Date**', dateString + '\n[ics](' + encodeURI(icsLink) + ')', true);
 		embed.addField('**Date**', dateString, true);
 		if (!raid.time) {
 			raid.time = '-';
