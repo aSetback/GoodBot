@@ -170,10 +170,6 @@ module.exports = {
 		let lineup = await client.embed.getLineup(client, raid);
 		let raidDate = new Date(Date.parse(raid.date));
 		let dateString = raidDate.toLocaleString('en-us', { month: 'long', timeZone: 'UTC' }) + " " + raidDate.getUTCDate();
-		if (raid.time.indexOf('PM')) {
-			
-		}
-
 		let raidData = {};
 		raidData.color = raid.color ? raid.color : '#02a64f';
 		raidData.description = raid.description ? raid.description : 'To sign up for this raid, please click on one of the emojis directly below this post.'
