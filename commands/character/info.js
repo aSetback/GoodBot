@@ -1,11 +1,14 @@
 exports.run = async function (client, message, args) {
-    let playerName = args[0];
-    if (!playerName) {
+    let playerName = null;
+    if (args[0]) {
+        playerName = args[0];
+    } else {
         playerName = message.member.nickname;
         if (!playerName) {
             playerName = message.author.username;
         }
     }
+
     playerName = client.general.ucfirst(playerName);
     let main = await client.character.get(client, playerName, message.guild.id);
 
@@ -72,26 +75,29 @@ exports.run = async function (client, message, args) {
     signupInfo.forEach((signup) => {
         signupMsg += signup.date.padEnd(12) + signup.player.padEnd(15) + signup.name.padEnd(22) + signup.signup.padEnd(12) + signup.confirmed.padEnd(12) + signup.reserve + '\n';
     });
+    if (!signupInfo.length) {
+        signupMsg += 'Player is not currently signed up for any raids.\n';
+    }
     signupMsg += '```';
     message.author.send(signupMsg);
 
-    let resistMsg = '**Resistances**\n';
-    resistMsg += '```md\n'; 
-    resistMsg += 'Character'.padEnd(20) + 'Fire'.padEnd(20) + 'Frost'.padEnd(20) + 'Nature'.padEnd(20) + 'Shadow'.padEnd(20) + '\n';
-    resistMsg += ''.padEnd(100, '=') + '\n';
-    resistMsg += main.name.padEnd(20) + main.fireResist.toString().padEnd(20) +  main.frostResist.toString().padEnd(20) +  main.natureResist.toString().padEnd(20) +  main.shadowResist.toString().padEnd(20) + '\n';
-    for (key in alts) {
-        let alt = alts[key];
-        let resists = {
-            fire: alt.fireResist ? alt.fireResist : 0,
-            frost: alt.frostResist ? alt.frostResist : 0,
-            nature: alt.natureResist ? alt.natureResist : 0,
-            shadow: alt.shadowResist ? alt.shadowResist : 0,
+    if (main.fireResist) {
+        let resistMsg = '**Resistances**\n';
+        resistMsg += '```md\n'; 
+        resistMsg += 'Character'.padEnd(20) + 'Fire'.padEnd(20) + 'Frost'.padEnd(20) + 'Nature'.padEnd(20) + 'Shadow'.padEnd(20) + '\n';
+        resistMsg += ''.padEnd(100, '=') + '\n';
+        resistMsg += main.name.padEnd(20) + main.fireResist.toString().padEnd(20) +  main.frostResist.toString().padEnd(20) +  main.natureResist.toString().padEnd(20) +  main.shadowResist.toString().padEnd(20) + '\n';
+        for (key in alts) {
+            let alt = alts[key];
+            let resists = {
+                fire: alt.fireResist ? alt.fireResist : 0,
+                frost: alt.frostResist ? alt.frostResist : 0,
+                nature: alt.natureResist ? alt.natureResist : 0,
+                shadow: alt.shadowResist ? alt.shadowResist : 0,
+            }
+            resistMsg += alt.name.padEnd(20) + resists.fire.toString().padEnd(20) + resists.frost.toString().padEnd(20) +  resists.nature.toString().padEnd(20) +  resists.shadow.toString().padEnd(20) + '\n';
         }
-        resistMsg += alt.name.padEnd(20) + resists.fire.toString().padEnd(20) + resists.frost.toString().padEnd(20) +  resists.nature.toString().padEnd(20) +  resists.shadow.toString().padEnd(20) + '\n';
+        resistMsg += '```';
+        message.author.send(resistMsg);
     }
-    
-    resistMsg += '```';
-    message.author.send(resistMsg);
- 
 }
