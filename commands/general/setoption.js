@@ -15,16 +15,32 @@ exports.run = (client, message, args) => {
 		return message.channel.send('Invalid parameters.  Correct usage is: +setoption optionName optionValue');
 	}
 
-	// Write to class json file
-	let fileName = 'data/' + message.guild.id + '-options.json';
-	let parsedList = {};
-	if (fs.existsSync(fileName)) {
-		currentList = fs.readFileSync(fileName, 'utf8');
-		parsedList = JSON.parse(currentList);
+	if (optionName == 'raidcategory') {
+		client.models.settings.findOne({where: {guildID: message.guild.id}}).then((settings) => {
+			let record = {
+				raidcategory: optionValue,
+			}
+			if (settings) {
+				client.models.settings.update(record, {where: {id: settings.id}}).then(() => {
+					return client.messages.send(message.channel, 'Option saved.', 240);
+				});
+			} else {
+				client.models.settings.create(record).then(() => {
+					return client.messages.send(message.channel, 'Option saved.', 240);
+				});
+			}
+		});
+	} else {
+		// Write to class json file
+		let fileName = 'data/' + message.guild.id + '-options.json';
+		let parsedList = {};
+		if (fs.existsSync(fileName)) {
+			currentList = fs.readFileSync(fileName, 'utf8');
+			parsedList = JSON.parse(currentList);
+		}
+		parsedList[optionName] = optionValue;
+		fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
+
+		return client.messages.send(message.channel, 'Option saved.', 240);
 	}
-	parsedList[optionName] = optionValue;
-	fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
-
-	return client.messages.send(message.channel, 'Option saved.', 240);
-
 };

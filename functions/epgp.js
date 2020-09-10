@@ -113,7 +113,7 @@ module.exports = {
 				'gp': parseInt(data[key].value.fields[2].value.raw.replace(/\"/g, '').split(',')[1])
 			}
 			entry.ep = isNaN(entry.ep) ? 0 : entry.ep;
-			entry.gp = isNaN(entry.gp) ? 0 : entry.gp;
+			entry.gp = isNaN(entry.gp) ? 200 : entry.gp + 200;
 			if (entry.gp < 200) { entry.gp = 200; }
 			entry.class = client.general.ucfirst(entry.class);
 			if (entry.class == 'Deathknight') { entry.class = 'Death Knight'; }
