@@ -19,6 +19,7 @@ exports.run = (client, message, args) => {
 		client.models.settings.findOne({where: {guildID: message.guild.id}}).then((settings) => {
 			let record = {
 				raidcategory: optionValue,
+				guildID: message.guild.id
 			}
 			if (settings) {
 				client.models.settings.update(record, {where: {id: settings.id}}).then(() => {
