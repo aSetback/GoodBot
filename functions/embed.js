@@ -167,14 +167,15 @@ module.exports = {
 		raidName = raid.name ? raid.name : instanceName;
 
 		let title = "Raid Signups for " + raidName;
+		let leader = channel.guild.members.find(member => member.id == raid.memberID);
 		let lineup = await client.embed.getLineup(client, raid);
 		let raidDate = new Date(Date.parse(raid.date));
 		let dateString = raidDate.toLocaleString('en-us', { month: 'long', timeZone: 'UTC' }) + " " + raidDate.getUTCDate();
 		let raidData = {};
 		raidData.color = raid.color ? raid.color : '#02a64f';
 		raidData.description = raid.description ? raid.description : 'To sign up for this raid, please click on one of the emojis directly below this post.'
+		
 		raidData.title = raid.title ? raid.title : title;
-
 		let maybeList = [];
 		let noList = [];
 
@@ -226,12 +227,24 @@ module.exports = {
 			.setThumbnail(icon);
 
 		let fields = 0;
+
+		// Generate calendar links if the time is set.
+		if (raid.time) {
+			let subject = raidData.title ? raidData.title + ' (' + instanceName + ')' : raidName;
+			let parsedTime = client.general.parseTime(raid.time);
+			let formattedDate = raidDate.toISOString().slice(0, 11) + parsedTime + '-04:00';
+			let zDate = new Date(Date.parse(formattedDate));
+			let icsLink = 'http://ics.agical.io/?subject=' + subject + '&organizer=' + leader.user.username + '&reminder=45&location=' + instanceName + '&dtstart=' + formattedDate;
+			let gcalLink = 'https://www.google.com/calendar/render?action=TEMPLATE&text=' + subject + '&location=' + instanceName + '&dates=' + zDate.toISOString().replace(/-/g, '').replace(/:/g, '').replace('.000', '');
+			raidData.description += '\n[ics](' + encodeURI(icsLink) + ') [gcal](' + encodeURI(gcalLink) + ')'
+		}
+		embed.setDescription(raidData.description);
+
 		if (raid.locked) {
 			embed.addField('**Status**', '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*');
 			fields++;
 		}
 
-		let leader = channel.guild.members.find(member => member.id == raid.memberID);
 		if (!leader) {
 			leader = "-";
 		}
@@ -239,9 +252,6 @@ module.exports = {
 		embed.addField('**Raid Leader**', leader, true);
 
 		fields++;
-		// let subject = raidData.title ? raidData.title : raidName;
-		// let icsLink = 'http://ics.agical.io/?subject=' + subject + '&organizer=' + leader.user.username + '&reminder=45&location=' + instanceName + '&dtstart=' + raidDate.toISOString() + '&dtend=' + raidDate.toISOString();
-		// embed.addField('**Date**', dateString + '\n[ics](' + encodeURI(icsLink) + ')', true);
 		embed.addField('**Date**', dateString, true);
 		if (!raid.time) {
 			raid.time = '-';
@@ -295,7 +305,6 @@ module.exports = {
 			]
 		}
 
-		embed.setDescription(raidData.description);
 		let roleCount = {
 			'tank': 0,
 			'healer': 0,
