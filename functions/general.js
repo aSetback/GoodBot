@@ -18,6 +18,9 @@ module.exports = {
         let parsed = regex.exec(time);
         let hours = '00';
         let minutes = '00';
+        if (parsed.length < 3) {
+            return false;
+        }
         if (parsed[1]) {
             hours = parseInt(parsed[1]);
         }
