@@ -15,12 +15,12 @@ exports.run = (client, message, args) => {
 		return message.channel.send('Invalid parameters.  Correct usage is: +setoption optionName optionValue');
 	}
 
-	if (optionName == 'raidcategory') {
+	if (optionName == 'raidcategory' || optionName == 'server' || optionName == 'region') {
 		client.models.settings.findOne({where: {guildID: message.guild.id}}).then((settings) => {
 			let record = {
-				raidcategory: optionValue,
 				guildID: message.guild.id
 			}
+			record[optionName] = optionValue;
 			if (settings) {
 				client.models.settings.update(record, {where: {id: settings.id}}).then(() => {
 					return client.messages.send(message.channel, 'Option saved.', 240);
