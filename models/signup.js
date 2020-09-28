@@ -17,6 +17,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.BOOLEAN,
             allowNull: true
         },
+        characterID: {
+            type: Sequelize.BIGINT(20),
+            allowNull: true
+        },
         raidID: {
             type: Sequelize.BIGINT(20),
             allowNull: false
