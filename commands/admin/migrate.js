@@ -4,7 +4,7 @@ exports.run = async (client, message, args) => {
     }
     
     let cache = [];
-    client.models.signup.findAll({where: {characterID: null}, limit: 1000}).then((signups) => {
+    client.models.signup.findAll({where: {characterID: null}, limit: 25000}).then((signups) => {
         signups.forEach(async (signup) => {
             if (!cache[signup.guildID]) {
                 cache[signup.guildID] = [];
