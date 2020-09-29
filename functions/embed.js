@@ -226,7 +226,9 @@ module.exports = {
 
 		// Add our fields
 		embeds.forEach((embedField) => {
-			embed.addField(embedField.name, embedField.signups.join('\n'), true);
+			if (embedField.signups.length > 0) {
+				embed.addField(embedField.name, embedField.signups.join('\n'), true);
+			}
 		});
 
 		// keep an even number of rows
