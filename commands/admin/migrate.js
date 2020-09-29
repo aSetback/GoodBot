@@ -12,6 +12,9 @@ exports.run = async (client, message, args) => {
 
             if (!cache[signup.guildID][signup.player]) {
                 character = await client.models.character.findOne({where: {name: signup.player, guildID: signup.guildID}, order: [['updatedAt', 'DESC']]});
+                if (!character) {
+                    character = await client.models.character.findOne({where: {name: signup.player, crosspostGuildID: signup.guildID}, order: [['updatedAt', 'DESC']]});
+                }
                 cache[signup.guildID][signup.player] = character ? character.id : 0;
             }
             let characterID = cache[signup.guildID][signup.player];

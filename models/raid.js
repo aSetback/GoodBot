@@ -57,6 +57,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.BIGINT(20),
             allowNull: true
         },
+        crosspostGuildID: {
+            type: Sequelize.BIGINT(20),
+            allowNull: true
+        },
         channelID: {
             type: Sequelize.BIGINT(20),
             allowNull: false
