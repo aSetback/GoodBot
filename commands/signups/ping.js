@@ -2,6 +2,10 @@ exports.run = async function(client, message, args) {
     let type = args.shift();
     let filterArg = args.shift();
     let raid = await client.raid.get(client, message.channel);
+    if (!raid) {
+        return client.messages.errorMessage('This command can only be used in a raid channel.', 240);
+    }
+
     let list = [];
 
     if (type == 'confirmed') {
