@@ -243,7 +243,7 @@ module.exports = {
 			maybeText +
 			noText +
 			confirmedText + 
-			'**Total:** ' + raid.signups.length + '\n'
+			'**Total:** ' + raid.signups.filter(s => s.signup == 'yes').length + '\n'
 		);
 
 		if (raid.confirmation) {
