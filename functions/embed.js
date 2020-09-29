@@ -211,7 +211,7 @@ module.exports = {
 					confirmed++;
 				}
 			} else {
-				otherSignups[signup.signup].push(signup.character.name);
+				otherSignups[signup.signup].push(signup.confirmed ? '**' + signup.character.name + '**' : signup.character.name);
 			}
 
 			// Store our signup for the next iteration
