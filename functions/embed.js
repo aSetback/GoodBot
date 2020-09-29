@@ -9,13 +9,27 @@ module.exports = {
 		let raid = await client.raid.get(client, channel);
 		let raidChannel = await client.channels.find(c => c.id == raid.channelID);
 		let embed = await client.embed.updateEmbed(client, raidChannel, raid);
-		client.embed.edit(client, raidChannel, embed);
-
+		let crosspostChannel = null;
 		if (raid.crosspostID && raid.crosspostID.length) {
-			let crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
-			client.embed.edit(client, crosspostChannel, embed);
+			crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
 		}
 
+		// Prevent the embed from trying to refresh more than once a second.
+		if (client.embeds[raid.id] && client.embeds[raid.id].timeout) {
+			client.embeds[raid.id].embed = embed;
+		} else {
+			client.embeds[raid.id] = {
+				embed: embed,
+				timeout: setTimeout(() => {
+					embed = client.embeds[raid.id].embed;
+					client.embed.edit(client, raidChannel, embed);
+					if (crosspostChannel) {
+						client.embed.edit(client, crosspostChannel, embed);
+					}
+					client.embeds[raid.id].timeout = null;
+				}, 1000)
+			};
+		}
 	},
 	edit: async (client, channel, embed) => {
 		let list = await channel.fetchPinnedMessages();

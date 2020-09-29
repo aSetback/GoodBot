@@ -6,6 +6,9 @@ const client = new Discord.Client();
 // Our music
 client.queue = {};
 
+// Embed holder
+client.embeds = {};
+
 // Guild Options
 client.guildOptions = {};
 
