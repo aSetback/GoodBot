@@ -11,37 +11,56 @@ exports.run = async function(client, message, args) {
 		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
 
-	let oldRaidChannel = args[0];
+	// Determine type
+	let type = args.shift();
+	let oldRaidChannel = type;
+	if (type == 'confirmed') {
+		oldRaidChannel = args.shift();
+	} 
+
+	// Check for required parameter
 	if (!oldRaidChannel) {
 		return message.channel.send('Proper usage is: +unsigned mar-21-tagalong');
 	}
 
+	// Pull discord.js object
 	oldChannel = await client.general.getChannel(oldRaidChannel, message.guild);
+
+	// Check that the channel exists
 	if (!oldChannel) {
 		return message.channel.send('Unable to find channel: ' + oldRaidChannel);
 	}
+
+	// Retrieve our old raid & our current raid
 	let oldRaid = await client.raid.get(client, oldChannel);
-	let oldSignups = await client.signups.getSignups(client, oldRaid);
-
 	let newRaid = await client.raid.get(client, message.channel);
-	let newSignups = await client.signups.getSignups(client, newRaid);
-
+	
+	// Set up vars
 	let unsigned = [];
-	for (oldKey in oldSignups) { 
-		let match = false;
-		let playerName = oldSignups[oldKey].player;
-		for (newKey in newSignups) {
-			if (playerName == newSignups[newKey].player) {
-				match = true;
-			}
-		}
-		if (!match) {
-			unsigned.push(playerName);
-		}
+
+	// Filter if necessary
+	let signups = oldRaid.signups;
+	if (type == 'confirmed') {
+		signups = signups.filter(s => s.confirmed == 1);
 	}
+
+	// Loop through and check if each player is signed up
+	signups.forEach((signup) => {
+		if (signup.character && !newRaid.signups.find(s => s.character.id == signup.character.id)) {
+			unsigned.push(signup.character.name);
+		}
+	});
+
+	// Do player/alt looks-ups
 	let mentions = await client.notify.makeList(client, message.guild, unsigned);
-	message.channel.send("Players who were signed up for " + oldChannel + ": ");
-	message.channel.send(mentions);
+
+	// Send message
+	if (mentions.length) {
+		message.channel.send("Players who were signed up for " + oldChannel + ": ");
+		message.channel.send(mentions);
+	} else {
+		message.channel.send('All players are currently signed up.');
+	}
 
 }
 
