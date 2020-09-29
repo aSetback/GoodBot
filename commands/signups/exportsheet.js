@@ -4,7 +4,6 @@ exports.run = async function(client, message, args) {
 		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
 
-
 	let sheetID = await client.customOptions.get(client, message.guild, 'sheet');
 	if (sheetID) {
 		sheedID = sheetID.trim();
@@ -56,14 +55,11 @@ exports.run = async function(client, message, args) {
 		sheetCols['dk-tank'] = 24;
 	}
 
-	let lineup = await client.embed.getLineup(client, raid)
-
 	cellData = [];
 	rowCounter = [];
-	for (key in lineup) {
-		player = lineup[key];
+	raid.signups.forEach((player) => {
 		if (player.signup == 'yes' && (!raid.confirmation || (raid.confirmation && player.confirmed))) {
-			let playerType = player.class + '-' + player.role;
+			let playerType = player.character.class + '-' + player.character.role;
 			if (playerType == 'druid-tank') {
 				playerType = 'druid-dps';
 			}
@@ -75,20 +71,21 @@ exports.run = async function(client, message, args) {
 				cellData.push({
 					row: rowCounter[col], 
 					col: col, 
-					value: player.name
+					value: player.character.name
 				});
 	
 				rowCounter[col]++;
 			}
 		}
-	}
+	});
+
 	setCells(cellData);
 
 	let reserves = await client.reserves.byRaid(client, raid);
 	await exportReserves(reserves);
-	await exportResists(lineup);
+	await exportResists(raid);
 
-	function exportResists(lineup) {
+	function exportResists(raid) {
 		return new Promise(async (resolve, reject) => {
 			let sheet = null;
 			for (key in doc.sheetsById) {
@@ -107,20 +104,19 @@ exports.run = async function(client, message, args) {
 				}
 			}
 			let outputRow = 1;
-			for (key in lineup) {
-				let signup = lineup[key];
+			raid.signups.forEach((signup) => {
 				let cell = sheet.getCell(outputRow, 0);
-				cell.value = signup.name;
+				cell.value = signup.character.name;
 				cell = sheet.getCell(outputRow, 1);
-				cell.value = signup.resists.nature;
+				cell.value = signup.character.natureResist;
 				cell = sheet.getCell(outputRow, 2);
-				cell.value = signup.resists.shadow;
+				cell.value = signup.character.shadowResist;
 				cell = sheet.getCell(outputRow, 3);
-				cell.value = signup.resists.fire;
+				cell.value = signup.character.fireResist;
 				cell = sheet.getCell(outputRow, 4);
-				cell.value = signup.resists.frost;
+				cell.value = signup.character.frostResist;
 				outputRow++;
-			}
+			});
 			await sheet.saveUpdatedCells();
 			resolve(true)
 		});

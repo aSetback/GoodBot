@@ -60,13 +60,14 @@ fs.readdir("./models/", (err, files) => {
   });
 
   // Associations
-  client.models.raidReserve.belongsTo(client.models.signup, { as: 'signup', foreignKey: 'signupID' });
-  client.models.raidReserve.belongsTo(client.models.reserveItem, { as: 'item', foreignKey: 'reserveItemID' });
+  client.models.raidReserve.belongsTo(client.models.signup, { as: 'signup', foreignKey: 'signupID', constraints: false  });
+  client.models.raidReserve.belongsTo(client.models.reserveItem, { as: 'item', foreignKey: 'reserveItemID', constraints: false });
   client.models.raid.hasMany(client.models.signup, { as: 'signups', foreignKey: 'raidID', constraints: false });
   client.models.signup.belongsTo(client.models.raid);
-  client.models.signup.hasOne(client.models.raidReserve, { as: 'reserve', foreignKey: 'signupID' });
-  client.models.wowGuild.hasMany(client.models.wowGuildMaster, { as: 'gm', foreignKey: 'wowGuildID'});
-  client.models.wowGuild.hasMany(client.models.wowOfficer, { as: 'officer', foreignKey: 'wowGuildID'});
+  client.models.signup.belongsTo(client.models.character, { as: 'character', foreignKey: 'characterID', constraints: false});
+  client.models.signup.hasOne(client.models.raidReserve, { as: 'reserve', foreignKey: 'signupID', constraints: false  });
+  client.models.wowGuild.hasMany(client.models.wowGuildMaster, { as: 'gm', foreignKey: 'wowGuildID', constraints: false });
+  client.models.wowGuild.hasMany(client.models.wowOfficer, { as: 'officer', foreignKey: 'wowGuildID', constraints: false });
   console.log('    > ' + models.join(', '));
 })
 

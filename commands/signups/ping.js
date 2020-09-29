@@ -1,18 +1,27 @@
-exports.run = async function(client, message, args) {
-    
+exports.run = async function(client, message, args) {    
     let type = args.shift();
+    let filterArg = args.shift();
+    let raid = await client.raid.get(client, message.channel);
+    let list = [];
+    
     if (type == 'confirmed') {
-        let raid = await client.raid.get(client, message.channel);
-        let confirmed = await client.signups.getConfirmed(client, raid);
-        let pingList = [];
-        for (key in confirmed) {
-            pingList.push(confirmed[key].player);
-        }
-        if (pingList) {
-            let mentionText = await client.notify.makeList(client, message.guild, pingList);
-            message.channel.send(mentionText);
-        }
-
+        list = raid.signups.filter(signup => signup.confirmed == 1);
+    }
+    if (type == 'raid') {
+        list = raid.signups.filter(signup => signup.signup == 'yes');
+    }
+    if (type == 'class') {
+        list = raid.signups.filter(signup => signup.signup == 'yes' && signup.character.class == filterArg);
+    }
+    if (type == 'role') {
+        list = raid.signups.filter(signup => signup.signup == 'yes' && signup.character.role == filterArg);
     }
 
+    let pingList = [];
+    for (key in list) {
+        pingList.push(list[key].character.name);
+    }
+    
+    let notifications = await client.notify.makeList(client, message.guild, pingList);
+    message.channel.send(notifications);
 }

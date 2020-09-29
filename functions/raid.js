@@ -184,6 +184,12 @@ module.exports = {
         return promise;
     },
     get(client, channel) {
+        let includes = [
+            {model: client.models.signup, as: 'signups', foreignKey: 'signupID', include: {
+                model: client.models.character, as: 'character', foreignKey: 'characterID'
+            }},
+        ];
+
         let promise = new Promise((resolve, reject) => {
             client.models.raid.findOne({ 
                 where: {
@@ -191,7 +197,8 @@ module.exports = {
                         {channelID: channel.id},
                         {crosspostID: channel.id}
                     ]
-                }
+                },
+                include: includes
             }).then((raid) => {
                 if (!raid) {
                     client.models.raid.findOne({ where: { 'crosspostID': channel.id } }).then((raid) => {
@@ -239,6 +246,48 @@ module.exports = {
             });
         });
         return promise;
+    },
+    getCategory: async (client, guildID, raidType, faction) => {
+        // Retrieve guild's default category
+        let category = await client.customOptions.get(client, guildID, 'raidcategory');
+        console.log(category);
+        // Raid category hasn't been set -- 
+        if (!category) {
+            category = 'Raid Signups';
+        }
+
+        let guild = await client.guilds.find(g => g.id == guildID);
+
+        // Check for overwrite for this raid type
+        let categoryParams = {'raid': raidType, 'guildID': guildID};
+        if (faction) {
+            categoryParams.faction = faction;
+        }
+        let raidCategory = await client.models.raidCategory.findOne({ where: categoryParams});
+        if (raidCategory)  {
+            category = raidCategory.category;
+        }
+
+        return category;
+
+    },
+    archive: async (client, channel, raid) => {
+        let category = channel.guild.channels.find(c => c.name == "Archives" && c.type == "category");
+        if (category) {
+            try {
+                await channel.setParent(category.id);
+                channel.lockPermissions();
+                client.models.raid.update({'archived': 1}, {where: {id: raid.id}});
+            } catch (e) {
+                if (e.message.indexOf('Maximum number')) {
+                    let errorArchiveMaxChannel = client.loc('errorMaxChannel', "The category **Archives** is full, this channel could not be moved.");
+                    client.messages.errorMessage(channel, errorArchiveMaxChannel, 240);
+                }
+            }
+        } else {
+            let errorArchiveNoChannel = client.loc('errorMaxChannel', "The category **Archives** does not exist, please create the category to use this command.");
+            client.messages.errorMessage(channel, errorArchiveNoChannel, 240);
+        }
     },
     createRaidChannel: async (client, message, category, raid, guild) => {
         let promise = new Promise((resolve, reject) => {

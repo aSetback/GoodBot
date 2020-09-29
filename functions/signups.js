@@ -83,6 +83,7 @@ z           }
                 'player': characterName,
                 'signup': signValue,
                 'raidID': raid.id,
+                'characterID': character.id,
                 'channelID': raid.channelID,
                 'guildID': raid.guildID,
                 'memberID': message.author.id
@@ -170,7 +171,11 @@ z           }
     },
     getSignups(client, raid) {
         let promise = new Promise((resolve, reject) => {
-            client.models.signup.findAll({ where: {'raidID': raid.id}}).then((signups) => {
+            let includes = [
+                { model: client.models.character, as: 'character', foreignKey: 'characterID' }
+            ];
+
+            client.models.signup.findAll({ where: {'raidID': raid.id}, include: includes }).then((signups) => {
                 resolve(signups);
             });
         });
