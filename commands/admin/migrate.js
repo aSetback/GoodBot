@@ -4,7 +4,11 @@ exports.run = async (client, message, args) => {
     }
     
     let cache = [];
-    client.models.signup.findAll({where: {characterID: null}, limit: 25000}).then((signups) => {
+    let includes = [
+        {model: client.models.raid, as: 'raid', foreignKey: 'raid'},
+    ];
+
+    client.models.signup.findAll({where: {characterID: null}, include: includes, limit: 25000}).then((signups) => {
         signups.forEach(async (signup) => {
             if (!cache[signup.guildID]) {
                 cache[signup.guildID] = [];
@@ -13,7 +17,7 @@ exports.run = async (client, message, args) => {
             if (!cache[signup.guildID][signup.player]) {
                 character = await client.models.character.findOne({where: {name: signup.player, guildID: signup.guildID}, order: [['updatedAt', 'DESC']]});
                 if (!character) {
-                    character = await client.models.character.findOne({where: {name: signup.player, crosspostGuildID: signup.guildID}, order: [['updatedAt', 'DESC']]});
+                    character = await client.models.character.findOne({where: {name: signup.player, guildID: signup.raid.crosspostGuildID}, order: [['updatedAt', 'DESC']]});
                 }
                 cache[signup.guildID][signup.player] = character ? character.id : 0;
             }
