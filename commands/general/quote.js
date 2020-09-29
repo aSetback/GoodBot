@@ -34,20 +34,20 @@ exports.run = (client, message, args) => {
     function getQuote(id, guildID) {
         client.models.quote.findOne({ where: {'guildID': guildID, 'id': id}}).then((quote) => {
             if (quote) {
-                client.messages.send(quote.quote, 900);
+                client.messages.send(message.channel, quote.quote, 900);
             }
         });
     }
 
     function addQuote(record) {
         client.models.quote.create(record).then((newRecord) => {
-            client.messages.send('New quote added (ID: ' + newRecord.id +')', 900);
+            client.messages.send(message.channel, 'New quote added (ID: ' + newRecord.id +')', 900);
         });
     }
 
     function removeQuote(id, guildID) {
         client.models.quote.destroy({ where: {'id': id, 'guildID': guildID}}).then(() => {
-            client.messages.send('Deleted quote (ID: ' + id + ')', 900);
+            client.messages.send(message.channel, 'Deleted quote (ID: ' + id + ')', 900);
         });
     }
 
@@ -55,7 +55,7 @@ exports.run = (client, message, args) => {
         client.models.quote.findAll({ where: {'guildID': guildID}}).then((quotes) => {
             let randomNumber = Math.floor(Math.random() * quotes.length);
             let quote = quotes[randomNumber];
-            client.messages.send(quote.quote, 900);
+            client.messages.send(message.channel, quote.quote, 900);
         });
     }
 
@@ -67,13 +67,13 @@ exports.run = (client, message, args) => {
                 quoteCount++;
                 quoteMessage += quote.id + ' - ' + quote.quote + '\n';
                 if (quoteCount % 20 == 0) {
-                    client.messages.send(quoteMessage, 900);
+                    client.messages.send(message.channel, quoteMessage, 900);
                     quoteMessage = '';
                 }
             });
 
             if (quoteMessage) {
-                client.messages.send(quoteMessage, 900);
+                client.messages.send(message.channel, quoteMessage, 900);
             }
         });
     }

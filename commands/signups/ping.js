@@ -3,7 +3,7 @@ exports.run = async function(client, message, args) {
     let filterArg = args.shift();
     let raid = await client.raid.get(client, message.channel);
     if (!raid) {
-        return client.messages.errorMessage('This command can only be used in a raid channel.', 240);
+        return client.messages.errorMessage(message.channel, 'This command can only be used in a raid channel.', 240);
     }
 
     let list = [];
@@ -27,7 +27,7 @@ exports.run = async function(client, message, args) {
     }
     
     if (pingList.length == 0) {
-        return client.messages.errorMessage('No players were found.', 240);
+        return client.messages.errorMessage(message.channel, 'No players were found.', 240);
     } else {
         let notifications = await client.notify.makeList(client, message.guild, pingList);
         return message.channel.send(notifications);
