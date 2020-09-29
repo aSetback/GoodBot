@@ -199,10 +199,12 @@ module.exports = {
 
 			// If we're on a different class/role than the previous signup, we need to start a new embed field
 			if (prevSignup != null && (signup.character.role != prevSignup.character.role || signup.character.class != prevSignup.character.class)) {
-				embeds.push({
-					'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.class), 
-					'signups': signups
-				});
+				if (signups.length) {
+					embeds.push({
+						'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.class), 
+						'signups': signups
+					});
+				}
 				signups = [];
 			}
 			
@@ -234,10 +236,12 @@ module.exports = {
 
 		// If we have at least one signup, add the embed field for the last signup class/role combo
 		if (prevSignup) {
-			embeds.push({
-				'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.class), 
-				'signups': signups
-			});
+			if (signups.length) {
+				embeds.push({
+					'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.class), 
+					'signups': signups
+				});
+			}
 		}
 
 		// Add our fields
