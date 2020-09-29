@@ -148,8 +148,10 @@ module.exports = {
 			raid.signups[key].order = key + 1;
 		});
 
+		cleanSignups = raid.signups.filter(s => s.character != null);
+
 		// Sort our sign-ups by role, then class
-		let sortedLineup = raid.signups.sort((a, b) => {
+		let sortedLineup = cleanSignups.sort((a, b) => {
 			if (a.character.role > b.character.role) {
 				return -1;
 			} else if (a.character.role < b.character.role) {
@@ -243,7 +245,7 @@ module.exports = {
 			maybeText +
 			noText +
 			confirmedText + 
-			'**Total:** ' + raid.signups.filter(s => s.signup == 'yes').length + '\n'
+			'**Total:** ' + cleanSignups.filter(s => s.signup == 'yes').length + '\n'
 		);
 
 		if (raid.confirmation) {
