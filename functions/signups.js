@@ -153,7 +153,7 @@ z           }
             let record = {
                 confirmed: false
             };
-            client.models.signup.findOne({where: {player: characterName, raidID: raidID, signup: 'yes'}}).then((signup) => {
+            client.models.signup.findOne({where: {player: characterName, raidID: raidID}}).then((signup) => {
                 if (!signup) {
                     resolve(false);
                 } else {
