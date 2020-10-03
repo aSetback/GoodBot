@@ -115,12 +115,38 @@ module.exports = {
             let record = {
                 memberID: memberID
             };
-            client.models.raid.update(record, {
+            client.models.raidLeader.update(record, {
                 where: {
                     id: raid.id,
                 }
             }).then(() => {
                 resolve(true);
+            });
+        });
+        return promise;
+    },
+    addLeader(client, raid, memberID) {
+        let promise = new Promise((resolve, reject) => {
+            client.models.raidLeader.findOne({where: {'memberID': memberID, 'raidID': raid.id}}).then(async (raidLeader) => {
+                if (!raidLeader) {
+                    await client.models.raidLeader.create({
+                        'raidID': raid.id,
+                        'memberID': memberID,
+                        'guildID': raid.guildID
+                    });
+                }
+                resolve();
+            });
+        });
+        return promise;
+    },
+    removeLeader(client, raid, memberID) {
+        let promise = new Promise((resolve, reject) => {
+            client.models.raidLeader.findOne({where: {'memberID': memberID, 'raidID': raid.id}}).then(async (raidLeader) => {
+                if (raidLeader) {
+                    await client.models.raidLeader.destroy({where: {'id': raidLeader.id}});
+                }
+                resolve();
             });
         });
         return promise;
@@ -185,6 +211,7 @@ module.exports = {
     },
     get(client, channel) {
         let includes = [
+            {model: client.models.raidLeader, as: 'leaders', foreignKey: 'raidID'},
             {model: client.models.signup, as: 'signups', foreignKey: 'signupID', include: {
                 model: client.models.character, as: 'character', foreignKey: 'characterID'
             }},

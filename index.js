@@ -66,6 +66,7 @@ fs.readdir("./models/", (err, files) => {
   client.models.raidReserve.belongsTo(client.models.signup, { as: 'signup', foreignKey: 'signupID', constraints: false  });
   client.models.raidReserve.belongsTo(client.models.reserveItem, { as: 'item', foreignKey: 'reserveItemID', constraints: false });
   client.models.raid.hasMany(client.models.signup, { as: 'signups', foreignKey: 'raidID', constraints: false });
+  client.models.raid.hasMany(client.models.raidLeader, { as: 'leaders', foreignKey: 'raidID', constraints: false });
   client.models.signup.belongsTo(client.models.raid);
   client.models.signup.belongsTo(client.models.character, { as: 'character', foreignKey: 'characterID', constraints: false});
   client.models.signup.hasOne(client.models.raidReserve, { as: 'reserve', foreignKey: 'signupID', constraints: false  });

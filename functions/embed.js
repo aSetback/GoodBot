@@ -69,7 +69,6 @@ module.exports = {
 		raidName = raid.name ? raid.name : instanceName;
 
 		let title = "Raid Signups for " + raidName;
-		let leader = channel.guild.members.find(member => member.id == raid.memberID);
 		let raidDate = new Date(Date.parse(raid.date));
 		let dateString = raidDate.toLocaleString('en-us', { month: 'long', timeZone: 'UTC' }) + " " + raidDate.getUTCDate();
 		let raidData = {};
@@ -121,8 +120,6 @@ module.exports = {
 			.setColor(raidData.color)
 			.setThumbnail(icon);
 
-		let fields = 0;
-
 		// Generate calendar links if the time is set.
 		if (raid.time) {
 			let subject = raidData.title ? raidData.title + ' (' + instanceName + ')' : raidName;
@@ -139,22 +136,31 @@ module.exports = {
 
 		if (raid.locked) {
 			embed.addField('**Status**', '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*');
-			fields++;
 		}
 
-		if (!leader) {
-			leader = "-";
+		let leaders = [];
+		// Add our original raid leader
+		if (!raid.leaders.find(m => m.id == raid.memberID)) {
+			let member = channel.guild.members.find(member => member.id == raid.memberID);
+			leaders.push(member);
 		}
-		fields++;
-		embed.addField('**Raid Leader**', leader, true);
 
-		fields++;
+
+		raid.leaders.forEach((leader) => {
+			let member = channel.guild.members.find(member => member.id == leader.memberID);
+			if (leader) { leaders.push(member); }
+		});
+		
+
+		if (leaders.length) {
+			embed.addField('**Raid Leader**', leaders.join('\n'), true);
+		}
+
 		embed.addField('**Date**', dateString, true);
 		if (!raid.time) {
 			raid.time = '-';
 		}
 
-		fields++;
 		embed.addField('**Time**', raid.time, true);
 
 		// Preserve our original key to display sign-up order
@@ -259,11 +265,17 @@ module.exports = {
 		let confirmedText = raid.confirmation ? '**Confirmed:** ' + confirmed + '\n' : '';
 		let maybeText = otherSignups['maybe'].length ? '**Maybe:** ' + otherSignups['maybe'].join(', ') + '\n' : '';
 		let noText = otherSignups['no'].length ? '**No:** ' + otherSignups['no'].join(', ') + '\n' : '';
+		let raidComp = emojis['tank'] + ' ' + roleCount['tank'] + '   ';
+		raidComp += emojis['healer'] + ' ' + roleCount['healer'] + '   '; 
+		raidComp += emojis['dps'] + ' ' + roleCount['dps'] + '   '; 
+		raidComp += emojis['caster'] + ' ' + roleCount['caster'] + '\n'; 
+
 		embed.addField('Sign-ups', 
 			maybeText +
 			noText +
 			confirmedText + 
-			'**Total:** ' + cleanSignups.filter(s => s.signup == 'yes').length + '\n'
+			'**Total:** ' + cleanSignups.filter(s => s.signup == 'yes').length + '\n' +
+			raidComp
 		);
 
 		if (raid.confirmation) {
