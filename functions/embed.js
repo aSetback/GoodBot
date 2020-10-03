@@ -127,7 +127,7 @@ module.exports = {
 			if (parsedTime) {
 				let formattedDate = raidDate.toISOString().slice(0, 11) + parsedTime + '-04:00';
 				let zDate = new Date(Date.parse(formattedDate));
-				let icsLink = 'http://ics.agical.io/?subject=' + subject + '&organizer=' + leader.user.username + '&reminder=45&location=' + instanceName + '&dtstart=' + formattedDate;
+				let icsLink = 'http://ics.agical.io/?subject=' + subject + '&reminder=45&location=' + instanceName + '&dtstart=' + formattedDate;
 				let gcalLink = 'https://www.google.com/calendar/render?action=TEMPLATE&text=' + subject + '&location=' + instanceName + '&dates=' + zDate.toISOString().replace(/-/g, '').replace(/:/g, '').replace('.000', '') + '/' + zDate.toISOString().replace(/-/g, '').replace(/:/g, '').replace('.000', '');
 				raidData.description += '\n[ics](' + encodeURI(icsLink) + ') [gcal](' + encodeURI(gcalLink) + ')'
 			}
