@@ -21,7 +21,8 @@ exports.run = async function(client, message, args) {
 			memberID = member.id;
 		}
 	}
-	
+	memberID = memberID.replace('!', '');
+		
 	if (!memberID) {
 		client.messages.errorMessage(message.channel, "Could not find player **" + leader + "**.", 240);
 		return false;

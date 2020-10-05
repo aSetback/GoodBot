@@ -27,6 +27,8 @@ exports.run = async function(client, message, args) {
 		return false;
 	}
 	
+	memberID = memberID.replace('!', '');
+
 	// Update our raider leader member ID
 	await client.raid.removeLeader(client, raid, memberID)
 
