@@ -115,7 +115,7 @@ module.exports = {
             let record = {
                 memberID: memberID
             };
-            client.models.raidLeader.update(record, {
+            client.models.raid.update(record, {
                 where: {
                     id: raid.id,
                 }
