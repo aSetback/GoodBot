@@ -137,6 +137,15 @@
 +setleader Leader
   Sets the raid leader of the raid
 
++addleader Leader
+  Adds an additional leader to the raid sign-up
+
++removeleader Leader
+  Removes an additional leader from the raid sign-up (there must always be one!)
+
++lineup
+  The bot will DM you with a link to manage the confirmations of your raid
+
 +settime Time
   Set the time for the raid start
 
