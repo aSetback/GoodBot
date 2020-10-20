@@ -47,7 +47,13 @@ module.exports = {
             return message.channel.send('Current trigger: ' + client.config.prefix);
         }
 
-        if (message.channel && message.channel.name && message.channel.name == 'set-your-name') {
+        if (message.channel 
+            && message.channel.name 
+            && message.channel.name == 'set-your-name'
+            && message.content.indexOf('+') != 0
+            && message.author.id != client.config.userId
+            ) {
+            
             client.setup.nick(client, message);
         }
 

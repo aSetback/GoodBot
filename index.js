@@ -115,11 +115,6 @@ fs.readdir(commandDir, (err, files) => {
   });
 });
 
-// Add a reaction listener for sign-ups
-client.on('raw', packet => {
-  client.reaction.rawEvent(client, packet);
-});
-
 client.on('ready', () => {
   // Add listener for set-up channels
   client.setup.run(client);
