@@ -6,5 +6,5 @@ exports.run = async function(client, message, args) {
 	}
 
     let raid = await client.raid.get(client, message.channel);
-    message.author.send('http://goodbot.me/raids/' + raid.id + '/lineup');
+    message.author.send('http://goodbot.me/raids/lineup/' + raid.id);
 };
