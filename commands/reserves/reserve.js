@@ -86,7 +86,7 @@ exports.run = async function (client, message, args, noMsg) {
 
 function likeSearch(client, raid, item) {
     let promise = new Promise((resolve, reject) => {
-        client.models.reserveItem.findAll({where: { name: {[Op.like]: '%' + item + '%'}, raid: raid.raid}}).then((items) => {
+        client.models.reserveItem.findAll({where: generateWhere(raid, item, true)}).then((items) => {
             resolve(items);
         });
     });
@@ -105,9 +105,28 @@ function findSignup(client, raidID, player) {
     return promise;
 }
 
+function generateWhere(raid, item, like) {
+    raidParts = raid.raid.split('+');
+    let raidSections = [];
+    raidParts.forEach((part) => {
+        if (like) {
+            raidSections.push({ raid: part, name: {[Op.like]: '%' + item + '%'}});
+        } else {
+            raidSections.push({ raid: part, name: item });
+        }
+    });
+
+    let returnObj = {
+        [Op.or]: raidSections
+    };
+    // {[Op.or]: [{name: item, raid: 'zg'}, {name: item, raid: 'aq20'}]}
+    return returnObj;
+}
+
 function signupReserve(client, signupID, raid, item) {
     let promise = new Promise((resolve, reject) => {
-        client.models.reserveItem.findOne({ where: { raid: raid.raid, name: item } }).then(async (reserveItem) => {
+        client.models.reserveItem.findOne({ where: generateWhere(raid, item, false) }).then(async (reserveItem) => {
+            
             if (reserveItem) {
                 record = {
                     raidID: raid.id,

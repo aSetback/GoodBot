@@ -1,10 +1,27 @@
 const Discord = require("discord.js");
+
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 exports.run = async function(client, message, args) {
 	let raid = await client.raid.get(client, message.channel);
 	if (!raid) {
 		return message.author.send('This command is only usable in raid channels.');
 	}
-	client.models.reserveItem.findAll({where: {raid: raid.raid}, order: ['name']}).then((reserveItem) => {
+
+	let whereCondition = {raid: raid.raid};
+	if (raid.raid.indexOf('+') > -1) {
+		raidParts = raid.raid.split('+');
+		let raidSections = [];
+		raidParts.forEach((part) => {
+			raidSections.push({ raid: part});
+		});
+	
+		whereCondition = {
+			[Op.or]: raidSections
+		};
+	}
+	client.models.reserveItem.findAll({where: whereCondition, order: ['name']}).then((reserveItem) => {
 
 		let icon = 'http://softball.setback.me/goodbot/icons/' + raid.raid + '.png';
 		let returnMessage = '';
