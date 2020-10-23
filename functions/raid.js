@@ -368,17 +368,13 @@ module.exports = {
                     }
 
                     let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
-                    channel.setParent(category.id)
-                    .then((channel) => {
-                        channel.lockPermissions().then(() => {
-                            channel.send(signupMessage).then((botMsg) => {
-                                client.raid.reactEmoji(botMsg);
-                                botMsg.pin().then(() => {
-                                    client.embed.update(client, channel);
-                                    resolve(channel);
-                                });
-                            });
-                        });
+                    channel.setParent(category.id).then(async (channel) => {
+                        await channel.lockPermissions().catch(console.error);
+                        let botMsg = await channel.send(signupMessage)
+                        await botMsg.pin();
+                        await client.raid.reactEmoji(botMsg);
+                        client.embed.update(client, channel);
+                        resolve(channel);
                     });
                 });
         });
