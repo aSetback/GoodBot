@@ -87,6 +87,9 @@
 +resist character type amount
   Set a player's resistance of a type (fire, frost, shadow, nature) to a number for export on spreadsheet.
 
++resistlist
+  Outputs the resistances for all players signed up for a raid.
+
 +set Player class role
   Manually set a player's class and role.  Valid roles are DPS, Tank, Healer, Caster.
 
@@ -97,22 +100,25 @@
 ## Raid Sign-up Commands
 ```
  
-+confirmation
-  Toggle 'confirmation mode' for a raid
++lineup
+  The bot will DM you a link to the page for managing your raid lineup.
 
++confirmation
+  Toggle 'confirmation mode' for a raid.
+  
 +confirm Player
   Confirms player for the raid (Confirmation mode must be enabled!)
+
++lock
+  Locks a raid, preventing all further signups & reserves.
+
++unlock
+  Unlocks a raid, allowing additional signups & reserves.
 
 +exportsheet
   Attempt to export your spreadsheet to Google Sheets  (Will only work if this has been set up, and bot has permissions)
   This will ping only confirmed players if confirmation mode is enabled.
   
-+pingraid
-  Send a notification to all players signed up for the current raid
-
-+ping confirmed
-  Send a notification to confirmed players for the current raid
-
 +raid RaidName Mar-21 (title?) (faction?)
   Create a new raid channel under the raid category called mar-21-RaidName
 
@@ -143,9 +149,6 @@
 +removeleader Leader
   Removes an additional leader from the raid sign-up (there must always be one!)
 
-+lineup
-  The bot will DM you with a link to manage the confirmations of your raid
-
 +settime Time
   Set the time for the raid start
 
@@ -157,6 +160,25 @@
 
 +unsigned PreviousRaidChannel
   Compare the current lineup to the specified raid, and send a notification to all players not currently signed up.
+```
+
+## Pings
+```
++ping raid
+  Pings every signed up for a raid
+
++ping confirmed
+  Pings all players who are confirmed for this raid
+
++unsigned #channel-name
+  Pings all players signed up for the original raid, but not this one
+
++ping class ClassName
+  Pings all signed up players of that class
+
++ping role RoleName
+  Pings all signed up players of that role
+
 ```
 
 ## Soft Reserves
@@ -176,11 +198,7 @@
   +reserveitems
     The bot will DM the user a list of all items that are available for reserve for this raid
 
-  +noreserve
-    The bot will ping all players who are signed up as 'yes', but do not currently have a reserve set
-
 ```
-
 
 ## Configuration Options
 ```
