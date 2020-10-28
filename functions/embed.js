@@ -75,7 +75,6 @@ module.exports = {
 		raidData.color = raid.color ? raid.color : '#02a64f';
 		raidData.description = raid.description ? raid.description : 'To sign up for this raid, please click on one of the emojis directly below this post.'
 		raidData.title = raid.title ? raid.title : title;
-		console.log(client.emojis.cache);
 
 		let emojis = {};
 		try {
