@@ -26,8 +26,8 @@ exports.run = (client, message, args) => {
 
     async function reactFactions(msg) {
         let emojis = [
-            client.emojis.find(emoji => emoji.name === "GoodBotAlliance"),
-            client.emojis.find(emoji => emoji.name === "GoodBotHorde"),
+            client.emojis.cache.find(emoji => emoji.name === "GoodBotAlliance"),
+            client.emojis.cache.find(emoji => emoji.name === "GoodBotHorde"),
         ];
         for (key in emojis) {
             await msg.react(emojis[key]);

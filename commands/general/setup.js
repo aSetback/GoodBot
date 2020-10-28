@@ -53,10 +53,10 @@ exports.run = async (client, message, args) => {
                 .then((channel) => {
                     let signupMessage = 'Please select your role. \n';
                     let emojis = {
-                        'tank': client.emojis.find(emoji => emoji.name === "GBtank"),
-                        'healer': client.emojis.find(emoji => emoji.name === "GBhealer"),
-                        'dps': client.emojis.find(emoji => emoji.name === "GBdps"),
-                        'caster': client.emojis.find(emoji => emoji.name === "GBcaster"),
+                        'tank': client.emojis.cache.find(emoji => emoji.name === "GBtank"),
+                        'healer': client.emojis.cache.find(emoji => emoji.name === "GBhealer"),
+                        'dps': client.emojis.cache.find(emoji => emoji.name === "GBdps"),
+                        'caster': client.emojis.cache.find(emoji => emoji.name === "GBcaster"),
                     }
                     for (role in emojis) {
                         signupMessage += emojis[role] + ' for ' + role + '\n';
@@ -77,25 +77,25 @@ exports.run = async (client, message, args) => {
     async function reactClasses(msg, expansion) {
         
         let emojis = [
-            client.emojis.find(emoji => emoji.name === "GBwarrior"),
-            client.emojis.find(emoji => emoji.name === "GBpaladin"),
-            client.emojis.find(emoji => emoji.name === "GBshaman"),
-            client.emojis.find(emoji => emoji.name === "GBhunter"),
-            client.emojis.find(emoji => emoji.name === "GBrogue"),
-            client.emojis.find(emoji => emoji.name === "GBdruid"),
-            client.emojis.find(emoji => emoji.name === "GBpriest"),
-            client.emojis.find(emoji => emoji.name === "GBwarlock"),
-            client.emojis.find(emoji => emoji.name === "GBmage")
+            client.emojis.cache.find(emoji => emoji.name === "GBwarrior"),
+            client.emojis.cache.find(emoji => emoji.name === "GBpaladin"),
+            client.emojis.cache.find(emoji => emoji.name === "GBshaman"),
+            client.emojis.cache.find(emoji => emoji.name === "GBhunter"),
+            client.emojis.cache.find(emoji => emoji.name === "GBrogue"),
+            client.emojis.cache.find(emoji => emoji.name === "GBdruid"),
+            client.emojis.cache.find(emoji => emoji.name === "GBpriest"),
+            client.emojis.cache.find(emoji => emoji.name === "GBwarlock"),
+            client.emojis.cache.find(emoji => emoji.name === "GBmage")
         ];
 
         if (expansion >= 2) {
-            emojis.push(client.emojis.find(emoji => emoji.name === "GBdk"));
+            emojis.push(client.emojis.cache.find(emoji => emoji.name === "GBdk"));
         }
         if (expansion >= 4) {
-            emojis.push(client.emojis.find(emoji => emoji.name === "GBmonk"));
+            emojis.push(client.emojis.cache.find(emoji => emoji.name === "GBmonk"));
         }
         if (expansion >= 6) {
-            emojis.push(client.emojis.find(emoji => emoji.name === "GBdh"));
+            emojis.push(client.emojis.cache.find(emoji => emoji.name === "GBdh"));
         }
         for (key in emojis) {
             await msg.react(emojis[key]);
@@ -104,10 +104,10 @@ exports.run = async (client, message, args) => {
 
     async function reactRoles(msg) {
         let emojis = [
-            client.emojis.find(emoji => emoji.name === "GBtank"),
-            client.emojis.find(emoji => emoji.name === "GBhealer"),
-            client.emojis.find(emoji => emoji.name === "GBdps"),
-            client.emojis.find(emoji => emoji.name === "GBcaster"),
+            client.emojis.cache.find(emoji => emoji.name === "GBtank"),
+            client.emojis.cache.find(emoji => emoji.name === "GBhealer"),
+            client.emojis.cache.find(emoji => emoji.name === "GBdps"),
+            client.emojis.cache.find(emoji => emoji.name === "GBcaster"),
         ];
         for (key in emojis) {
             await msg.react(emojis[key]);

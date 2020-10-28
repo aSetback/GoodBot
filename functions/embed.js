@@ -80,22 +80,22 @@ module.exports = {
 		let emojis = {};
 		try {
 			emojis = {
-				"warrior": client.emojis.find(emoji => emoji.name === "GBwarrior"),
-				"druid": client.emojis.find(emoji => emoji.name === "GBdruid"),
-				"paladin": client.emojis.find(emoji => emoji.name === "GBpaladin"),
-				"priest": client.emojis.find(emoji => emoji.name === "GBpriest"),
-				"mage": client.emojis.find(emoji => emoji.name === "GBmage"),
-				"warlock": client.emojis.find(emoji => emoji.name === "GBwarlock"),
-				"rogue": client.emojis.find(emoji => emoji.name === "GBrogue"),
-				"hunter": client.emojis.find(emoji => emoji.name === "GBhunter"),
-				"shaman": client.emojis.find(emoji => emoji.name === "GBshaman"),
-				"dk": client.emojis.find(emoji => emoji.name === "GBdk"),
-				"monk": client.emojis.find(emoji => emoji.name === "GBmonk"),
-				"dh": client.emojis.find(emoji => emoji.name === "GBdh"),
-				"tank": client.emojis.find(emoji => emoji.name === "GBtank"),
-				"healer": client.emojis.find(emoji => emoji.name === "GBhealer"),
-				"dps": client.emojis.find(emoji => emoji.name === "GBdps"),
-				"caster": client.emojis.find(emoji => emoji.name === "GBcaster"),
+				"warrior": client.emojis.cache.find(emoji => emoji.name === "GBwarrior"),
+				"druid": client.emojis.cache.find(emoji => emoji.name === "GBdruid"),
+				"paladin": client.emojis.cache.find(emoji => emoji.name === "GBpaladin"),
+				"priest": client.emojis.cache.find(emoji => emoji.name === "GBpriest"),
+				"mage": client.emojis.cache.find(emoji => emoji.name === "GBmage"),
+				"warlock": client.emojis.cache.find(emoji => emoji.name === "GBwarlock"),
+				"rogue": client.emojis.cache.find(emoji => emoji.name === "GBrogue"),
+				"hunter": client.emojis.cache.find(emoji => emoji.name === "GBhunter"),
+				"shaman": client.emojis.cache.find(emoji => emoji.name === "GBshaman"),
+				"dk": client.emojis.cache.find(emoji => emoji.name === "GBdk"),
+				"monk": client.emojis.cache.find(emoji => emoji.name === "GBmonk"),
+				"dh": client.emojis.cache.find(emoji => emoji.name === "GBdh"),
+				"tank": client.emojis.cache.find(emoji => emoji.name === "GBtank"),
+				"healer": client.emojis.cache.find(emoji => emoji.name === "GBhealer"),
+				"dps": client.emojis.cache.find(emoji => emoji.name === "GBdps"),
+				"caster": client.emojis.cache.find(emoji => emoji.name === "GBcaster"),
 			}
 		} catch (error) {
 			emojis = {
