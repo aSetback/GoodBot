@@ -14,7 +14,7 @@ exports.run = (client, message, args) => {
     // UCFirst
     newName = newName.charAt(0).toUpperCase() + newName.slice(1).toLowerCase();
     if (message.guild) {
-        message.guild.members.get(message.author.id).setNickname(newName);
+        message.guild.members.cache.get(message.author.id).setNickname(newName);
         return message.author.send('Your nickname has been updated.');
     }
 };

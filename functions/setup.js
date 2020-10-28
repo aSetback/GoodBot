@@ -188,7 +188,7 @@ module.exports = {
         client.log.write(client, message.member, message.channel, 'Set Nick: ' + newName);
 
         // UCFirst
-        let result = message.guild.members.get(message.author.id).setNickname(newName);  
+        let result = message.guild.members.cache.get(message.author.id).setNickname(newName);  
         result.catch((e) => {
             message.author.send('Unable to set your name: ' + e.message);
             message.author.send('This generally happens when a player has a higher role than the bot - please note that the bot will never be able to change the nickname of the server owner.');
