@@ -1,4 +1,4 @@
-const Discord = require("discord.js");
+kconst Discord = require("discord.js");
 const { Op } = require('sequelize');
 const character = require("./character");
 const raid = require("./raid");
@@ -141,13 +141,13 @@ module.exports = {
 		let leaders = [];
 		// Add our original raid leader
 		if (!raid.leaders.find(m => m.id == raid.memberID)) {
-			let member = channel.guild.members.find(member => member.id == raid.memberID);
+			let member = await channel.guild.members.fetch(member => member.id == raid.memberID);
 			leaders.push(member);
 		}
 
 
 		raid.leaders.forEach((leader) => {
-			let member = channel.guild.members.find(member => member.id == leader.memberID);
+			let member = await channel.guild.members.fetch(member => member.id == leader.memberID);
 			if (leader) { leaders.push(member); }
 		});
 		
