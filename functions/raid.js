@@ -331,7 +331,7 @@ module.exports = {
             if (!guild) {
                 guild = message.guild;
             }
-            let channel = await guild.createChannel(channelName, {
+            let channel = await guild.channels.create(channelName, {
                 type: 'text'
             })
 

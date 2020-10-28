@@ -114,7 +114,7 @@ module.exports = {
                 }
             });
 
-            member.addRole(role).then(() => {
+            member.roles.add(role).then(() => {
                 client.setup.checkCompleteness(client, member);
             });
         }
@@ -159,7 +159,7 @@ module.exports = {
                 }
             });
 
-            member.addRole(role).then(() => {
+            member.roles.add(role).then(() => {
                 client.setup.checkCompleteness(client, member);
             });
         } else {

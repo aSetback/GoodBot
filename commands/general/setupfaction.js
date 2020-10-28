@@ -9,7 +9,7 @@ exports.run = (client, message, args) => {
 
     // Set your faction
     let factionChannel = 'select-your-faction';
-    message.guild.createChannel(factionChannel, {
+    message.guild.channels.create(factionChannel, {
             type: 'text'
         })
         .then((channel) => {
@@ -26,8 +26,8 @@ exports.run = (client, message, args) => {
 
     async function reactFactions(msg) {
         let emojis = [
-            client.emojis.cache.find(emoji => emoji.name === "GoodBotAlliance"),
-            client.emojis.cache.find(emoji => emoji.name === "GoodBotHorde"),
+            client.emojis.find(emoji => emoji.name === "GoodBotAlliance"),
+            client.emojis.find(emoji => emoji.name === "GoodBotHorde"),
         ];
         for (key in emojis) {
             await msg.react(emojis[key]);
