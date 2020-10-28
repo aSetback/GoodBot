@@ -302,7 +302,7 @@ module.exports = {
         let category = channel.guild.channels.cache.find(c => c.name == "Archives" && c.type == "category");
         if (category) {
             try {
-                await channel.setParent(category.id);
+                channel = await channel.setParent(category.id);
                 channel.lockPermissions();
                 client.models.raid.update({'archived': 1}, {where: {id: raid.id}});
                 console.log('done');
@@ -373,7 +373,7 @@ module.exports = {
             await botMsg.pin();
             await client.raid.reactEmoji(botMsg);
             client.embed.update(client, channel);
-            await channel.setParent(category.id);
+            channel = await channel.setParent(category.id);
             channel.lockPermissions().catch(console.error);    
             resolve(channel);
 
