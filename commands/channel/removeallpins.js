@@ -4,7 +4,7 @@ exports.run = async (client, message, args) => {
 		return false;
     }
 
-   message.channel.messages.fetchPinnedMessages().then((pinnedMessages) => {
+   message.channel.messages.fetchPinned().then((pinnedMessages) => {
         pinnedMessages.forEach(async (message) => {
             await message.unpin();
         });

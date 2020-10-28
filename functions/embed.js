@@ -32,7 +32,7 @@ module.exports = {
 		}
 	},
 	edit: async (client, channel, embed) => {
-		let list = await channel.messages.fetchPinnedMessages();
+		let list = await channel.messages.fetchPinned();
 		pinnedMsg = list.last();
 		if (!pinnedMsg) { return false; }
 		pinnedMsg.edit(embed);
