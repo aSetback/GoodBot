@@ -1,4 +1,4 @@
-kconst Discord = require("discord.js");
+const Discord = require("discord.js");
 const { Op } = require('sequelize');
 const character = require("./character");
 const raid = require("./raid");
