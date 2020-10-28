@@ -141,13 +141,13 @@ module.exports = {
 		let leaders = [];
 		// Add our original raid leader
 		if (!raid.leaders.find(m => m.id == raid.memberID)) {
-			let member = await channel.guild.members.fetch(member => member.id == raid.memberID);
+			let member = await channel.guild.members.fetch(raid.memberID);
 			leaders.push(member);
 		}
 
 
-		raid.leaders.forEach((leader) => {
-			let member = await channel.guild.members.fetch(member => member.id == leader.memberID);
+		raid.leaders.forEach(async (leader) => {
+			let member = await channel.guild.members.fetch(leader.memberID);
 			if (leader) { leaders.push(member); }
 		});
 		
