@@ -79,22 +79,22 @@ module.exports = {
 		let emojis = {};
 		try {
 			emojis = {
-				"warrior": '${' +  client.emojis.cache.find(emoji => emoji.name === "GBwarrior") + '}',
-				"druid": '${' + client.emojis.cache.find(emoji => emoji.name === "GBdruid") + '}',
-				"paladin": '${' + client.emojis.cache.find(emoji => emoji.name === "GBpaladin") + '}',
-				"priest": '${' + client.emojis.cache.find(emoji => emoji.name === "GBpriest") + '}',
-				"mage": '${' + client.emojis.cache.find(emoji => emoji.name === "GBmage") + '}',
-				"warlock": '${' + client.emojis.cache.find(emoji => emoji.name === "GBwarlock") + '}',
-				"rogue": '${' + client.emojis.cache.find(emoji => emoji.name === "GBrogue") + '}',
-				"hunter": '${' + client.emojis.cache.find(emoji => emoji.name === "GBhunter") + '}',
-				"shaman": '${' + client.emojis.cache.find(emoji => emoji.name === "GBshaman") + '}',
-				"dk": '${' + client.emojis.cache.find(emoji => emoji.name === "GBdk") + '}',
-				"monk": '${' + client.emojis.cache.find(emoji => emoji.name === "GBmonk") + '}',
-				"dh": '${' + client.emojis.cache.find(emoji => emoji.name === "GBdh") + '}',
-				"tank": '${' + client.emojis.cache.find(emoji => emoji.name === "GBtank") + '}',
-				"healer": '${' + client.emojis.cache.find(emoji => emoji.name === "GBhealer") + '}',
-				"dps": '${' + client.emojis.cache.find(emoji => emoji.name === "GBdps") + '}',
-				"caster": '${' + client.emojis.cache.find(emoji => emoji.name === "GBcaster") + '}',
+				"warrior": client.emojis.cache.find(emoji => emoji.name === "GBwarrior").toString(),
+				"druid": client.emojis.cache.find(emoji => emoji.name === "GBdruid").toString(),
+				"paladin": client.emojis.cache.find(emoji => emoji.name === "GBpaladin").toString(),
+				"priest": client.emojis.cache.find(emoji => emoji.name === "GBpriest").toString(),
+				"mage": client.emojis.cache.find(emoji => emoji.name === "GBmage").toString(),
+				"warlock": client.emojis.cache.find(emoji => emoji.name === "GBwarlock").toString(),
+				"rogue": client.emojis.cache.find(emoji => emoji.name === "GBrogue").toString(),
+				"hunter": client.emojis.cache.find(emoji => emoji.name === "GBhunter").toString(),
+				"shaman": client.emojis.cache.find(emoji => emoji.name === "GBshaman").toString(),
+				"dk": client.emojis.cache.find(emoji => emoji.name === "GBdk").toString(),
+				"monk": client.emojis.cache.find(emoji => emoji.name === "GBmonk").toString(),
+				"dh": client.emojis.cache.find(emoji => emoji.name === "GBdh").toString(),
+				"tank": client.emojis.cache.find(emoji => emoji.name === "GBtank").toString(),
+				"healer": client.emojis.cache.find(emoji => emoji.name === "GBhealer").toString(),
+				"dps": client.emojis.cache.find(emoji => emoji.name === "GBdps").toString(),
+				"caster": client.emojis.cache.find(emoji => emoji.name === "GBcaster").toString(),
 			}
 		} catch (error) {
 			emojis = {
@@ -114,6 +114,7 @@ module.exports = {
 		}
 
 		console.log(emojis.caster);
+		return;
 
 		let icon = 'http://softball.setback.me/goodbot/icons/' + raid.raid + '.png';
 		let embed = new Discord.MessageEmbed()
