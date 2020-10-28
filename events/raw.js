@@ -1,11 +1,11 @@
 module.exports = async (client, packet) => {
     if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t)) return;
-
-    let channel = client.channels.get(packet.d.channel_id);
+    let guild = client.guilds.get(packet.d.guild_id);
+    let channel = await client.channels.get(packet.d.channel_id);
+    let member = await guild.fetchMember(packet.d.user_id);
     let emoji = packet.d.emoji;
     let action = packet.t === 'MESSAGE_REACTION_ADD' ? 'add' : 'remove';
-    let member = channel.guild.members.get(packet.d.user_id);
-    
+
     // Check is this is a sign-up channel
     let raid = await client.raid.get(client, channel);
     if (raid) {

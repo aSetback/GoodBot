@@ -2,7 +2,7 @@ const fs = require("fs");
 
 module.exports = {
     run: (client) => {
-        client.on('raw', packet => {
+        client.on('raw', async packet => {
             // Only parse emoji adds
             if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t)) return;
 
@@ -15,10 +15,11 @@ module.exports = {
             // Ignore the bot emojis
     		if (packet.d.user_id.toString() == client.config.userId) return;
 
-            let channel = client.channels.get(packet.d.channel_id);
+            let guild = client.guilds.get(packet.d.guild_id);
+            let channel = await client.channels.get(packet.d.channel_id);
+            let member = await guild.fetchMember(packet.d.user_id);
             let emoji = packet.d.emoji;
-            let member = channel.guild.members.get(packet.d.user_id);	
-            
+                    
             // Don't operate on DMs
             if (!channel.guild) return;
 
