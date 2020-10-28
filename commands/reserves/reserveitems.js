@@ -26,7 +26,7 @@ exports.run = async function(client, message, args) {
 		let icon = 'http://softball.setback.me/goodbot/icons/' + raid.raid + '.png';
 		let returnMessage = '';
 		let fields = 0;
-		let embed = new Discord.RichEmbed()
+		let embed = new Discord.MessageEmbed()
 		.setTitle("Reservable items for " + raid.raid.toUpperCase())
 		.setColor('#b00b00')
 		.setThumbnail(icon);
@@ -40,7 +40,7 @@ exports.run = async function(client, message, args) {
 			if (fields == 5) {
 				message.author.send(embed);    
 				fields = 0;
-				embed = new Discord.RichEmbed()
+				embed = new Discord.MessageEmbed()
 				.setTitle("Reservable items for " + raid.raid.toUpperCase())
 				.setColor('#b00b00')
 				.setThumbnail(icon);

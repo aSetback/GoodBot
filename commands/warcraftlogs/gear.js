@@ -48,7 +48,7 @@ exports.run = async (client, message, args) => {
   }
 
   function displayData(apiData) {
-    let embed = new Discord.RichEmbed()
+    let embed = new Discord.MessageEmbed()
       .setTitle(player)
       .setColor(0x02a64f);
 

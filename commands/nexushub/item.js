@@ -4,7 +4,7 @@ exports.run = async function(client, message, args) {
     
     let itemString = args.join(' ');
     let itemInfo = await client.nexushub.item(itemString);
-    let embed = new Discord.RichEmbed()
+    let embed = new Discord.MessageEmbed()
         .setTitle(itemInfo.name)
         .setThumbnail(itemInfo.icon);
     

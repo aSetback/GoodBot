@@ -13,7 +13,7 @@ exports.run = async function(client, message, args) {
     }
     
     let priceInfo = await client.nexushub.priceInfo(itemString, server, faction);
-    let embed = new Discord.RichEmbed()
+    let embed = new Discord.MessageEmbed()
         .setTitle(priceInfo.name)
         .setThumbnail(priceInfo.icon);
     

@@ -25,11 +25,12 @@ exports.run = async function(client, message, args) {
     for (key in list) {
         pingList.push(list[key].character.name);
     }
-    
+   
     if (pingList.length == 0) {
         return client.messages.errorMessage(message.channel, 'No players were found.', 240);
     } else {
         let notifications = await client.notify.makeList(client, message.guild, pingList);
+        console.log(notifications);
         return message.channel.send(notifications);
     }
 }

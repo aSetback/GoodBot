@@ -6,7 +6,7 @@ module.exports = {
 		// Split the lua file up into lines
 		epgpLines = content.split('\n');
 
-		let channel = guild.channels.find(channel => channel.name === "standings");
+		let channel = guild.channels.cache.find(channel => channel.name === "standings");
 		if (!channel) {
 			console.log('EPGP channel does not exist for ' + guild.name);
 			return false;
@@ -46,7 +46,7 @@ module.exports = {
 			client.models.epgp.create(record);
 		});
 
-		channel.fetchMessages({limit: 20})
+		channel.messages.fetch({limit: 20})
 		   .then(function(list){
 				channel.bulkDelete(list, true);
 

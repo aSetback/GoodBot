@@ -5,7 +5,7 @@ module.exports = {
                 sentMessage.delete().catch(O_o => { });
             }, seconds * 1000);
         });
-        let errorChannel = channel.guild ? channel.guild.channels.find(c => c.name == "error-logs") : null;
+        let errorChannel = channel.guild ? channel.guild.channels.cache.find(c => c.name == "error-logs") : null;
         if (errorChannel) {
             errorChannel.send(channel + ': ' + message);
         }

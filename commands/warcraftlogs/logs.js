@@ -22,7 +22,7 @@ exports.run = async (client, message, args) => {
     if (err) {
       return;
     }
-    let embed = new Discord.RichEmbed()
+    let embed = new Discord.MessageEmbed()
       .setTitle("Recent Logs: " + guild)
       .setColor(0x02a64f);
     

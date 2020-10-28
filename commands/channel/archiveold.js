@@ -4,7 +4,7 @@ exports.run = async (client, message, args) => {
 		return false;
     }
     
-	let category = message.guild.channels.find(c => c.name == "Archives" && c.type == "category");
+	let category = message.guild.channels.cache.find(c => c.name == "Archives" && c.type == "category");
 	if (category) {
 		let newArchives = category.clone();
 		category.setName('Archives-Old');

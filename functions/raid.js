@@ -283,7 +283,7 @@ module.exports = {
             category = 'Raid Signups';
         }
 
-        let guild = await client.guilds.find(g => g.id == guildID);
+        let guild = await client.guilds.cache.find(g => g.id == guildID);
 
         // Check for overwrite for this raid type
         let categoryParams = {'raid': raidType, 'guildID': guildID};
@@ -299,7 +299,7 @@ module.exports = {
 
     },
     archive: async (client, channel, raid) => {
-        let category = channel.guild.channels.find(c => c.name == "Archives" && c.type == "category");
+        let category = channel.guild.channels.cache.find(c => c.name == "Archives" && c.type == "category");
         if (category) {
             try {
                 await channel.setParent(category.id);

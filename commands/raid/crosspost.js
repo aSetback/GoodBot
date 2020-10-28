@@ -11,7 +11,7 @@ exports.run = async (client, message, args) => {
 		return client.message.errorMessage(message.channel, client.loc('noServerID', "Please provide a valid server ID or name."), 240);
 	}
 
-	let crosspostGuild = client.guilds.find(g => g.id == server || g.name.toLowerCase() == server.toLowerCase());
+	let crosspostGuild = client.guilds.cache.find(g => g.id == server || g.name.toLowerCase() == server.toLowerCase());
 
 	// Retrieve the category
     let category = await client.customOptions.get(client, crosspostGuild.id, 'raidcategory');
@@ -37,7 +37,7 @@ exports.run = async (client, message, args) => {
 	}
 
 	// Retrieve our category from the discord API
-	let discordCategory = crosspostGuild.channels.find(c => c.name.toLowerCase() == category.toLowerCase().trim() && c.type == "category");
+	let discordCategory = crosspostGuild.channels.cache.find(c => c.name.toLowerCase() == category.toLowerCase().trim() && c.type == "category");
 
 	if (!discordCategory) {
 		return message.channel.send('Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.');

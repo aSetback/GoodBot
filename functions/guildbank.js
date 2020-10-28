@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 
 module.exports = {
 	update: (client, guild, content) => {
-		let channel = guild.channels.find(channel => channel.name === "bank");
+		let channel = guild.channels.cache.find(channel => channel.name === "bank");
         if (!channel) {
             console.log('Error: Guild Bank channel could not be found!');
             return false;
@@ -46,8 +46,8 @@ module.exports = {
         });
     
         console.log("Creating embed.");
-        let channel = guild.channels.find(channel => channel.name === "bank");
-        let embed = new Discord.RichEmbed()
+        let channel = guild.channels.cache.find(channel => channel.name === "bank");
+        let embed = new Discord.MessageEmbed()
 		.setTitle("Character: " + characterName)
         .setColor('#b00b00')
         .setTimestamp();

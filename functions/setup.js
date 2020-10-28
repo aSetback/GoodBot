@@ -15,9 +15,9 @@ module.exports = {
             // Ignore the bot emojis
     		if (packet.d.user_id.toString() == client.config.userId) return;
 
-            let guild = client.guilds.get(packet.d.guild_id);
-            let channel = await client.channels.get(packet.d.channel_id);
-            let member = await guild.fetchMember(packet.d.user_id);
+            let guild = client.guilds.cache.get(packet.d.guild_id);
+            let channel = await client.channels.cache.get(packet.d.channel_id);
+            let member = await guild.members.fetch(packet.d.user_id);
             let emoji = packet.d.emoji;
                     
             // Don't operate on DMs
@@ -40,7 +40,7 @@ module.exports = {
             }
         });
     },
-    selectFaction: (client, emoji, member, channel, action) => {
+    selectFaction: async (client, emoji, member, channel, action) => {
         let faction = '';
         // Translate emoji name
         if (emoji.name == 'GoodBotAlliance') {
@@ -57,16 +57,15 @@ module.exports = {
         }
 
         // Check if a discord role exists for this emoji
-        let role = channel.guild.roles.find(role => role.name.toLowerCase() === faction.toLowerCase());
-    
+        let role = channel.guild.roles.cache.find(role => role.name.toLowerCase() === faction.toLowerCase());
+        member = await channel.guild.members.fetch(member.user.id);
         if (role) {
             if (action == 'add') {
-                member.addRole(role).then(() => {
-                    client.setup.checkCompleteness(client, member);
-                });
+                await member.roles.add(role.id);
+                client.setup.checkCompleteness(client, member);
                 client.log.write(client, member, channel, 'Faction Added: ' + faction);
             } else {
-                member.removeRole(role)
+                await member.roles.remove(role.id)
                 client.log.write(client, member, channel, 'Faction Removed: ' + faction);
             }
         }
@@ -82,7 +81,7 @@ module.exports = {
         }
 
         // Check if a discord role exists for this emoji
-        let role = channel.guild.roles.find(role => role.name.toLowerCase() === emojiName.toLowerCase());
+        let role = channel.guild.roles.cache.find(role => role.name.toLowerCase() === emojiName.toLowerCase());
 
         // Make an array of role objects for each of the classes
         let classes = ['warrior', 'paladin', 'shaman', 'hunter', 'rogue', 'druid', 'priest', 'warlock', 'mage'];
@@ -109,7 +108,7 @@ module.exports = {
 
             // Remove all other roles
             classes.forEach((memberClass) => {
-                let memberRole = channel.guild.roles.find(role => role.name.toLowerCase() === memberClass.toLowerCase());
+                let memberRole = channel.guild.roles.cache.find(role => role.name.toLowerCase() === memberClass.toLowerCase());
                 if (memberRole) {
                     member.removeRole(memberRole);
                 }
@@ -145,7 +144,7 @@ module.exports = {
         }
 
         // Check if a discord role exists for this emoji
-        let role = channel.guild.roles.find(role => role.name.toLowerCase() === emojiName.toLowerCase());
+        let role = channel.guild.roles.cache.find(role => role.name.toLowerCase() === emojiName.toLowerCase());
 
         // Tag the player with the selected role, if it exists.
         if (member && role) {
@@ -154,7 +153,7 @@ module.exports = {
 
             // Remove all other roles
             roles.forEach((roleName) => {
-                let memberRole = channel.guild.roles.find(role => role.name.toLowerCase() === roleName.toLowerCase());
+                let memberRole = channel.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                 if (memberRole) {
                     member.removeRole(memberRole);
                 }
@@ -197,7 +196,7 @@ module.exports = {
         client.setup.checkCompleteness(client, message.member);
     },
     checkCompleteness: async function(client, member) {
-        let factionChannel = member.guild.channels.find(c => c.name == "select-your-faction");
+        let factionChannel = member.guild.channels.cache.find(c => c.name == "select-your-faction");
         let hasFaction = true;
         if (factionChannel) {
             hasFaction = client.set.hasFaction(member.guild, member);
@@ -214,9 +213,9 @@ module.exports = {
         if (!roleName) {
             return false;
         }
-        let role = member.guild.roles.find(role => role.name.toLowerCase() === roleName.toLowerCase());
+        let role = member.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
         if (role) {
-            member.addRole(role)
+            member.roles.add(role)
         }
 
     }

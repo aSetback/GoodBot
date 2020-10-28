@@ -11,10 +11,10 @@ exports.run = async function(client, message, args) {
 	if (leader.substr(0, 2) == '<@') {
 		memberID = leader.substr(2, leader.length-3);
 	} else {
-		var member = await message.guild.members.find((member) => (member.nickname && member.nickname.toLowerCase() == leader.toLowerCase()));
+		var member = await message.guild.members.cache.find((member) => (member.nickname && member.nickname.toLowerCase() == leader.toLowerCase()));
 		// if you can't find by nickname, check username
 		if (!member) {
-			member = await message.guild.members.find(member => member.user.username.toLowerCase() == leader.toLowerCase());
+			member = await message.guild.members.cache.find(member => member.user.username.toLowerCase() == leader.toLowerCase());
 		}
 
 		if (member) {

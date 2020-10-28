@@ -7,9 +7,9 @@ module.exports = {
     getChannel: async (channelName, guild) => {
         if (channelName.substring(0, 2) == '<#') {
             let channelID = channelName.substring(2, channelName.length - 1);
-            channel = await guild.channels.find(c => c.id == channelID);
+            channel = await guild.channels.cache.find(c => c.id == channelID);
         } else {
-            channel = await guild.channels.find(c => c.name == channelName);
+            channel = await guild.channels.cache.find(c => c.name == channelName);
         }
         return channel;
     },

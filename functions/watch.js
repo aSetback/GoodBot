@@ -17,7 +17,7 @@ module.exports = {
 					guild: guild,
 					type: null
 				};
-				let displayChannel = await guild.channels.find(channel => channel.name === "standings");
+				let displayChannel = await guild.channels.cache.find(channel => channel.name === "standings");
 
 				fsTimeout = setTimeout(async () => { 
 					fsTimeout=null

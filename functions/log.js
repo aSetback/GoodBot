@@ -26,7 +26,7 @@ module.exports = {
                 }
 
                 // Attempt to log to a server-logs channel
-                let logChannel = channel.guild ? channel.guild.channels.find(c => c.name == "server-logs") : null;
+                let logChannel = channel.guild ? channel.guild.channels.cache.find(c => c.name == "server-logs") : null;
                 if (logChannel) {
                     logChannel.send(logMessage);
                 }

@@ -7,11 +7,11 @@ module.exports = {
 	update: async (client, channel) => {
 		// Confirm we have a raid
 		let raid = await client.raid.get(client, channel);
-		let raidChannel = await client.channels.find(c => c.id == raid.channelID);
+		let raidChannel = await client.channels.cache.find(c => c.id == raid.channelID);
 		let embed = await client.embed.updateEmbed(client, raidChannel, raid);
 		let crosspostChannel = null;
 		if (raid.crosspostID && raid.crosspostID.length) {
-			crosspostChannel = await client.channels.find(c => c.id == raid.crosspostID);
+			crosspostChannel = await client.channels.cache.find(c => c.id == raid.crosspostID);
 		}
 
 		// Prevent the embed from trying to refresh more than once a second.
@@ -115,7 +115,7 @@ module.exports = {
 		}
 
 		let icon = 'http://softball.setback.me/goodbot/icons/' + raid.raid + '.png';
-		let embed = new Discord.RichEmbed()
+		let embed = new Discord.MessageEmbed()
 			.setTitle(raidData.title)
 			.setColor(raidData.color)
 			.setThumbnail(icon);
@@ -141,14 +141,14 @@ module.exports = {
 		let leaders = [];
 		// Add our original raid leader
 		if (!raid.leaders.find(m => m.id == raid.memberID)) {
-			let member = await channel.guild.fetchMember(raid.memberID);
+			let member = await channel.guild.members.fetch(raid.memberID);
 			if (!member) { member = '-'; }
 			leaders.push(member);
 		}
 
 
 		raid.leaders.forEach(async (leader) => {
-			let member = await channel.guild.fetchMember(leader.memberID);
+			let member = await channel.guild.members.fetch(leader.memberID);
 			if (leader) { leaders.push(member); }
 		});
 		

@@ -17,7 +17,7 @@ module.exports = {
 		}
 		if (messageLimit > 20) { messageLimit = 20; }
 		setTimeout(() => {
-			message.channel.fetchMessages({limit: messageLimit})
+			message.channel.messages.fetch({limit: messageLimit})
 			.then(function(list){
 					message.channel.bulkDelete(list);
 				});

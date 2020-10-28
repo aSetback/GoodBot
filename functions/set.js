@@ -111,9 +111,9 @@ module.exports = {
         return promise;
     },
     hasFaction: (client, member) => {
-        let horde = member.guild.roles.find(role => role.name.toLowerCase() === 'horde');
-        let alliance = member.guild.roles.find(role => role.name.toLowerCase() === 'alliance');
-        if (member.roles.has(horde.id) || member.roles.has(alliance.id)) {
+        let horde = member.guild.roles.cache.find(role => role.name.toLowerCase() === 'horde');
+        let alliance = member.guild.roles.cache.find(role => role.name.toLowerCase() === 'alliance');
+        if (member.roles.cache.has(horde.id) || member.roles.cache.has(alliance.id)) {
             return true;
         }
         return false;

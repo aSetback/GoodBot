@@ -14,7 +14,7 @@ module.exports = {
         }
 
         let characterName = client.general.ucfirst(name);
-        let member = message.guild.members.find(member => member.nickname == characterName ||  member.user.username == characterName);
+        let member = message.guild.members.cache.find(member => member.nickname == characterName ||  member.user.username == characterName);
         let raid = await client.raid.get(client, message.channel);
 
         // Locked raid handling
@@ -36,9 +36,9 @@ z           }
         if (!character && raid.crosspostID && raid.crosspostID.length) {
             let otherChannel;
             if (message.channel.id == raid.channelID) {
-                otherChannel = await client.channels.find(c => c.id == raid.crosspostID);
+                otherChannel = await client.channels.cache.find(c => c.id == raid.crosspostID);
             } else {
-                otherChannel = await client.channels.find(c => c.id == raid.channelID);
+                otherChannel = await client.channels.cache.find(c => c.id == raid.channelID);
             }
             character = await client.set.getCharacter(client, otherChannel.guild, characterName);
         }

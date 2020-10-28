@@ -43,7 +43,7 @@ exports.run = async function (client, message, args) {
     let signupInfo = [];
     for (key in signups) {
         let signup = signups[key];
-        let channel = message.guild.channels.find(c => c.id == signup.raid.channelID)
+        let channel = message.guild.channels.cache.find(c => c.id == signup.raid.channelID)
         let confirmed = '-';
         if (signup.raid.confirmation) {
             confirmed = signup.confirmed ? 'yes' : 'no';
