@@ -113,9 +113,6 @@ module.exports = {
 			}
 		}
 
-		console.log(emojis.caster);
-		return;
-
 		let icon = 'http://softball.setback.me/goodbot/icons/' + raid.raid + '.png';
 		let embed = new Discord.MessageEmbed()
 			.setTitle(raidData.title)
