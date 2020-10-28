@@ -3,9 +3,6 @@ module.exports = {
         let promise = new Promise( async (resolve, reject) => {
             let mentionText = '';
             let noMatch = [];
-            guild.members.fetch()
-            .then(console.log)
-            .catch(console.error);
 
             await guild.members.fetch();
                for (key in list) {
