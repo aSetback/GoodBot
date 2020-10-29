@@ -7,11 +7,13 @@ module.exports = {
             for (key in list) {
                 let character = list[key];
                 let search = character.toLowerCase();
-
-                let member = await client.notify.findUser(client, guild, search);
+                let main = await client.notify.getMain(client, guild, search);
+                main = main.toLowerCase();
+                let member = await client.notify.findUser(client, guild, main);
+                // Maybe they're not cached .. let's try fetching them.
                 if (!member) {
-                    memberQuery = await guild.members.fetch({ query: search, limit: 1});
-                    member = await client.notify.findUser(client, guild, search);
+                    await guild.members.fetch({ query: main, limit: 1});
+                    member = await client.notify.findUser(client, guild, main);
                 }
 
                 if (member) {
@@ -37,31 +39,19 @@ module.exports = {
                 member = await guild.members.cache.find(member => member.user.username.toLowerCase() == search);
             }
 
-            if (!member) {
-                member = await client.notify.getMain(client, guild, search);
-            }
             resolve(member);
         });
         return promise;
     },
-    getMain: (client, guild, character) => {
+    getMain: (client, guild, search) => {
         let promise = new Promise((resolve, reject) => {
-            client.models.character.findOne({where: {name: character, guildID: guild.id}}).then((character) => {
+            client.models.character.findOne({where: {name: search, guildID: guild.id}}).then((character) => {
                 if (character && character.mainID) {
                     client.models.character.findOne({where: {id: character.mainID}}).then((main) => {
-                        let search = main.name.toLowerCase();
-                        var member = guild.members.cache.find((member) => (member.nickname && member.nickname.toLowerCase() == search));
-                        if (!member) {
-                            member = guild.members.cache.find(member => member.user.username.toLowerCase() == search);
-                        }
-                        if (member) {
-                            resolve(member);
-                        } else {
-                            resolve(false);
-                        }
+                        resolve(main.name);
                     });
                 } else {
-                    resolve(false);
+                    resolve(search);
                 }
             });
         });
