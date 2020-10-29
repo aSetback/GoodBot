@@ -155,7 +155,7 @@ module.exports = {
             roles.forEach((roleName) => {
                 let memberRole = channel.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                 if (memberRole) {
-                    member.removeRole(memberRole);
+                    member.roles.remove(memberRole);
                 }
             });
 
