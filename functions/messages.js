@@ -7,7 +7,7 @@ module.exports = {
         });
         let errorChannel = channel.guild ? channel.guild.channels.cache.find(c => c.name == "error-logs") : null;
         if (errorChannel) {
-            errorChannel.send(channel + ': ' + message);
+            errorChannel.send(`${channel}` + ': ' + message);
         }
     },
     send: (channel, message, seconds) => {

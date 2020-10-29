@@ -56,7 +56,7 @@ exports.run = async function(client, message, args) {
 
 	// Send message
 	if (mentions.length) {
-		message.channel.send("Players who were signed up for " + oldChannel + ": ");
+		message.channel.send("Players who were signed up for " + `${oldChannel}` + ": ");
 		message.channel.send(mentions);
 	} else {
 		message.channel.send('All players are currently signed up.');
