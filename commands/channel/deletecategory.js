@@ -12,7 +12,7 @@ exports.run = async (client, message, args) => {
         return client.messages.errorMessage(message.channel, errorDeleteCategoryNotFound, 240);
     }
 
-    let channels = message.guild.channels.filter(c => c.parentID == category.id);
+    let channels = message.guild.channels.cache.filter(c => c.parentID == category.id);
     channels.forEach(async (channel) => { 
         await channel.delete();
     });
