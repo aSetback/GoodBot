@@ -58,7 +58,8 @@ module.exports = {
 			'eoe': 'Eye of Eternity',
 			'uld': 'Ulduar',
 			'toc': 'Trial of the Crusader',
-			'icc': 'Icecrown Citadel'
+			'icc': 'Icecrown Citadel',
+			'ny': "Ny'alotha"
 		}
 		if (raids[raid.raid.toLowerCase()]) {
 			instanceName = raids[raid.raid.toLowerCase()];
