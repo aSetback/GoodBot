@@ -1,34 +1,37 @@
+const { Guild } = require('discord.js');
 const fs = require('fs');
 
-exports.run = (client, message, args) => {
+exports.run = async (client, message, args) => {
 
 	if (!message.member) {
 		return false;
 	}
-
-	var vc = message.member.voiceChannel;
+	var vc = message.member.voice.channel;
 	if (!vc) {
-		return message.channel.send('Must be in voice channel.');
+		return client.messages.send(message.channel, 'You must be in a voice channel to play a wav file.', 240);
 	}
 	
 	if (!args[0]) {
-		return message.channel.send('Wav file required.');
+		return client.messages.send(message.channel, 'You need to include which wav you want played.  Proper usage is: `+wav WavName`.  For a list of wavs, please use `+wavlist`.', 240);
+	}
+	
+	if (message.guild.voice && message.guild.voice.channelID) {
+		return client.messages.send(message.channel, 'Another wav file is already playing!', 240);
 	}
 	
 	var wav = args[0].toLowerCase();
 	var filename = './wav/' + wav + '.wav';
-	fs.exists(filename, function(exists) {
+	fs.exists(filename, async (exists) => {
 		if (exists) {
-			vc.join()
-				.then(connection => {
-					const dispatcher = connection.playFile(filename);
-					dispatcher.on('end', end => {
-						vc.leave()
-					});
-				})
-				.catch(console.error);
+			let connection = await vc.join();
+			let dispatcher = connection.play(filename);
+			dispatcher.on('finish', () => {
+				setTimeout(() => {
+					vc.leave();
+				}, 1000);
+			});
 		} else {
-			return message.channel.send('Wav file does not exist');
+			return client.messages.send(message.channel, 'The request wav file does not exist.', 240);
 		}
 	})
 }
