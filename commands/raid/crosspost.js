@@ -8,7 +8,7 @@ exports.run = async (client, message, args) => {
 	// Retrieve our server ID or name
 	let server = args.join(' ');
 	if (!server) {
-		return client.message.errorMessage(message.channel, client.loc('noServerID', "Please provide a valid server ID or name."), 240);
+		return client.messages.errorMessage(message.channel, client.loc('noServerID', "Please provide a valid server ID or name."), 240);
 	}
 
 	let crosspostGuild = client.guilds.cache.find(g => g.id == server || g.name.toLowerCase() == server.toLowerCase());
@@ -43,6 +43,7 @@ exports.run = async (client, message, args) => {
 		return message.channel.send('Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.');
 	}
 	
+	await crosspostGuild.members.fetch(message.author.id);
 	// Retrieve this user's permission for the raid category
 	let permissions = discordCategory.permissionsFor(message.author);
 	if (!permissions.has("MANAGE_CHANNELS")) {
