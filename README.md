@@ -160,6 +160,9 @@
 
 +unsigned PreviousRaidChannel
   Compare the current lineup to the specified raid, and send a notification to all players not currently signed up.
+
++remove Player1 Player2 Player3 [...]
+  Removes player(s) from sign-ups completely.
 ```
 
 ## Pings
