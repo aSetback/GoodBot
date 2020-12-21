@@ -9,15 +9,23 @@ module.exports = {
                 let search = character.toLowerCase();
                 let main = await client.notify.getMain(client, guild, search);
                 main = main.toLowerCase();
+                
                 let member = await client.notify.findUser(client, guild, main);
+ 
                 // Maybe they're not cached .. let's try fetching them.
                 if (!member) {
-                    await guild.members.fetch({ query: main, limit: 1});
+                    await guild.members.fetch({ query: main, limit: 10});
                     member = await client.notify.findUser(client, guild, main);
                 }
 
+                // Maybe they used the '+account' command to set up an account!
+                if (!member) {
+                    member = await client.models.character.findOne({where: {name: main, guildID: guild.id}});
+                }
+
                 if (member) {
-                    mentionText += '<@' + member.user.id + '> ';
+                    let memberID = member.pingMemberID ? member.pingMemberID : member.user.id;
+                    mentionText += '<@' + memberID + '> ';
                 } else {
                     noMatch.push(character);
                 }
