@@ -12,7 +12,7 @@ module.exports = {
                 let member = await client.notify.findUser(client, guild, main);
                 // Maybe they're not cached .. let's try fetching them.
                 if (!member) {
-                    await guild.members.fetch({ query: main, limit: 1});
+                    await guild.members.fetch({ query: main, limit: 10});
                     member = await client.notify.findUser(client, guild, main);
                 }
 
