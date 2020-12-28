@@ -11,7 +11,7 @@ exports.run = async (client, message, args) => {
     }
   });
 
-  let zones = [1005, 1002, 1004, 1003, 1000, 1001];
+  let zones = [1006, 1005, 1002, 1004, 1003, 1000, 1001];
   if (zone) {
     zoneObj = {
       'mc': [1000],
@@ -19,7 +19,8 @@ exports.run = async (client, message, args) => {
       'ony': [1001],
       'zg': [1003],
       'aq40': [1004],
-      'aq20': [1005]
+      'aq20': [1005],
+      'naxx': [1006],
     };
     if (zoneObj[zone]) {
       zones = zoneObj[zone]
@@ -50,7 +51,7 @@ exports.run = async (client, message, args) => {
   }
 
   // Set our partition -- Phase 3 is current default.
-  let partition = 3;
+  let partition = 4;
 
   // Allow the user to overwrite
   if (args[2]) {
