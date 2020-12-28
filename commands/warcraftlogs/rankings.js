@@ -51,7 +51,7 @@ exports.run = async (client, message, args) => {
   }
 
   // Set our partition -- Phase 3 is current default.
-  let partition = 4;
+  let partition = 5;
 
   // Allow the user to overwrite
   if (args[2]) {
