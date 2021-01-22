@@ -21,8 +21,9 @@ exports.run = async function(client, message, args) {
         signups.forEach((signup) => {
             if (signup.reserve && signup.reserve.item) {
                 if (returnMessage.length > 1500) {
+                    returnMessage += '```';
                     message.author.send(returnMessage)
-                    returnMessage = '';
+                    returnMessage = '```md\n';
                 }  
 
                 let raidName = signup.raid.title ? signup.raid.title : signup.raid.name;
