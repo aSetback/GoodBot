@@ -238,22 +238,32 @@ module.exports = {
         });
         return promise;
     },
-    getReserveHistory: async (client, guildID, raid) => {
+    getReserveHistory: async (client, guildID, raid, raidName) => {
         let promise = new Promise((resolve, reject) => {
             let includes = [
+                {
+                    model: client.models.raid, as: 'raid', foreignKey: 'raidID'
+                },
                 {
                     model: client.models.raidReserve, as: 'reserve', foreignKey: 'signupID', include: {
                         model: client.models.reserveItem, as: 'item', foreignKey: 'raidReserveID'
                     }
                 }
             ];
+
             let timesReserved = {};
             let signupNames = [];
             client.models.signup.findAll({ where: { raidID: raid.id } }).then((signups) => {
                 for (key in signups) {
                     signupNames.push(signups[key].player);
                 }
-                client.models.signup.findAll({ where: { guildID: guildID, player: { [Op.in]: signupNames } }, include: includes }).then((signups) => {
+
+                whereClause = { guildID: guildID, player: { [Op.in]: signupNames }};
+                if (raidName) {
+                    whereClause['$raid.name$'] = raidName;
+                }
+    
+                client.models.signup.findAll({ where: whereClause, include: includes }).then((signups) => {
                     signups.forEach((signup) => {
                         if (signup.reserve && signup.reserve.item) {
                             if (timesReserved[signup.player]) {
@@ -316,6 +326,69 @@ module.exports = {
             let errorArchiveNoChannel = client.loc('errorMaxChannel', "The category **Archives** does not exist, please create the category to use this command.");
             client.messages.errorMessage(channel, errorArchiveNoChannel, 240);
         }
+    },
+    createEventChannel: async (client, message, category, raid, guild) => {
+        let promise = new Promise(async (resolve, reject) => {
+            if (!category) {
+                message.channel.send('Category __' + category + '__ does not exist.');
+                return false;
+            }
+            if (!raid.dateString || !raid.raid) {
+                return message.channel.send('Invalid parameters.  Please use the following format: +event MC Oct-15 <name?>');
+            }
+
+            let channelName = raid.dateString + '-' + raid.name;
+            if (!guild) {
+                guild = message.guild;
+            }
+            let channel = await guild.channels.create(channelName, {
+                type: 'text'
+            })
+
+            let raidDateParts = raid.dateString.split('-');
+            // Parse out our date
+            raid.parsedDate = new Date(Date.parse(raidDateParts[0] + " " + raidDateParts[1]));
+            raid.parsedDate.setFullYear(new Date().getFullYear());
+
+            // If 'date' appears to be in the past, assume it's for the next calendar year (used for the dec => jan swapover)
+            if (raid.parsedDate.getTime() < new Date().getTime()) {
+                raid.parsedDate.setFullYear(raid.parsedDate.getFullYear() + 1);
+            }
+
+            // Set up our sql record
+            let record = {
+                'name': raid.name ? raid.name : raid.raid,
+                'raid': raid.raid,
+                'date': raid.parsedDate,
+                'title': raid.title ? raid.title : null,
+                'faction': raid.faction ? raid.faction.toLowerCase() : null,
+                'color': raid.color ? raid.color : '#02a64f',
+                'description': raid.description ? raid.description : null,
+                'rules': raid.rules ? raid.rules : null,
+                'time': raid.time ? raid.time : null,
+                'channelID': channel.id,
+                'guildID': channel.guild.id,
+                'memberID': message.author.id,
+                'softreserve': raid.softreserve,
+                'confirmation': raid.confirmation
+            };
+            if (raid.id) {
+                await client.models.raid.update({crosspostID: channel.id}, {where: {id: raid.id}});
+            } else {
+                await client.models.raid.create(record);
+            }
+
+            let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
+            let botMsg = await channel.send(signupMessage)
+            await botMsg.pin();
+            await client.raid.reactEmoji(botMsg);
+            client.embed.eventUpdate(client, channel);
+            channel = await channel.setParent(category.id);
+            channel.lockPermissions().catch(console.error);    
+            resolve(channel);````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+
+        });
+        return promise;
     },
     createRaidChannel: async (client, message, category, raid, guild) => {
         let promise = new Promise(async (resolve, reject) => {
