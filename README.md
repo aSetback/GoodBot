@@ -322,7 +322,7 @@
 ```
 Spreadsheet export can be set up by providing the bot access to a Google Sheet.
 
-An example sheet can be found here: https://docs.google.com/spreadsheets/d/1mH9UD5luAV3YiSy4OCuzw1Lbd5xe0eF4VCYp013h7eo
+An example sheet can be found here: https://docs.google.com/spreadsheets/d/1KJz86pYn7rHx1Aru9Uc2xcTwl-QZrxJb8_4BRRkapZs
 
 All sign-ups are exported to the first page of the spreadsheet, by column.  Export begins on the third row.
 
@@ -346,11 +346,11 @@ Columns:
 		shaman healer => 17
 		dk dps => 18
 		dk tank => 19
-    monk dps => 20
-    monk tank => 21
-    monk healer => 22
-    dh dps => 23
-    dh tank => 24
+ 		monk dps => 20
+  	  	monk tank => 21
+    		monk healer => 22
+    		dh dps => 23
+    		dh tank => 24
 ```
 To set up your spreadsheet:
 * The sheet must be shared with discord@api-project-483394155093.iam.gserviceaccount.com																								
