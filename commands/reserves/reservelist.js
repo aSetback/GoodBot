@@ -3,15 +3,6 @@ const moment = require('moment');
 
 exports.run = async function(client, message, args) {
     let channel = message.channel;
-    // Check if we're looking up the reserves from another channel
-    if (args[1] || (args[0] && args[0] != 'history' && args[0] != 'channel')) {
-        let channelName = args[1] ? args[1] : args[0];
-        channel = await client.general.getChannel(channelName, message.guild);
-
-        if (!channel) {
-            return client.messages.errorMessage(message.channel, "Could not find channel: **" + channelName + "**", 240);
-        }
-    }
     let raid = await client.raid.get(client, channel);
     let guildID = message.guild.id;
     if (!raid) {
@@ -33,7 +24,10 @@ exports.run = async function(client, message, args) {
     
     client.models.raidReserve.findAll({where: {RaidID: raid.id}, include: includes}).then(async (raidReserves) => {
         let reserves = [];
-        let reserveHistory = await client.raid.getReserveHistory(client, guildID, raid);
+        let reserveHistory;
+        if (args[0] && args[0] == 'history') {
+            reserveHistory = await client.raid.getReserveHistory(client, guildID, raid, args[1]);
+        }
         for (key in raidReserves) {
             let raidReserve = raidReserves[key];
             if (raidReserve.signup) {
@@ -74,7 +68,11 @@ exports.run = async function(client, message, args) {
                 }
                 returnMessage += reserve.signup.player.padEnd(20) + reserve.item.name.padEnd(50) + moment(reserve.updatedAt).utcOffset(-240).format('h:mm A, L').padEnd(30);
                 if (args[0] && args[0] == 'history') {
-                    returnMessage += reserveHistory[reserve.signup.player][reserve.item.id].count;
+                    if (reserveHistory[reserve.signup.player] && reserveHistory[reserve.signup.player][reserve.item.id]) {
+                        returnMessage += reserveHistory[reserve.signup.player][reserve.item.id].count; 
+                    } else {
+                        returnMessage += '0';
+                    }
                 }
                 returnMessage += '\n';
                 if (returnMessage.length > 1800) {

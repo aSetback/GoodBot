@@ -16,8 +16,8 @@ exports.run = async function(client, message, args) {
     let timesReserved = [];
     client.models.signup.findAll({ where: {guildID: guildID, player: player}, include: includes}).then((signups) => {
         let returnMessage = '```md\n';
-        returnMessage += 'Item Name'.padEnd(50) + 'Raid'.padEnd(30) + '\n' + 'Date' + '\n';
-        returnMessage += ''.padEnd(75, '=') + '\n'; 
+        returnMessage += 'Item Name'.padEnd(50) + 'Raid'.padEnd(30) + 'Date' + '\n';
+        returnMessage += ''.padEnd(105, '=') + '\n'; 
         signups.forEach((signup) => {
             if (signup.reserve && signup.reserve.item) {
                 if (returnMessage.length > 1500) {
@@ -32,7 +32,7 @@ exports.run = async function(client, message, args) {
                 }
                 
     
-                returnMessage += signup.reserve.item.name.padEnd(50) + raidName.padEnd(50) + signup.raid.date + '\n';
+                returnMessage += signup.reserve.item.name.padEnd(50) + raidName.padEnd(30) + signup.raid.date + '\n';
                 if (timesReserved[signup.reserve.item.id]) {
                     timesReserved[signup.reserve.item.id].count++;
                 } else {
