@@ -16,11 +16,22 @@ exports.run = async function(client, message, args) {
     let timesReserved = [];
     client.models.signup.findAll({ where: {guildID: guildID, player: player}, include: includes}).then((signups) => {
         let returnMessage = '```md\n';
-        returnMessage += 'Item Name'.padEnd(50) + 'Date' + '\n';
+        returnMessage += 'Item Name'.padEnd(50) + 'Raid'.padEnd(30) + '\n' + 'Date' + '\n';
         returnMessage += ''.padEnd(75, '=') + '\n'; 
         signups.forEach((signup) => {
             if (signup.reserve && signup.reserve.item) {
-                returnMessage += signup.reserve.item.name.padEnd(50) + signup.raid.date + '\n';
+                if (returnMessage.length > 1500) {
+                    message.author.send(returnMessage)
+                    returnMessage = '';
+                }  
+
+                let raidName = signup.raid.title ? signup.raid.title : signup.raid.name;
+                if (!raidName) {
+                    raidName = '';
+                }
+                
+    
+                returnMessage += signup.reserve.item.name.padEnd(50) + raidName.padEnd(50) + signup.raid.date + '\n';
                 if (timesReserved[signup.reserve.item.id]) {
                     timesReserved[signup.reserve.item.id].count++;
                 } else {
@@ -38,7 +49,9 @@ exports.run = async function(client, message, args) {
             returnMessage += item.name.padEnd(50) + item.count + '\n';
         });
         returnMessage += '```';
-        message.author.send(returnMessage)
+        message.author.send(returnMessage);
+    
+
     });
 
 };
