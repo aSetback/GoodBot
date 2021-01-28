@@ -19,8 +19,16 @@ module.exports = {
 		setTimeout(() => {
 			message.channel.messages.fetch({limit: messageLimit})
 			.then(function(list){
-					message.channel.bulkDelete(list);
+				message.channel.bulkDelete(list).catch(() => {
+					let counter = 0;
+					list.forEach((message) => {
+						counter++;
+						setTimeout(async() => {
+							await message.delete();
+						}, counter * 1000);
+					});
 				});
+			});
 		}, 1500);
 	}
 }
