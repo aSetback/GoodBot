@@ -1,7 +1,7 @@
 exports.run = (client, message, args) => {
 
-	const altName = client.general.ucfirst(args.shift());
-	const mainName = client.general.ucfirst(args.shift());
+	const altName = args.shift();
+	const mainName = args.shift();
 	if (!message.guild) {
 		return false;
 	}
@@ -9,6 +9,8 @@ exports.run = (client, message, args) => {
 	if (!altName || !mainName) {
 		return client.messages.send(message.channel, 'Invalid parameters.  Correct usage is: +alt altName mainName', 240);
 	}
+	altName = client.general.ucfirst(altName);
+	mainName = client.general.ucfirst(mainName);
 
 	client.models.character.findOne({where: {name: mainName, guildID: message.guild.id}}).then((mainCharacter) => {
 		if (!mainCharacter) {
