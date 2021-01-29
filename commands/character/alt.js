@@ -1,7 +1,7 @@
 exports.run = (client, message, args) => {
 
-	const altName = args.shift();
-	const mainName = args.shift();
+	let altName = args.shift();
+	let mainName = args.shift();
 	if (!message.guild) {
 		return false;
 	}
