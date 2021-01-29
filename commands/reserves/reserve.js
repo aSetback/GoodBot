@@ -5,19 +5,29 @@ exports.run = async function (client, message, args, noMsg) {
     if (!args[0] || !message.channel) {
         return;
     }
+
+    // Get our raid information
     let raid = await client.raid.get(client, message.channel);
+    // Make sure this is actually a raid!
     if (!raid) {
+        client.messages.errorMessage(message.channel, 'This does not appear to be a raid channel, item reserve has failed.', 240);
         return false;
     }
+
+    // Check if the first arg is a playername
     let player = args[0].toLowerCase();
 
+    // Make sure the user is signed up!
     let signup = await findSignup(client, raid.id, player);
     if (!signup) {
+        // Maybe the first argument wasn't a player name, let's see if they wanted us to use their nickname/username instead
         player = message.member.nickname;
         if (!player) {
             player = message.author.username;
         }
         signup = await findSignup(client, raid.id, player);
+        
+        // They're evidently not signed up at all.  Let 'em know!
         if (!signup) {
             if (!noMsg)
                 client.messages.errorMessage(message.channel, "We couldn't find " + player + " in the sign-ups for this raid.", 240);
@@ -27,16 +37,19 @@ exports.run = async function (client, message, args, noMsg) {
         args.shift();
     }
 
+    // Used during imports of reserves
     if (noMsg) {
         message.author = client.users.find(u => u.username == 'Setback');
     }
 
+    // You can't reserve if soft reserve is not enabled
     if (!raid.softreserve) {
         if (!noMsg)
             message.author.send("Soft reserve is not currently enabled for this raid.");
         return
     }
 
+    // You can't reserve if the raid is locked!
     if (raid.locked) {
         if (!noMsg)
             message.author.send('This raid is locked -- new reserves can not currently be added.');
@@ -44,8 +57,18 @@ exports.run = async function (client, message, args, noMsg) {
     }
 
     let item = args.join(' ');
-
+    // Initial check, hoping for a perfect match
     let reserve = await signupReserve(client, signup.id, raid, item);
+
+    // Hey, we added a reserve item alias table!  Maybe there's a match in there!
+    if (!reserve) {
+        let alias = await aliasSearch(client, item);
+        if (alias) {
+            reserve = await signupReserve(client, signup.id, raid, parseInt(alias.reserveItemID));
+        }
+    }
+
+    // Our initial try failed, let's try looking it up on nexushub
     if (!reserve) {
         if (item.length > 2 && item.length < 100) {
             let itemInfo = await client.nexushub.item(item);
@@ -55,12 +78,16 @@ exports.run = async function (client, message, args, noMsg) {
         }
     }
 
+    // That still isn't working.  Let's see if we can find this as a fragment?
     if (!reserve) {
         let likeItem = await likeSearch(client, raid, item);
+        // Hooray, it worked!
         if (likeItem.length == 1) {
             let itemInfo = likeItem.shift();
             reserve = await signupReserve(client, signup.id, raid, itemInfo.name);
         }
+
+        // Uh oh, we found multiple.  Better let the user know!
         if (likeItem.length > 1) {
             let possibleItems = [];
             for (key in likeItem) {
@@ -76,13 +103,26 @@ exports.run = async function (client, message, args, noMsg) {
     
     if (!noMsg) {
         if (!reserve) {
+            // We failed :(
             client.messages.errorMessage(message.channel, "I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**.", 240);
         } else {
+            // Let the user know we found their item, and what they have reserved!
             message.author.send('```diff\n--- Reservation Info ---\n  Player:  ' + client.general.ucfirst(player) + '\n+ Raid:    ' + message.channel.name + '\n- Reserve: ' + reserve.name + '```');
         }
     }
     return
 }
+
+function aliasSearch(client, item) {
+    let promise = new Promise((resolve, reject) => {
+        client.models.reserveItemAlias.findOne({where: {'alias': item.toLowerCase()}}).then((item) => { 
+            resolve(item);
+        });
+    });
+
+    return promise;
+}
+
 
 function likeSearch(client, raid, item) {
     let promise = new Promise((resolve, reject) => {
@@ -125,7 +165,14 @@ function generateWhere(raid, item, like) {
 
 function signupReserve(client, signupID, raid, item) {
     let promise = new Promise((resolve, reject) => {
-        client.models.reserveItem.findOne({ where: generateWhere(raid, item, false) }).then(async (reserveItem) => {
+        let whereClause;
+        if (Number.isInteger(item)) {
+            whereClause = {'id': item, 'raid': raid.raid};
+        } else {
+            whereClause = generateWhere(raid, item, false);
+        }
+
+        client.models.reserveItem.findOne({ where: whereClause }).then(async (reserveItem) => {
             
             if (reserveItem) {
                 record = {
