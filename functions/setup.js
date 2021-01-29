@@ -61,7 +61,7 @@ module.exports = {
         member = await channel.guild.members.fetch(member.user.id);
         if (role) {
             if (action == 'add') {
-                await member.roles.add(role.id);
+                await member.roles.add(role.id).catch((e) => { console.error('Add role failed, no permission')});
                 client.setup.checkCompleteness(client, member);
                 client.log.write(client, member, channel, 'Faction Added: ' + faction);
             } else {
@@ -116,7 +116,7 @@ module.exports = {
 
             member.roles.add(role).then(() => {
                 client.setup.checkCompleteness(client, member);
-            });
+            }).catch((e) => { console.error('Add role failed, no permission')});
         }
         client.set.characterClass(client, channel.guild, member, member.displayName, emojiName);
         if (!role) {
@@ -161,7 +161,7 @@ module.exports = {
 
             member.roles.add(role).then(() => {
                 client.setup.checkCompleteness(client, member);
-            });
+            }).catch((e) => { console.error('Add role failed, no permission')});
         } else {
 
         }
@@ -215,7 +215,7 @@ module.exports = {
         }
         let role = member.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
         if (role) {
-            member.roles.add(role)
+            member.roles.add(role).catch((e) => { console.error('Add role failed, no permission')});
         }
 
     }
