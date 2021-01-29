@@ -60,7 +60,6 @@ module.exports = {
         if (message.channel 
             && message.channel.name 
             && message.channel.name == 'set-your-name'
-            && message.content.indexOf('+') != 0
             && message.author.id != client.config.userId
             && !cmd
             ) {
