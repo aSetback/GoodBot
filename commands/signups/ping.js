@@ -30,7 +30,6 @@ exports.run = async function(client, message, args) {
         return client.messages.errorMessage(message.channel, 'No players were found.', 240);
     } else {
         let notifications = await client.notify.makeList(client, message.guild, pingList);
-        console.log(notifications);
         return message.channel.send(notifications);
     }
 }

@@ -112,7 +112,6 @@ z           }
         client.log.write(client, message.author, message.channel, logMessage);
     },
     remove(client, raidID, characterName) {
-        console.log(characterName);
         let promise = new Promise((resolve, reject) => {
             client.models.signup.findOne({where: {player: characterName, raidID: raidID}}).then((signup) => {
                 // Only delete the sign-up if it exists.

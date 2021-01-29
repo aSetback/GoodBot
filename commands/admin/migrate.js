@@ -24,8 +24,6 @@ exports.run = async (client, message, args) => {
             let characterID = cache[signup.guildID][signup.player];
 
             client.models.signup.update({characterID: characterID}, {where: {id: signup.id}});
-            console.log('Updated Signup ' + signup.id + ' (' + signup.player + '/' + signup.guildID + ')');
-
         });
     });
 

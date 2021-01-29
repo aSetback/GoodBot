@@ -58,7 +58,7 @@ module.exports = {
             client.models.log.create(record);
 
             // Write to console
-            console.log('[' + client.timestamp.get() + '] ' + logMessage);
+            console.log('(GB) [' + client.timestamp.get() + '] ' + logMessage);
         } catch (e) {
             console.error(e);
         }
