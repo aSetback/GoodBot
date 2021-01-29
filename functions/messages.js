@@ -47,11 +47,22 @@ module.exports = {
             return message.channel.send('Current trigger: ' + client.config.prefix);
         }
 
+        // Check if the message starts with our command trigger -- if so, pop off first element and check if it's a command.
+        var command = '';
+        if (args[0] && args[0].indexOf(client.config.prefix) == 0) {
+            args = message.content.trim().slice(client.config.prefix.length).trim().split(/ +/g);
+            command = args.shift().toLowerCase();
+        };
+
+        const cmd = client.commands.get(command);
+
+        // Check if the user is trying to set their name, and this isn't a command
         if (message.channel 
             && message.channel.name 
             && message.channel.name == 'set-your-name'
             && message.content.indexOf('+') != 0
             && message.author.id != client.config.userId
+            && !cmd
             ) {
             
             client.setup.nick(client, message);
@@ -77,14 +88,7 @@ module.exports = {
             }
         }
 
-        // Check if the message starts with our command trigger -- if so, pop off first element and check if it's a command.
-        var command = '';
-        if (args[0] && args[0].indexOf(client.config.prefix) == 0) {
-            args = message.content.trim().slice(client.config.prefix.length).trim().split(/ +/g);
-            command = args.shift().toLowerCase();
-        };
 
-        const cmd = client.commands.get(command);
 
         // If that command doesn't exist, silently exit and do nothing
         if (!cmd) return;
