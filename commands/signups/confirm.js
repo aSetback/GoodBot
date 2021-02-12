@@ -25,26 +25,30 @@ exports.run = async function(client, message, args) {
 	let notFound = [];
 
 	let raid = await client.raid.get(client, message.channel);
-	// Loop through the players to confirm
-	for (key in players) {
-		let player = client.general.ucfirst(players[key]);
-		let confirmed = await client.signups.confirm(client, raid.id, player);
-		if (confirmed) {
-			confirmedPlayers.push(player);
-		} else {
-			notFound.push(player);
+	if (args[0].toLowerCase() == 'all') {
+		await client.models.signup.update({ 'confirmed': 1 }, {where: {raidID: raid.id, signup: 'yes'}})
+	} else {
+		// Loop through the players to confirm
+		for (key in players) {
+			let player = client.general.ucfirst(players[key]);
+			let confirmed = await client.signups.confirm(client, raid.id, player);
+			if (confirmed) {
+				confirmedPlayers.push(player);
+			} else {
+				notFound.push(player);
+			}
+		}
+
+		// Notify the user which players were confirmed
+		if (confirmedPlayers.length) {
+			message.author.send('Added confirmation for players: ' + confirmedPlayers.join(', ') + ' for  **' + message.channel.name + '**.');
+		}
+		if (notFound.length) {
+			message.author.send('Could not find players: ' + notFound.join(', ') + ' for **' + message.channel.name + '**.');
 		}
 	}
 
 	// Update our embed
 	client.embed.update(client, message.channel);
-
-	// Notify the user which players were confirmed
-	if (confirmedPlayers.length) {
-		message.author.send('Added confirmation for players: ' + confirmedPlayers.join(', ') + ' for  **' + message.channel.name + '**.');
-	}
-	if (notFound.length) {
-		message.author.send('Could not find players: ' + notFound.join(', ') + ' for **' + message.channel.name + '**.');
-	}
 
 };

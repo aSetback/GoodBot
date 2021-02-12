@@ -145,6 +145,7 @@ module.exports = {
             'shaman-dps',
             'shaman-caster',
             'shaman-healer',
+            'shaman-tank',
             'dk-dps',
             'dk-tank',
             'monk-dps',
