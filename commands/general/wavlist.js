@@ -1,14 +1,20 @@
 const fs = require("fs");
 
 exports.run = (client, message, args) => {
-	let wavList = ['Wav Files:'];
+	let returnMessage = '__WAVs:__\n';
 	fs.readdir("./wav/", (err, files) => {
 		if (err) return console.error(err);
 		files.forEach(file => {
 			if (!file.endsWith(".wav")) return;
+			if (returnMessage.length > 1500) {
+				message.author.send(returnMessage);
+				returnMessage = '';
+			}
+
 			let wav = file.split(".")[0];
-			wavList.push(wav);
+			console.log(wav);
+			returnMessage += wav + '\n';
 		});
-		message.author.send(wavList.join('\n'));
+		return message.author.send(returnMessage);
 	});
 }
