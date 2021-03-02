@@ -12,7 +12,6 @@ exports.run = (client, message, args) => {
 			}
 
 			let wav = file.split(".")[0];
-			console.log(wav);
 			returnMessage += wav + '\n';
 		});
 		return message.author.send(returnMessage);
