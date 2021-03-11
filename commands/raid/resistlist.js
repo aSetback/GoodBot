@@ -28,11 +28,15 @@ exports.run = async function(client, message, args) {
             returnMessage = '```md\n';
         }
         let character = lineup[key];
+        let fire = character.fireResist ? character.fireResist : 0;
+        let frost = character.frostResist ? character.frostResist : 0;
+        let nature = character.natureResist ? character.natureResist : 0;
+        let shadow = character.shadowResist ? character.shadowResist : 0;
         returnMessage += character.name.padEnd(25) 
-            + character.fireResist.toString().padEnd(15)
-            + character.frostResist.toString().padEnd(15)
-            + character.natureResist.toString().padEnd(15)
-            + character.shadowResist.toString().padEnd(15) + '\n';
+            + fire.toString().padEnd(15)
+            + frost.toString().padEnd(15)
+            + nature.toString().padEnd(15)
+            + shadow.toString().padEnd(15) + '\n';
     } 
     returnMessage += '```';
     message.author.send(returnMessage);
