@@ -6,7 +6,10 @@ exports.run = async function(client, message, args) {
 	}
 
 	let raid = await client.raid.get(client, message.channel);
-    let lineup = await client.embed.getLineup(client, raid);
+    let lineup = [];
+    for (key in raid.signups) {
+        lineup.push(raid.signups[key].character);
+    }
     lineup.sort((a, b) => {
         return a.name > b.name ? 1 : -1;
     })
@@ -26,10 +29,10 @@ exports.run = async function(client, message, args) {
         }
         let character = lineup[key];
         returnMessage += character.name.padEnd(25) 
-            + character.resists.fire.toString().padEnd(15)
-            + character.resists.frost.toString().padEnd(15)
-            + character.resists.nature.toString().padEnd(15)
-            + character.resists.shadow.toString().padEnd(15) + '\n';
+            + character.fireResist.toString().padEnd(15)
+            + character.frostResist.toString().padEnd(15)
+            + character.natureResist.toString().padEnd(15)
+            + character.shadowResist.toString().padEnd(15) + '\n';
     } 
     returnMessage += '```';
     message.author.send(returnMessage);
