@@ -159,7 +159,14 @@ exports.run = async function(client, message, args) {
 
 	async function setCells(cellData) {
 		var sheet;
-		sheet = doc.sheetsByIndex[0];
+		for (key in doc.sheetsById) {
+			if (doc.sheetsById[key].title == 'Export') {
+				sheet = doc.sheetsById[key];
+			}
+		}
+		if (!sheet) {
+			sheet = doc.sheetsByIndex[0];
+		}
 		await sheet.loadCells('B3:V35');
 		for (row = 2; row < 23; row++) {
 			for (col = 1; col <  22; col++) {
