@@ -16,10 +16,8 @@ exports.run = async function(client, message, args) {
 		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
 	
-	// Get the first parameter as either player, or player list.
-	let players = args.join().toLowerCase();
-	// Attempt to split on comma to see if it's a list
-	players = players.split(',');
+	let playerArray = client.general.parseList(args);
+
 	// Keep a record of which players are added
 	let unconfirmedPlayers = [];
 	let notFound = [];
@@ -30,8 +28,8 @@ exports.run = async function(client, message, args) {
 		await client.models.signup.update({ 'confirmed': 0 }, {where: {raidID: raid.id, signup: 'yes'}})
 	} else {
 		// Loop through the players to confirm
-		for (key in players) {
-			let player = client.general.ucfirst(players[key]);
+		for (key in playerArray) {
+			let player = client.general.ucfirst(playerArray[key]);
 			let confirmed = await client.signups.unconfirm(client, raid.id, player);
 			if (confirmed) {
 				unconfirmedPlayers.push(player);
