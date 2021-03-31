@@ -141,7 +141,13 @@ module.exports = {
 		let leaders = [];
 		// Add our original raid leader
 		if (!raid.leaders.find(m => m.id == raid.memberID)) {
-			let member = await channel.guild.members.fetch(raid.memberID);
+			let member;
+			try {
+				member = await channel.guild.members.fetch(raid.memberID);
+			} catch(e) {
+				console.log(e);
+			}
+
 			if (!member) { member = '-'; }
 			leaders.push(member);
 		}
