@@ -33,5 +33,23 @@ module.exports = {
             }
         }
         return hours.toString().padStart(1, '0') + ':' + minutes.padStart(1, '0') + ':00';
+    },
+    parseList: (args) => {
+        // Re-join our args
+        let list = args.join(' ').toLowerCase().replace(/,/g, ' ');
+
+        // Split by spaces, commas, or quoted groups.
+        let regex = /[^\s"]+|"([^"]*)"/gi;
+        let returnArray = [];
+        do {
+            var match = regex.exec(list);
+            if (match != null)
+            {
+                returnArray.push(match[1] ? match[1] : match[0]);
+            }
+        } while (match != null);
+
+        // Return the array of items listed.
+        return returnArray;
     }
 };
