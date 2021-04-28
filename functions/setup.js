@@ -17,11 +17,12 @@ module.exports = {
 
             let guild = client.guilds.cache.get(packet.d.guild_id);
             let channel = await client.channels.cache.get(packet.d.channel_id);
-            let member = await guild.members.fetch(packet.d.user_id);
             let emoji = packet.d.emoji;
                     
             // Don't operate on DMs
-            if (!channel.guild) return;
+            if (channel.type == 'dm') return;
+            
+            let member = await guild.members.fetch(packet.d.user_id);
 
             if (!member) {
                 channel.send('[Error]: Could not find user ID: ' + packet.d.user_id + '.');
