@@ -16,9 +16,9 @@ module.exports = {
     		if (packet.d.user_id.toString() == client.config.userId) return;
 
             let guild = client.guilds.cache.get(packet.d.guild_id);
-            let channel = await client.channels.cache.get(packet.d.channel_id);
+            let channel = await client.channels.fetch(packet.d.channel_id);
             let emoji = packet.d.emoji;
-                    
+        
             // Don't operate on DMs
             if (channel.type == 'dm') return;
             

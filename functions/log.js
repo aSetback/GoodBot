@@ -35,7 +35,7 @@ module.exports = {
                 logMessage += ' / Guild: ' +  channel.guild.name  + ' (' + channel.guild.id + ')';
             } else {
                 // This is a direct message, only write it to console
-                logMessage += ' / DM From: ' + member.username + ' (' + member.id + ')';
+                logMessage += ' / DM From: ' + member.user.username + ' (' + member.id + ')';
                 memberName = member.username;
                 memberID = member.id;
             }

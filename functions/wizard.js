@@ -42,11 +42,13 @@ module.exports = {
         if (classEmojis.find(e => e == emoji.name)) {
             let className = emoji.name.substring(2, emoji.name.length);
             client.wizard.setClass(client, member, className);
+            client.log.write(client, member, channel, 'Set Class: ' + className);
             client.wizard.deleteMessage(client, channel, "What class is your main?");
         }
         if (roleEmojis.find(e => e == emoji.name)) {
             let roleName = emoji.name.substring(2, emoji.name.length);
             client.wizard.setRole(client, member, roleName);
+            client.log.write(client, member, channel, 'Set Role: ' + roleName);
             client.wizard.deleteMessage(client, channel, "What role is your main?");
         }
     },
@@ -130,6 +132,7 @@ module.exports = {
             });
             if (result) {
                 message.react("✔️");
+                client.log.write(client, member, message.channel, 'Set Nick: ' + newName);
                 message.author.send("Your username has been set to **" + newName + "** on " + guild.name + ".").catch(() => {console.log('error')});
                 client.wizard.deleteMessage(client, message.channel, "What is your main character's name?");
                 client.wizard.getClass(client, message.author);
