@@ -53,6 +53,12 @@ module.exports = {
         }
     },
     complete: async(client, member) => {
+        // Set user's complete role, if there is one
+        let roleName = await client.customOptions.get(client, member.guild, 'completerole');
+        if (!roleName) {
+            return false;
+        }
+        client.wizard.addRole(client, member, roleName);
         let character = await client.models.character.findOne({ where: {'name': member.displayName, 'guildID': member.guild.id}});
         member.send('Thank you!  I have set **' + character.name + "** as a **" + character.class + " " + character.role + "** on " + member.guild.name + ".\nNeed to start over?  Type **restart** in this channel.");
     },
@@ -74,6 +80,8 @@ module.exports = {
                 }
             });
         }
+
+        client.wizard.addRole(client, member, roleName);
         client.wizard.complete(client, member);
     },
     setClass: async (client, member, className) => {
@@ -94,7 +102,15 @@ module.exports = {
                 }
             });
         }
+        client.wizard.addRole(client, member, className);
         client.wizard.getRole(client, member);
+    },
+    addRole: async (client, member, roleName) => {
+        await member.guild.roles.fetch();
+        let role = member.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
+        if (role) {
+            await member.roles.add(role.id).catch((e) => { console.error(e)});
+        }
     },
     deleteMessage: async(client, channel, content) => {
         let messages = await channel.messages.fetch();
