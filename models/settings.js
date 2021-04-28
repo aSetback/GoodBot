@@ -32,6 +32,10 @@ module.exports = (client, Sequelize) => {
         expansion: {
             type: Sequelize.STRING,
             allowNull: true
+        },
+        wizard: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true
         }
     }, {
     // options
