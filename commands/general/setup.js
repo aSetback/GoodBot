@@ -5,8 +5,13 @@ exports.run = async (client, message, args) => {
     }
     
     let expansion = await client.guildOption.expansion(client, message.guild.id);
-
-    // Create Category
+    // Create Categories
+    await message.guild.channels.create('Raid Signups', {
+        'type': 'category'
+    })
+    await message.guild.channels.create('Archives', {
+        'type': 'category'
+    })
     message.guild.channels.create('Get Started', {
             'type': 'category'
         })
@@ -72,6 +77,7 @@ exports.run = async (client, message, args) => {
                         reactRoles(botMsg, expansion);
                     });
                 });
+            message.author.send("GoodBot has been set up for your server!\nI've created a new section called 'Get Started' with channels for users to set their name, class & faction.\nI've also created a category called 'Raid Signups' where all new raid channels will be created by default.\nYou can create your first raid by using `+raid MC may-18 Title`, substituting 'MC' for the raid you'd like to host, 'may-18' for the date of the raid, and 'Title' for the title you'd like to raid to have.");
         });
 
     async function reactClasses(msg, expansion) {
