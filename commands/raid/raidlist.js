@@ -21,7 +21,8 @@ exports.run = async (client, message, args) => {
             },
             guildID: message.guild.id
         },
-        orderBy: [
+        order: [
+            ['faction', 'ASC'],
             ['raid', 'ASC'],
             ['date', 'ASC'],
             ['time', 'ASC']
@@ -29,7 +30,7 @@ exports.run = async (client, message, args) => {
     });
     let returnMessage = '';
     raids.forEach((raid) => {
-        returnMessage += raid.date + ' @ ' + raid.time + ' - <#' + raid.channelID + '> (' + raid.raid + ')' + '\n';
+        returnMessage += raid.date + ' @ ' + raid.time + ' - <#' + raid.channelID + '> (' + raid.raid + ', ' + raid.faction + ')' + '\n';
     });
     message.channel.send(returnMessage);
 }
