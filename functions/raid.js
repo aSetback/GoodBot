@@ -441,25 +441,9 @@ module.exports = {
             }
 
             let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
-
-            let yes = new client.disbut.MessageButton()
-                .setStyle('green')
-                .setLabel('Yes') 
-                .setID('+');
-            let no = new client.disbut.MessageButton()
-                .setStyle('red')
-                .setLabel('No') 
-                .setID('-');
-            let maybe = new client.disbut.MessageButton()
-                .setStyle('grey')
-                .setLabel('Maybe') 
-                .setID('m');
-            let buttonRow = new client.disbut.MessageActionRow()
-                .addComponent(yes)
-                .addComponent(no)
-                .addComponent(maybe);
-            let botMsg = await channel.send(signupMessage, buttonRow);
+            let botMsg = await channel.send(signupMessage)
             await botMsg.pin();
+            await client.raid.reactEmoji(botMsg);
             client.embed.update(client, channel);
             channel = await channel.setParent(category.id);
             channel.lockPermissions().catch(console.error);    
@@ -467,5 +451,12 @@ module.exports = {
 
         });
         return promise;
+    },
+    reactEmoji: async (msg) => {
+        const emojis = ["👍", "🤷", "👎"];
+        for (i = 0; i < emojis.length; i++) {
+            await msg.react(emojis[i]);
+        }
     }
+
 }

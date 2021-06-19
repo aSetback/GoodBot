@@ -1,10 +1,7 @@
 const Discord = require("discord.js");
 const Enmap = require("enmap");
 const fs = require("fs");
-const client = new Discord.Client(); // Creating discord.js client (constructor)
-const disbut = require('discord-buttons');
-disbut(client) 
-client.disbut = disbut;
+const client = new Discord.Client();
 
 // Our music
 client.queue = {};
