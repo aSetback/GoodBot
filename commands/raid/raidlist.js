@@ -18,8 +18,18 @@ exports.run = async (client, message, args) => {
             },
             createdAt: {
                 [Op.gte]: age
-            }
-        }
+            },
+            guildID: message.guild.id
+        },
+        orderBy: [
+            ['raid', 'ASC'],
+            ['date', 'ASC'],
+            ['time', 'ASC']
+        ]
     });
-    console.log(raids);
+    let returnMessage = '';
+    raids.forEach((raid) => {
+        returnMessage += raid.date + ' @ ' + raid.time + ' - <#' + raid.channelID + '> (' + raid.raid + ')' + '\n';
+    });
+    message.channel.send(returnMessage);
 }
