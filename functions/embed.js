@@ -22,20 +22,29 @@ module.exports = {
 				embed: embed,
 				timeout: setTimeout(() => {
 					embed = client.embeds[raid.id].embed;
-					client.embed.edit(client, raidChannel, embed);
+					client.embed.edit(client, raidChannel, embed, raid);
 					if (crosspostChannel) {
-						client.embed.edit(client, crosspostChannel, embed);
+						client.embed.edit(client, crosspostChannel, embed, raid);
 					}
 					client.embeds[raid.id].timeout = null;
 				}, 1000)
 			};
 		}
 	},
-	edit: async (client, channel, embed) => {
+	edit: async (client, channel, embed, raid) => {
 		let list = await channel.messages.fetchPinned();
 		pinnedMsg = list.last();
 		if (!pinnedMsg) { return false; }
-		pinnedMsg.edit({ embed: embed, component: client.buttonRow });
+		
+		let buttonRow = new client.disbut.MessageActionRow()
+			.addComponent(client.buttons.yes)
+			.addComponent(client.buttons.no)
+			.addComponent(client.buttons.maybe);
+		if (raid.softreserve) {
+			client.buttons.reserves.setURL('https://goodbot.me/r/' + raid.id);
+			buttonRow.addComponent(client.buttons.reserves);
+		}
+		pinnedMsg.edit({ embed: embed, component: buttonRow });
 	},
 	updateEmbed: async (client, channel, raid) => {
 		let raidName = '';

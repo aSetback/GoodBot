@@ -60,7 +60,7 @@ exports.run = async (client, message, args) => {
                 if (!gearList[gear.slot]) {
                     gearList[gear.slot] = [];
                 }
-                gear.link = '[' + gear.itemName + '](' + 'https://classic.wowhead.com/item=' + gear.id + ')';
+                gear.link = '[' + gear.itemName + '](' + 'https://tbc.wowhead.com/item=' + gear.id + ')';
                 if (gearList[gear.slot].indexOf(gear.link) < 0) {
                     gearList[gear.slot].push(gear.link);
                 }

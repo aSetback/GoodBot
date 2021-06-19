@@ -53,7 +53,7 @@ module.exports = {
         .setTimestamp();
         let returnMessage = '';
         contents.forEach((item) => {
-            returnMessage += item.qty + 'x ' +'[' + item.name + '](https://classic.wowhead.com/item=' + item.id + ')\n';
+            returnMessage += item.qty + 'x ' +'[' + item.name + '](https://tbc.wowhead.com/item=' + item.id + ')\n';
             if (returnMessage.length > 900) {
                 embed.addField('Items', returnMessage);    
 				returnMessage = '';

@@ -5,22 +5,23 @@ const client = new Discord.Client(); // Creating discord.js client (constructor)
 const disbut = require('discord-buttons');
 disbut(client) 
 client.disbut = disbut;
-let yes = new client.disbut.MessageButton()
+client.buttons = {};
+client.buttons.yes = new client.disbut.MessageButton()
   .setStyle('green')
   .setLabel('Yes') 
   .setID('+');
-let no = new client.disbut.MessageButton()
+client.buttons.no = new client.disbut.MessageButton()
   .setStyle('red')
   .setLabel('No') 
   .setID('-');
-let maybe = new client.disbut.MessageButton()
+client.buttons.maybe = new client.disbut.MessageButton()
   .setStyle('grey')
   .setLabel('Maybe') 
   .setID('m');
-client.buttonRow = new client.disbut.MessageActionRow()
-  .addComponent(yes)
-  .addComponent(no)
-  .addComponent(maybe);
+client.buttons.reserves = new client.disbut.MessageButton()
+  .setStyle('url')
+  .setLabel('Reserves')
+  .setURL('https://goodbot.me/r/');
 
 
 // Our music
