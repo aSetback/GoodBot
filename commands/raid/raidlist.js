@@ -9,11 +9,15 @@ exports.run = async (client, message, args) => {
     }
     let start = moment(new Date()).format();
     let end = moment(new Date()).add(7, 'days').format();
+    let age = moment(new Date()).subtract(60, 'days').format();
     let raids = await client.models.raid.findAll({
         where: {
             date: {
-                [Op.lte]: start,
-                [Op.gte]: end
+                [Op.gte]: start,
+                [Op.lte]: end
+            },
+            createdAt: {
+                [Op.gte]: age
             }
         }
     });

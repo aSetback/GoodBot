@@ -21,6 +21,12 @@ exports.run = async (client, message, args) => {
 		raid.name = raid.raid;
 	}
 
+	// Raid type translations
+	if (raid.raid == 'KZ') { raid.raid = 'KARA'; }
+	if (raid.raid == 'KARAZHAN') { raid.raid = 'KARA'; }
+	if (raid.raid == 'GRUUL') { raid.raid = 'GL'; }
+	if (raid.raid == 'MAG') { raid.raid = 'ML'; }
+
 	// Check for overwrite for this raid type
 	let categoryParams = {'raid': raid.raid, 'guildID': message.guild.id};
 	if (factionRequired) {
