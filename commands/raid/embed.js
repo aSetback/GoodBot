@@ -13,8 +13,7 @@ exports.run = async function(client, message, args) {
         client.embed.update(client, message.channel);
     } else {
         let signupMessage = 'embed';
-        message.channel.send(signupMessage).then((botMsg) => {
-            reactEmoji(botMsg);
+        message.channel.send(signupMessage, client.buttonRow).then((botMsg) => {
             botMsg.pin().then(() => {
                 client.embed.update(client, message.channel);
             });
@@ -22,12 +21,3 @@ exports.run = async function(client, message, args) {
     }
 
 };
-
-async function reactEmoji(msg) {
-    const emojis = ["👍", "🤷", "👎"];
-    for (i = 0; i < emojis.length; i++) {
-        await msg.react(emojis[i]);
-    }
-}
-
-

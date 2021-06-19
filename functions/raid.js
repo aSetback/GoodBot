@@ -287,7 +287,7 @@ module.exports = {
     getCategory: async (client, guildID, raidType, faction) => {
         // Retrieve guild's default category
         let category = await client.customOptions.get(client, guildID, 'raidcategory');
-        console.log(category);
+
         // Raid category hasn't been set -- 
         if (!category) {
             category = 'Raid Signups';
@@ -378,13 +378,12 @@ module.exports = {
             }
 
             let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
-            let botMsg = await channel.send(signupMessage)
+            let botMsg = await channel.send(signupMessage, client.buttonRow)
             await botMsg.pin();
-            await client.raid.reactEmoji(botMsg);
             client.embed.eventUpdate(client, channel);
             channel = await channel.setParent(category.id);
             channel.lockPermissions().catch(console.error);    
-            resolve(channel);````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+            resolve(channel);
 
         });
         return promise;
@@ -441,24 +440,7 @@ module.exports = {
             }
 
             let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
-
-            let yes = new client.disbut.MessageButton()
-                .setStyle('green')
-                .setLabel('Yes') 
-                .setID('+');
-            let no = new client.disbut.MessageButton()
-                .setStyle('red')
-                .setLabel('No') 
-                .setID('-');
-            let maybe = new client.disbut.MessageButton()
-                .setStyle('grey')
-                .setLabel('Maybe') 
-                .setID('m');
-            let buttonRow = new client.disbut.MessageActionRow()
-                .addComponent(yes)
-                .addComponent(no)
-                .addComponent(maybe);
-            let botMsg = await channel.send(signupMessage, buttonRow);
+            let botMsg = await channel.send(signupMessage, client.buttonRow);
             await botMsg.pin();
             client.embed.update(client, channel);
             channel = await channel.setParent(category.id);

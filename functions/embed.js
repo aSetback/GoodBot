@@ -35,7 +35,7 @@ module.exports = {
 		let list = await channel.messages.fetchPinned();
 		pinnedMsg = list.last();
 		if (!pinnedMsg) { return false; }
-		pinnedMsg.edit(embed);
+		pinnedMsg.edit({ embed: embed, component: client.buttonRow });
 	},
 	updateEmbed: async (client, channel, raid) => {
 		let raidName = '';

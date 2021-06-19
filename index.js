@@ -5,6 +5,23 @@ const client = new Discord.Client(); // Creating discord.js client (constructor)
 const disbut = require('discord-buttons');
 disbut(client) 
 client.disbut = disbut;
+let yes = new client.disbut.MessageButton()
+  .setStyle('green')
+  .setLabel('Yes') 
+  .setID('+');
+let no = new client.disbut.MessageButton()
+  .setStyle('red')
+  .setLabel('No') 
+  .setID('-');
+let maybe = new client.disbut.MessageButton()
+  .setStyle('grey')
+  .setLabel('Maybe') 
+  .setID('m');
+client.buttonRow = new client.disbut.MessageActionRow()
+  .addComponent(yes)
+  .addComponent(no)
+  .addComponent(maybe);
+
 
 // Our music
 client.queue = {};
