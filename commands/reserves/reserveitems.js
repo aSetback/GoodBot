@@ -31,7 +31,7 @@ exports.run = async function(client, message, args) {
 		.setColor('#b00b00')
 		.setThumbnail(icon);
 		reserveItem.forEach((item) => {
-            returnMessage += '[' + item.name + '](https://classic.wowhead.com/item=' + item.itemID + ')\n';
+            returnMessage += '[' + item.name + '](https://tbc.wowhead.com/item=' + item.itemID + ')\n';
             if (returnMessage.length > 900) {
                 embed.addField('Reservable Items', returnMessage);    
 				fields ++;
