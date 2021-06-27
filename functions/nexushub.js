@@ -15,6 +15,14 @@ module.exports = {
         });
         return promise;
     },
+    itemID: async function(itemId) {
+        let promise = new Promise(async function(resolve, reject) {
+            let nexus = new Nexus;
+            let itemInfo = await nexus.get('/wow-classic/v1/item/' + itemId);
+            resolve(itemInfo);
+        });
+        return promise;
+    },
     priceInfo: async function(itemString, server, faction) {
         let promise = new Promise(async function(resolve, reject) {
             let nexus = new Nexus;
