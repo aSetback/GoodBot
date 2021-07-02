@@ -79,8 +79,10 @@ exports.run = async (client, message, args) => {
             gear.itemName = 'Queued';
             let itemInfo = await client.nexushub.itemID(gear.id);
             gear.itemName = itemInfo.name;
-            // Save our item info for next time!
-            client.models.item.create({name: itemInfo.name, id: gear.id, slot: slots.indexOf(gear.slot)});
+            if (itemInfo.name) {
+              // Save our item info for next time!
+              client.models.item.create({name: itemInfo.name, id: gear.id, slot: slots.indexOf(gear.slot)});
+            }
           }
           if (!gearList[gear.slot]) {
             gearList[gear.slot] = [];
