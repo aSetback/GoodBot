@@ -74,8 +74,9 @@ exports.run = async (client, message, args) => {
       let fight = apiData.data[key];
       for (gearKey in fight.gear) {
         let gear = fight.gear[gearKey];
-        if (gear.itemName) {
+        if (gear.itemName && gear.itemName != 'Queued') {
           if (gear.itemName == 'Unknown') {
+            gear.itemName = 'Queued';
             let itemInfo = await client.nexushub.itemID(gear.id);
             gear.itemName = itemInfo.name;
             // Save our item info for next time!
