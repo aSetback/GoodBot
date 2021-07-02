@@ -68,28 +68,35 @@ exports.run = async (client, message, args) => {
   }
 
   async function getGear(apiData) {
+    let retrievedItems = {};
     let gearList = {};
     // Organize our gear by slot
     for (key in apiData.data) {
       let fight = apiData.data[key];
       for (gearKey in fight.gear) {
         let gear = fight.gear[gearKey];
-        if (gear.itemName && gear.itemName != 'Queued') {
+        if (gear.itemName) {
           if (gear.itemName == 'Unknown') {
-            gear.itemName = 'Queued';
-            let itemInfo = await client.nexushub.itemID(gear.id);
-            gear.itemName = itemInfo.name;
-            if (itemInfo.name) {
-              // Save our item info for next time!
-              client.models.item.create({name: itemInfo.name, id: gear.id, slot: slots.indexOf(gear.slot)});
+            if (retrievedItems[gear.id]) {
+              gear.itemName = retrievedItems[gear.id];
+            } else {
+              let itemInfo = await client.nexushub.itemID(gear.id);
+              gear.itemName = itemInfo.name;
+              if (itemInfo.name) {
+                retrievedItems[gear.id] = itemInfo.name;
+                // Save our item info for next time!
+                client.models.item.create({name: itemInfo.name, id: gear.id, slot: slots.indexOf(gear.slot)});
+              }
             }
           }
           if (!gearList[gear.slot]) {
             gearList[gear.slot] = [];
           }
-          gear.link = '[' + gear.itemName + '](' + 'https://tbc.wowhead.com/item=' + gear.id + ')';
-          if (gearList[gear.slot].indexOf(gear.link) < 0) {
-            gearList[gear.slot].push(gear.link);
+          if (gear.id) {
+            gear.link = '[' + gear.itemName + '](' + 'https://tbc.wowhead.com/item=' + gear.id + ')';
+            if (gearList[gear.slot].indexOf(gear.link) < 0) {
+              gearList[gear.slot].push(gear.link);
+            }
           }
         }
       }
