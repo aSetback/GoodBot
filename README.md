@@ -1,5 +1,8 @@
 # GoodBot
 
+## Need Help?
+* Join the GoodBot Discord and ask for help in the #Support channel: [GoodBot Discord](http://goodbot.mankrikpugs.com/)
+
 ## Getting Started
 * Invite GoodBot to your server using the following link: [Invite Link](https://discordapp.com/oauth2/authorize?client_id=525115228686516244&permissions=8&scope=bot)
 
@@ -297,30 +300,30 @@ An example sheet can be found here: https://docs.google.com/spreadsheets/d/1KJz8
 All sign-ups are exported to the first page of the spreadsheet, by column.  Export begins on the third row.
 
 Columns:
-		warrior tank => 1
-		warrior dps => 2
-		hunter dps => 3
-		rogue dps => 4
-		mage caster => 5
-		warlock caster => 6
-		priest healer => 7
-		paladin healer => 8
-		druid healer => 9
-		druid caster => 10
-		druid dps => 11
-		priest caster => 12
-		paladin dps => 13
-		paladin tank => 14
-		shaman dps => 15
-		shaman caster => 16
-		shaman healer => 17
-		dk dps => 18
-		dk tank => 19
- 		monk dps => 20
-    monk tank => 21
-    monk healer => 22
-    dh dps => 23
-    dh tank => 24
+warrior tank => 1
+warrior dps => 2
+hunter dps => 3
+rogue dps => 4
+mage caster => 5
+warlock caster => 6
+priest healer => 7
+paladin healer => 8
+druid healer => 9
+druid caster => 10
+druid dps => 11
+priest caster => 12
+paladin dps => 13
+paladin tank => 14
+shaman dps => 15
+shaman caster => 16
+shaman healer => 17
+dk dps => 18
+dk tank => 19
+monk dps => 20
+monk tank => 21
+monk healer => 22
+dh dps => 23
+dh tank => 24
 ```
 To set up your spreadsheet:
 * The sheet must be shared with **discord@api-project-483394155093.iam.gserviceaccount.com**
