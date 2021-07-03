@@ -203,6 +203,7 @@ module.exports = {
         member = await member.guild.members.fetch(member.user.id);
         let factionChannel = member.guild.channels.cache.find(c => c.name == "select-your-faction");
         let hasFaction = true;
+        console.log(member.displayName);
         if (factionChannel) {
             hasFaction = client.set.hasFaction(member.guild, member);
         }
