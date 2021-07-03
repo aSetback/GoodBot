@@ -183,7 +183,7 @@ module.exports = {
         setTimeout(() => {
             message.delete().catch(O_o=>{}); 
         }, 1000);
-        await member.guild.members.fetch({user: [message.author.id], force: true});
+        await message.guild.members.fetch({user: [message.author.id], force: true});
 
         // Make sure the name is valid
         let newName = client.general.ucfirst(message.content.trim());
