@@ -199,8 +199,7 @@ module.exports = {
             message.author.send('Unable to set your name: ' + e.message);
             message.author.send('This generally happens when a player has a higher role than the bot - please note that the bot will never be able to change the nickname of the server owner.');
         });
-        member.displayName = newName;
-        client.setup.checkCompleteness(client, member);
+        client.setup.checkCompleteness(client, message.member);
     },
     checkCompleteness: async function(client, member) {
         await member.guild.members.fetch({user: [member.id], force: true});

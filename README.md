@@ -24,7 +24,7 @@
 
 ### Gear Check / Logs Setup
 * Set your guild's server: +setoption server <Server Name>
-* Set your guild's region: +setoption server <Region> // (US or EU)
+* Set your guild's region: +setoption region <Region> // (US or EU)
 
 ### Command/Error Logging
 * If you create a channel called 'server-logs', the bot will automatically log all commands & sign-ups to this channel.
