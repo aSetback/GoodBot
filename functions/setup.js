@@ -72,7 +72,7 @@ module.exports = {
         }
     },
     selectClass: async (client, emoji, member, channel, action) => {
-        member = await channel.guild.members.fetch(member.user.id);
+        member = await member.guild.members.fetch(member.user.id);
         if (action != 'add') {
             return false;
         }
@@ -129,7 +129,7 @@ module.exports = {
 
     },
     selectRole: async (client, emoji, member, channel, action) => {
-        member = await channel.guild.members.fetch(member.user.id);
+        member = await member.guild.members.fetch(member.user.id);
         if (action != 'add') {
             return false;
         }
@@ -181,7 +181,7 @@ module.exports = {
         setTimeout(() => {
             message.delete().catch(O_o=>{}); 
         }, 1000);
-        let member = await channel.guild.members.fetch(message.author.id);
+        let member = await message.guild.members.fetch(message.author.id);
         
         // Make sure the name is valid
         let newName = client.general.ucfirst(message.content.trim());
@@ -200,7 +200,7 @@ module.exports = {
         client.setup.checkCompleteness(client, member);
     },
     checkCompleteness: async function(client, member) {
-        member = await channel.guild.members.fetch(member.user.id);
+        member = await member.guild.members.fetch(member.user.id);
         let factionChannel = member.guild.channels.cache.find(c => c.name == "select-your-faction");
         let hasFaction = true;
         if (factionChannel) {
