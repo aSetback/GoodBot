@@ -72,6 +72,7 @@ module.exports = {
         }
     },
     selectClass: async (client, emoji, member, channel, action) => {
+        member = await channel.guild.members.fetch(member.user.id);
         if (action != 'add') {
             return false;
         }
@@ -128,6 +129,7 @@ module.exports = {
 
     },
     selectRole: (client, emoji, member, channel, action) => {
+        member = await channel.guild.members.fetch(member.user.id);
         if (action != 'add') {
             return false;
         }
@@ -179,6 +181,7 @@ module.exports = {
         setTimeout(() => {
             message.delete().catch(O_o=>{}); 
         }, 1000);
+        let member = await channel.guild.members.fetch(message.author.id);
         
         // Make sure the name is valid
         let newName = client.general.ucfirst(message.content.trim());
@@ -194,9 +197,10 @@ module.exports = {
             message.author.send('Unable to set your name: ' + e.message);
             message.author.send('This generally happens when a player has a higher role than the bot - please note that the bot will never be able to change the nickname of the server owner.');
         });
-        client.setup.checkCompleteness(client, message.member);
+        client.setup.checkCompleteness(client, member);
     },
     checkCompleteness: async function(client, member) {
+        member = await channel.guild.members.fetch(member.user.id);
         let factionChannel = member.guild.channels.cache.find(c => c.name == "select-your-faction");
         let hasFaction = true;
         if (factionChannel) {
@@ -210,6 +214,8 @@ module.exports = {
         }
     },
     applyCompleteRole: async (client, member) => {
+        member = await channel.guild.members.fetch(member.user.id);
+
         let roleName = await client.customOptions.get(client, member.guild, 'completerole');
         if (!roleName) {
             return false;
