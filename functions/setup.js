@@ -214,7 +214,7 @@ module.exports = {
         }
     },
     applyCompleteRole: async (client, member) => {
-        member = await channel.guild.members.fetch(member.user.id);
+        member = await member.guild.members.fetch(member.user.id);
 
         let roleName = await client.customOptions.get(client, member.guild, 'completerole');
         if (!roleName) {
