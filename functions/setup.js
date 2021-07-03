@@ -128,7 +128,7 @@ module.exports = {
         client.log.write(client, member, channel, 'Class Set: ' + client.general.ucfirst(emojiName));
 
     },
-    selectRole: (client, emoji, member, channel, action) => {
+    selectRole: async (client, emoji, member, channel, action) => {
         member = await channel.guild.members.fetch(member.user.id);
         if (action != 'add') {
             return false;
@@ -177,7 +177,7 @@ module.exports = {
         client.log.write(client, member, channel, 'Role Set: ' + client.general.ucfirst(emojiName));
 
     },
-    nick: (client, message) => {
+    nick: async (client, message) => {
         setTimeout(() => {
             message.delete().catch(O_o=>{}); 
         }, 1000);
