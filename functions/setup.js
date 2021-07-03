@@ -42,6 +42,8 @@ module.exports = {
         });
     },
     selectFaction: async (client, emoji, member, channel, action) => {
+        await member.guild.members.fetch({user: [member.id], force: true});
+
         let faction = '';
         // Translate emoji name
         if (emoji.name == 'GoodBotAlliance') {
@@ -59,7 +61,7 @@ module.exports = {
 
         // Check if a discord role exists for this emoji
         let role = channel.guild.roles.cache.find(role => role.name.toLowerCase() === faction.toLowerCase());
-        member = await channel.guild.members.fetch(member.user.id);
+
         if (role) {
             if (action == 'add') {
                 await member.roles.add(role.id).catch((e) => { console.error('Add role failed, no permission')});
@@ -72,7 +74,7 @@ module.exports = {
         }
     },
     selectClass: async (client, emoji, member, channel, action) => {
-        member = await member.guild.members.fetch(member.user.id);
+        await member.guild.members.fetch({user: [member.id], force: true});
         if (action != 'add') {
             return false;
         }
@@ -129,7 +131,7 @@ module.exports = {
 
     },
     selectRole: async (client, emoji, member, channel, action) => {
-        member = await member.guild.members.fetch(member.user.id);
+        await member.guild.members.fetch({user: [member.id], force: true});
         if (action != 'add') {
             return false;
         }
@@ -181,8 +183,8 @@ module.exports = {
         setTimeout(() => {
             message.delete().catch(O_o=>{}); 
         }, 1000);
-        let member = await message.guild.members.fetch(message.author.id);
-        
+        await member.guild.members.fetch({user: [message.author.id], force: true});
+
         // Make sure the name is valid
         let newName = client.general.ucfirst(message.content.trim());
         if (!client.set.validName(message.guild, newName)) {
@@ -201,10 +203,9 @@ module.exports = {
         client.setup.checkCompleteness(client, member);
     },
     checkCompleteness: async function(client, member) {
-        member = await member.guild.members.fetch(member.user.id);
+        await member.guild.members.fetch({user: [member.id], force: true});
         let factionChannel = member.guild.channels.cache.find(c => c.name == "select-your-faction");
         let hasFaction = true;
-        console.log(member.displayName);
         if (factionChannel) {
             hasFaction = client.set.hasFaction(member.guild, member);
         }
@@ -216,7 +217,7 @@ module.exports = {
         }
     },
     applyCompleteRole: async (client, member) => {
-        member = await member.guild.members.fetch(member.user.id);
+        await member.guild.members.fetch({user: [member.id], force: true});
 
         let roleName = await client.customOptions.get(client, member.guild, 'completerole');
         if (!roleName) {
