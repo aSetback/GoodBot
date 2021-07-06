@@ -316,7 +316,7 @@ module.exports = {
                 channel.lockPermissions();
                 client.models.raid.update({'archived': 1}, {where: {id: raid.id}});
             } catch (e) {
-                if (e.message.indexOf('Maximum number')) {
+                if (e.message.indexOf('Maximum number') > 0) {
                     let errorArchiveMaxChannel = client.loc('errorMaxChannel', "The category **Archives** is full, this channel could not be moved.");
                     client.messages.errorMessage(channel, errorArchiveMaxChannel, 240);
                 }
