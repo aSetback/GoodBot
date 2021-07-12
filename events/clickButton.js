@@ -1,18 +1,8 @@
 const { Message } = require("discord.js");
 
 module.exports = async (client, button) => {
+    await button.clicker.fetch();
+    await client.signups.set(button.id, button.clicker.member.displayName, button.channel.name, button.message, client);
     button.defer();
-    let muffin = '```\n                            ██████                                          \n                          ██▒▒▒▒▒▒██                                        \n                        ██▒▒  ▒▒▒▒▒▒██                                      \n                        ██▒▒  ▒▒▒▒▒▒████████                                \n                        ██▒▒▒▒▒▒▒▒▒▒██▒▒▒▒▒▒████                            \n                          ██▒▒▒▒▒▒██▒▒▒▒▒▒▒▒▒▒▒▒████                        \n                        ██▒▒██████▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒▒▒██                      \n                        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒▒▒▒▒▒▒▒██                      \n                      ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                    \n                      ▓▓▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                    \n                      ██▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                    \n                    ▓▓▒▒░░▒▒▒▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒░░▓▓                  \n                    ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                  \n                    ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                  \n                      ████████▒▒▒▒▒▒▒▒██▒▒▒▒▒▒▒▒▒▒▒▒████                    \n                        ██▓▓▓▓██▒▒▒▒██▓▓██▒▒▒▒▒▒▒▒████                      \n                        ██▓▓▓▓▓▓████▓▓▓▓▓▓██▒▒▒▒██  ██                      \n                          ██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████▓▓██                        \n                          ██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██                        \n                          ██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██                        \n                            ██▓▓▒▒▓▓▓▓▓▓▓▓▓▓▒▒▒▒██                          \n                              ██████████████████                            ```';
-    let quack = '```⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n⣿⣿⣿⣿⣿⣿⣿⣿⡿⢋⣩⣭⣶⣶⣮⣭⡙⠿⣿⣿⣿⣿⣿⣿\n⣿⣿⣿⣿⣿⣿⠿⣋⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡙⢿⣿⣿⣿\n⣿⣿⣿⣿⣿⡃⠄⠹⡿⣿⣿⣿⣿⠟⠛⣿⣿⣿⣿⣷⡌⢿⣿⣿\n⣿⣿⣿⣿⣿⠐⣠⡶⣶⣲⡎⢻⣿⣤⣴⣾⣿⣿⣿⣿⣿⠸⣿⣿\n⣿⠟⣋⡥⡶⣞⡯⣟⣾⣺⢽⡧⣥⣭⣉⢻⣿⣿⣿⣿⣿⣆⢻⣿\n⡃⣾⢯⢿⢽⣫⡯⣷⣳⢯⡯⠯⠷⠻⠞⣼⣿⣿⣿⣿⣿⣿⡌⣿\n⣦⣍⡙⠫⠛⠕⣋⡓⠭⣡⢶⠗⣡⣶⡝⣿⣿⣿⣿⣿⣿⣿⣧⢹\n⣿⣿⣿⣿⣿⣿⣘⣛⣋⣡⣵⣾⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸\n⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸\n⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸```';
-    if (button.id == 'muffin') { 
-        button.message.delete();
-        button.channel.send(muffin);
-    } else if (button.id == 'quack') { 
-        button.message.delete();
-        button.channel.send(quack);
-    } else {
-        await button.clicker.fetch();
-        client.signups.set(button.id, button.clicker.member.displayName, button.channel.name, button.message, client);
-    }
 };
 
