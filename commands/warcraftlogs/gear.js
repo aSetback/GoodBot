@@ -76,7 +76,7 @@ exports.run = async (client, message, args) => {
       for (gearKey in fight.gear) {
         let gear = fight.gear[gearKey];
         if (gear.itemName) {
-          if (gear.itemName == 'Unknown') {
+          if (gear.itemName == 'Unknown' && gear.id != 0) {
             if (retrievedItems[gear.id]) {
               gear.itemName = retrievedItems[gear.id];
             } else {
