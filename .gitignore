@@ -4,4 +4,5 @@ data/*.json
 google.json
 wav/*
 signups/*
+docker/db/*
 package-lock.json
