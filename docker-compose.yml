@@ -1,17 +1,18 @@
-version: '1'
+version: "2"
 services:
   goodbot-app:
-    build:
-      context: ./
-    ports:
-      - 80:80
-    volumes:
-      - .:/var/www/html/app/
-    links:
-      - 'mysql'
-    container_name: goodbot-app
+    image: "node:8"
+    user: "node"
+    working_dir: /home/node/app
     environment:
-      ENVIRONMENT: 'development'
+      - NODE_ENV=development
+    volumes:
+      - ./:/home/node/app
+    expose:
+      - "8081"
+    links:
+      - "mysql"
+    command: "node index.js"
     depends_on:
       - mysql
   mysql:
@@ -24,4 +25,3 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root_password
-  
