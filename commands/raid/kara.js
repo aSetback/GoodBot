@@ -17,15 +17,17 @@ exports.run = async (client, message, args) => {
     return message.channel.send(apiData.error);
   }
   let response = '```\n';
-  response += 'Karazhan Parses\n';
+  response += 'Karazhan Parses' + ' - ' + client.general.ucfirst(player) + '\n';
   response += ''.padEnd(32, '-') + '\n';
-  let total = 0;
+  let bossTotal = 0;
+  let bossCount = 0;
   for (key in apiData) {
     response += key.padEnd(20) + apiData[key] + '\n';
-    total += apiData[key];
+    bossCount++;
+    bossTotal += apiData[key];
   }
   response += ''.padEnd(32, '-') + '\n';
-  response += 'average'.padEnd(20) + (total / 9).toFixed(2);
+  response += 'average'.padEnd(20) + (bossTotal / bossCount).toFixed(2);
   response += '```';
   return message.channel.send(response);
 
