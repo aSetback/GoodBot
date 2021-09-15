@@ -123,7 +123,7 @@ module.exports = {
 			}
 		}
 
-		let icon = 'http://softball.setback.me/goodbot/icons/' + raid.raid + '.png';
+		let icon = 'https://goodbot.me/images/icons/' + raid.raid + '.png';
 		let embed = new Discord.MessageEmbed()
 			.setTitle(raidData.title)
 			.setColor(raidData.color)
