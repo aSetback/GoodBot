@@ -208,8 +208,8 @@ function signupReserve(client, signupID, raid, item) {
                         return resolve(true); 
                     }
 
-
-                    if (raidReserves.length >= raid.reserveLimit) {
+                    let reserveLimit = raid.reserveLimit ? raid.reserveLimit : 1;
+                    if (raidReserves.length >= reserveLimit) {
                         let raidReserve = raidReserves[0];
                         await client.models.raidReserve.update({ reserveItemID: reserveItem.id }, { where: { id: raidReserve.id } });
                         return resolve(true);
