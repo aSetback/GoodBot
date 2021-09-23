@@ -369,7 +369,8 @@ module.exports = {
                 'guildID': channel.guild.id,
                 'memberID': message.author.id,
                 'softreserve': raid.softreserve,
-                'confirmation': raid.confirmation
+                'confirmation': raid.confirmation,
+                'reserveLimit': raid.reserveLimit
             };
             if (raid.id) {
                 await client.models.raid.update({crosspostID: channel.id}, {where: {id: raid.id}});
@@ -431,7 +432,8 @@ module.exports = {
                 'guildID': channel.guild.id,
                 'memberID': message.author.id,
                 'softreserve': raid.softreserve,
-                'confirmation': raid.confirmation
+                'confirmation': raid.confirmation,
+                'reserveLimit': raid.reserveLimit
             };
             if (raid.id) {
                 await client.models.raid.update({crosspostID: channel.id}, {where: {id: raid.id}});

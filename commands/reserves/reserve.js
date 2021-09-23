@@ -58,33 +58,33 @@ exports.run = async function (client, message, args, noMsg) {
 
     let item = args.join(' ');
     // Initial check, hoping for a perfect match
-    let reserve = await signupReserve(client, signup.id, raid, item);
+    let reserveMade = await signupReserve(client, signup.id, raid, item);
 
     // Hey, we added a reserve item alias table!  Maybe there's a match in there!
-    if (!reserve) {
+    if (!reserveMade) {
         let alias = await aliasSearch(client, item);
         if (alias) {
-            reserve = await signupReserve(client, signup.id, raid, parseInt(alias.reserveItemID));
+            reserveMade = await signupReserve(client, signup.id, raid, parseInt(alias.reserveItemID));
         }
     }
 
     // Our initial try failed, let's try looking it up on nexushub
-    if (!reserve) {
+    if (!reserveMade) {
         if (item.length > 2 && item.length < 100) {
             let itemInfo = await client.nexushub.item(item);
             if (itemInfo) {
-                reserve = await signupReserve(client, signup.id, raid, itemInfo.name);
+                reserveMade = await signupReserve(client, signup.id, raid, itemInfo.name);
             }
         }
     }
 
     // That still isn't working.  Let's see if we can find this as a fragment?
-    if (!reserve) {
+    if (!reserveMade) {
         let likeItem = await likeSearch(client, raid, item);
         // Hooray, it worked!
         if (likeItem.length == 1) {
             let itemInfo = likeItem.shift();
-            reserve = await signupReserve(client, signup.id, raid, itemInfo.name);
+            reserveMade = await signupReserve(client, signup.id, raid, itemInfo.name);
         }
 
         // Uh oh, we found multiple.  Better let the user know!
@@ -102,12 +102,25 @@ exports.run = async function (client, message, args, noMsg) {
     }
     
     if (!noMsg) {
-        if (!reserve) {
+        if (!reserveMade) {
             // We failed :(
             client.messages.errorMessage(message.channel, "I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**.", 240);
         } else {
+            includes = [
+                {model: client.models.reserveItem, as: 'item', foreignKey: 'reserveItemID'}
+            ];
+            
+            // Check if the player already has an existing reserve
+            reserves = await client.models.raidReserve.findAll({ where: { signupID: signup.id, raidID: raid.id }, order: [['updatedAt', 'ASC']], include: includes });
+
             // Let the user know we found their item, and what they have reserved!
-            message.author.send('```diff\n--- Reservation Info ---\n  Player:  ' + client.general.ucfirst(player) + '\n+ Raid:    ' + message.channel.name + '\n- Reserve: ' + reserve.name + '```');
+            let reserveMessage = '```diff\n--- Reservation Info ---\n  Player:  ' + client.general.ucfirst(player) + '\n+ Raid:    ' + message.channel.name + '\n';
+            for (key in reserves) {
+                let reserve = reserves[key];
+                reserveMessage += '- Reserve: ' + reserve.item.name + '\n';
+            }
+            reserveMessage += '```';
+            message.author.send(reserveMessage);
         }
     }
     return
@@ -181,19 +194,33 @@ function signupReserve(client, signupID, raid, item) {
                     signupID: signupID
                 };
 
+                includes = [
+                    {model: client.models.reserveItem, as: 'item', foreignKey: 'reserveItemID'}
+                ];
+                
+
                 // Check if the player already has an existing reserve
-                client.models.raidReserve.findOne({ where: { signupID: signupID, raidID: raid.id } }).then((raidReserve) => {
-                    if (raidReserve) {
-                        client.models.raidReserve.update({ reserveItemID: reserveItem.id }, { where: { id: raidReserve.id } });
-                        resolve(reserveItem);
+                client.models.raidReserve.findAll({ where: { signupID: signupID, raidID: raid.id }, order: [['updatedAt', 'ASC']], include: includes }).then(async (raidReserves) => {
+                    
+                    // Check if the player already has a reserve on this item
+                    let reserveExists = await client.models.raidReserve.findOne({ where: record });
+                    if (reserveExists) { 
+                        return resolve(true); 
+                    }
+
+
+                    if (raidReserves.length >= raid.reserveLimit) {
+                        let raidReserve = raidReserves[0];
+                        await client.models.raidReserve.update({ reserveItemID: reserveItem.id }, { where: { id: raidReserve.id } });
+                        return resolve(true);
                     } else {
                         client.models.raidReserve.create(record).then((record) => {
-                            resolve(reserveItem);
+                            return resolve(true);
                         });
                     }
                 });
             } else {
-                resolve(false);
+                return resolve(false);
             }
         });
     });

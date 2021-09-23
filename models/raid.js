@@ -45,6 +45,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.BOOLEAN,
             allowNull: true
         },
+        reserveLimit: {
+            type: Sequelize.TINYINT(3),
+            allowNull: true
+        },
         locked: {
             type: Sequelize.BOOLEAN,
             allowNull: true
