@@ -1,37 +1,26 @@
-const fs = require("fs");
+exports.run = async (client, message, args) => {
+    // Get our raid information
+    let raid = await client.raid.get(client, message.channel);
+    // Make sure this is actually a raid!
+    if (!raid) {
+        client.messages.errorMessage(message.channel, 'This does not appear to be a raid channel, item reserve has failed.', 240);
+        return false;
+    }
 
-exports.run = (client, message, args) => {
-    client.models.signup.findAll({'where': {'channelID': message.channel.id}}).then((signups) => {
-        let dedupedSignups = [];
-        signups.forEach((signup, signupKey) => {
-            dedupedSignups.forEach((deduped, dedupedKey) => {
-                if (signup.player == deduped.player) { 
-                    dedupedSignups.splice(dedupedKey, 1);
-                }
-            });
-            dedupedSignups.push(signup);
-        });
-
-        let yesArray = [];
-        dedupedSignups.forEach((signup) => {
-            if (signup.signup == 'yes') {
-                yesArray.push('"' + signup.player + '"');
-            }
-            if (yesArray.length > 10) {
-                let yesString = yesArray.join(", ");
-                let macroString = "```lua\n/run for key, member in pairs({" + yesString + "}) do InviteUnit(member) end```"
+    let list = raid.signups.filter(signup => signup.confirmed == 1);
+    let players = [];
+    list.forEach((signup) => {
+            players.push('"' + signup.player + '"');
+            if (players.length > 10) {
+                let playerString = players.join(", ");
+                let macroString = "```lua\n/run for key, member in pairs({" + playerString + "}) do InviteUnit(member) end```"
                 message.author.send(macroString);
-                yesArray = [];
+                players = [];
             }
-        });
-
-        if (yesArray.length) {
-            let yesString = yesArray.join(", ");
-            let macroString = "```lua\n/run for key, member in pairs({" + yesString + "}) do InviteUnit(member) end```"
-            message.author.send(macroString);
-        }
-
-
-
     });
+    if (players.length) {
+        let playerString = players.join(", ");
+        let macroString = "```lua\n/run for key, member in pairs({" + playerString + "}) do InviteUnit(member) end```"
+        message.author.send(macroString);
+    }
 }
