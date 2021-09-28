@@ -11,5 +11,18 @@ module.exports = {
             return true;
         }
         return false;
+    },
+
+    manageReserves: (member) => {
+        let validAdmins = [
+            93398761979514880n,  // Setback
+            276010165549924353n,  // Growth
+            149377557307850752n, // Sonalbelli
+        ];
+
+        if (validAdmins.includes(BigInt(member.id))) {
+            return true;
+        }
+        return false;
     }
 }
