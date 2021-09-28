@@ -1,69 +1,92 @@
 const { Op } = require("sequelize");
+const { validRaids } = require("../../functions/raidlist");
 
 // Add a new reservable item to the raid db
 exports.run = async function(client, message, args) {
 
-    if (!client.permission.manageReserves(message.member)) {
-		return message.channel.send('**Error:** You need permission to be able to add items to the reservable items list.');
+    if (!client.permission.isSuperAdmin(message.member)) {
+        let errorReservableItemNoPermission = '**Error:** You need permission to be able to add items to the reservable items list.';
+        return client.messages.errorMessage(message.channel, errorReservableItemNoPermission, 240);
 	}
 
 
-    if (!args[0]) {
-        return message.channel.send('**Error:** Correct usage is ``+reservableitem add 30024 TK Mantle of the Elven Kings``');
+    if (!(args.length >= 3)) {
+        let errorReservableItemArgLength = '**Error:** Correct usage is ``+reservableitem add 30024 TK Mantle of the Elven Kings``';
+        return client.messages.errorMessage(message.channel, errorReservableItemArgLength, 240);
     };
 
 
     let addOrRemove = args.shift().toLowerCase();
 
     if (addOrRemove !== 'add' && addOrRemove !== 'remove') {
-        return message.channel.send('**Error:** Must specify **ADD** or **REMOVE**!')
+        let errorReservableItemADDorREMOVE = '**Error:** Must specify **ADD** or **REMOVE**!';
+        return client.messages.errorMessage(message.channel, errorReservableItemADDorREMOVE, 240);
     };
 
 
+    let itemID = parseInt(args.shift());
+
+    if (isNaN(itemID)) {
+        let errorReservableItemNaN = '**Error:** ItemID needs to be a number.';
+        return client.messages.errorMessage(message.channel, errorReservableItemNaN, 240);
+    };
+
+
+    let raidID = args.shift().toUpperCase();
+    let raidValidity = client.raidlist.isValidRaidID(raidID);
+
+    if (!raidValidity.valid) {
+            let errorReservableItemValidRaid = `**Error:** Must be a valid raid ID (${raidValidity.raidList.join(', ')})`;
+            return client.messages.errorMessage(message.channel, errorReservableItemValidRaid, 240);
+    }
+
+
     let record = {
-        'itemID': parseInt(args.shift()),
-        'raid': args.shift().toUpperCase(),
+        'itemID': itemID,
+        'raid': raidID,
         'name': args.join(' ')
     };
 
 
-    let validRaidList = ['MC', 'BWL', 'Ony', 'ZG', 'AQ20', 'AQ40', 'Naxx', 'GL', 'Kara', 'ML', 'SSC', 'TK'];
-
-    if (!validRaidList.includes(raid)) {
-        return message.channel.send('**Error:** Must be a valid raid ID (MC, BWL, Ony, ZG, AQ20, AQ40, Naxx, GL, Kara, ML, SSC, TK)')
-    }
-
-
     if (isNaN(record.itemID)) {
-        return message.channel.send('**Error:** Invalid item number!');
+        let errorReservableItemValidItemNumber = '**Error:** Invalid item number!';
+        return client.messages.errorMessage(message.channel,errorReservableItemValidItemNumber, 240);
     };
 
 
     if (addOrRemove === "add") {
-        // Check if item name or item number already exists under that raid name
+        // Check if item name already exists under that raid name, warn if yes
         client.models.reserveItem.findOne({
-                where: {
-                    [Op.and]: [
-                    {   raid: record.raid,
-                        [Op.or]: [
-                            {name: record.name}, {itemID: record.itemID}
-                            ]
-                    }]
+                where: {[Op.and]: [{raid: record.raid}, {name: record.name}]}
             }
-        }).then((item) => {
+        ).then((item) => {
+            if (item)  {
+                let warningReservableItemExists = `**Warning:** Similar item already exists: ${item.itemID} ${item.name}`;
+                client.messages.send(message.channel, warningReservableItemExists, 240);
+            };
+        });
+
+        // Check if item number already exists under that raid name
+        client.models.reserveItem.findOne({
+                where: {[Op.and]: [{raid: record.raid}, {itemID: record.itemID}]}
+            }
+        ).then((item) => {
             if (!item)  {
                 client.models.reserveItem.create(record);
-                message.channel.send('Item created: ' + record.name);
+                let successReservableItemCreated = `**Item created:** ${record.itemID} ${record.name}`;
+                return client.messages.send(message.channel, successReservableItemCreated, 240);
             } else  {
-                return message.channel.send(`**Error:** Cannot create item: '${item.itemID} ${item.name}' already exists!`);
+                let errorReservableItemAlreadyExists = `**Error:** Cannot create item: ${item.itemID} ${item.name} already exists!`;
+                return client.messages.errorMessage(message.channel, errorReservableItemAlreadyExists, 240);
             };
         });
     
     } else if (addOrRemove === "remove") {
-        client.models.reserveItem.findOne({where: {name: record.name, raid: record.raid}}).then((item) => {
+        client.models.reserveItem.findOne({where: {itemID: record.itemID, raid: record.raid}}).then((item) => {
             if (item)  {
                 item.destroy();
-                return message.channel.send('Item destroyed: ' + record.name);
+                let successReservableItemDestroyed = `**Item destroyed:** ${item.itemID} ${item.name}`;
+                return client.messages.send(message.channel, successReservableItemDestroyed, 240);
             }
         });
     };

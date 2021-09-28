@@ -13,7 +13,7 @@ module.exports = {
         return false;
     },
 
-    manageReserves: (member) => {
+    isSuperAdmin: (member) => {
         let validAdmins = [
             93398761979514880n,  // Setback
             276010165549924353n,  // Growth
