@@ -44,6 +44,9 @@
 +serverid
   The bot will DM you the server's ID
 
++sort
+  The bot will organize a raid category by raid date.
+
 +setup
   Generate the 'Getting Started' channels & 'Raid Signups' Category.
 
@@ -269,28 +272,6 @@
   m Tagalong
   - Tagalong
 ```
-
-## Music Bot
-```
-+play youtubeURL
-  Plays/Queues the song to be played
-
-+skip
-  Skips the current track
-
-+stop
-  Stops the bot from playing, and clears the queue
-
-+volume 1-200
-  Sets the volume to a percentage (1% -> 200%)
-
-+np
-  Displays the name of the song currently playing
-
-+queue
-  Displays the current queue
-```
-
 ## Spreadsheets
 ```
 Spreadsheet export can be set up by providing the bot access to a Google Sheet.
