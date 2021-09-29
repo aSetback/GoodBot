@@ -1,5 +1,4 @@
 const { Op } = require("sequelize");
-const { validRaids } = require("../../functions/raidlist");
 
 // Add a new reservable item to the raid db
 exports.run = async function(client, message, args) {
