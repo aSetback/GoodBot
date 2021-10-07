@@ -118,7 +118,7 @@ module.exports = {
         }
         return false;
     },
-    validName: (guild, player) => {
+    validName: (client, guild, player) => {
         var reg = /^[a-zàâäåªæÆçÇœŒÐéèêëËƒíìîïÏñÑóòôöõºúùûÜýÿß]+$/i;
         if (!reg.test(player)) {
             return false;

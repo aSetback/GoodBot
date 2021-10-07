@@ -19,6 +19,7 @@
 	"validSpecs": ["Protection", "Fury", "Arms", "Demonology", "Affliction", "Destruction", "Holy", "Discipline", "Shadow", "Feral", "Restoration", "Balance", "Retribution", "Subtlety", "Combat", "Assassination", "Fire", "Frost", "Arcane", "Survival", "Beast Mastery", "Marksmanship", "Elemental", "Enhancement"],
 	"validClasses": ["Warrior", "Paladin", "Hunter", "Shaman", "Rogue", "Druid", "Priest", "Mage", "Warlock"],
 	"validRaids": ["MC", "BWL", "ONY", "ZG", "AQ20", "AQ40", "NAXX", "GL", "KARA", "ML", "SSC", "TK", "BT", "MH"],
+	"validCharacters": "^[a-zàâäåªæÆçÇœŒÐéèêëËƒíìîïÏñÑóòôöõºúùûÜýÿßØø]+$",
 	"WCL": { 
 		"id": "id-goes-here",
 		"secret": "secret-goes-here"
