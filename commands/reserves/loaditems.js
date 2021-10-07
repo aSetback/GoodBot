@@ -1,5 +1,7 @@
 const fs = require("fs");
 
+// Load reservable items list into the db for a specific raid
+// example: +loaditems kara
 exports.run = async function(client, message, args) {
     let raid = args.shift();
     let fileName = 'items/' + raid + '-items.json';
