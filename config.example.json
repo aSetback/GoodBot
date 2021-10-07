@@ -10,7 +10,6 @@
 	"epgpFile": "F:\\World of Warcraft\\_classic_\\WTF\\Account\\LAD\\SavedVariables\\GoodEPGP.lua",
 	"warcraftlogs": "XXXXXXXXXXXXXXXXXXXXXXXXXXX",
 	"db": {
-		"name": "GoodBotDev",
 		"ip": "localhost",
 		"user": "root",
 		"pass": "",
@@ -18,6 +17,11 @@
 	},
 	"validSpecs": ["Protection", "Fury", "Arms", "Demonology", "Affliction", "Destruction", "Holy", "Discipline", "Shadow", "Feral", "Restoration", "Balance", "Retribution", "Subtlety", "Combat", "Assassination", "Fire", "Frost", "Arcane", "Survival", "Beast Mastery", "Marksmanship", "Elemental", "Enhancement"],
 	"validClasses": ["Warrior", "Paladin", "Hunter", "Shaman", "Rogue", "Druid", "Priest", "Mage", "Warlock"],
+	"validAdmins": {
+		"Admin1": "XXXXXXXXXXXXXXXXXXX",
+		"Admin2": "XXXXXXXXXXXXXXXXXXX",
+		"Admin3": "XXXXXXXXXXXXXXXXXXX"
+	},
 	"WCL": { 
 		"id": "id-goes-here",
 		"secret": "secret-goes-here"

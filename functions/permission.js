@@ -13,14 +13,9 @@ module.exports = {
         return false;
     },
 
-    isSuperAdmin: (member) => {
-        let validAdmins = [
-            93398761979514880n,  // Setback
-            276010165549924353n,  // Growth
-            149377557307850752n, // Sonalbelli
-        ];
+    isSuperAdmin: (client, member) => {
 
-        if (validAdmins.includes(BigInt(member.id))) {
+        if (Object.values(client.config.validAdmins).includes(member.id)) {
             return true;
         }
         return false;
