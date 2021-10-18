@@ -6,7 +6,7 @@ exports.run = (client, message, args) => {
     if (!newName) {
         return message.author.send('Please include a name with this command.');
     }
-    var reg = /^[a-zàâäåªæÆçÇœŒéèêëËƒíìîïÏñÑóòôöºúùûÜýÿ]+$/i;
+    var reg = new RegExp(client.config.validCharacters, 'i');
     if (!reg.test(newName)) {
         return message.author.send('Unable to set your name.  Please use only letters.');
     }

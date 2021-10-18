@@ -32,7 +32,7 @@ exports.run = async function(client, message, args) {
 
 
     let raidID = args.shift().toUpperCase();
-    let raidValidity = client.raidlist.isValidRaidID(raidID);
+    let raidValidity = client.raidlist.isValidRaidID(client, raidID);
 
     if (!raidValidity.valid) {
             let errorReservableItemValidRaid = `**Error:** Must be a valid raid ID (${raidValidity.raidList.join(', ')})`;
