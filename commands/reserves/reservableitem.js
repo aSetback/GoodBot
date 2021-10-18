@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 // Add a new reservable item to the raid db
 exports.run = async function(client, message, args) {
 
-    if (!client.permission.isSuperAdmin(message.member)) {
+    if (!client.permission.isSuperAdmin(client, message.member)) {
         let errorReservableItemNoPermission = '**Error:** You need permission to be able to add items to the reservable items list.';
         return client.messages.errorMessage(message.channel, errorReservableItemNoPermission, 240);
 	}
