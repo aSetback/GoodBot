@@ -308,8 +308,10 @@ module.exports = {
         return category;
 
     },
-    archive: async (client, channel, raid) => {
-        let category = channel.guild.channels.cache.find(c => c.name == "Archives" && c.type == "category");
+    archive: async (client, raid) => {
+        let guild = client.guilds.cache.get(raid.guildID);
+        let channel = guild.channels.cache.find(c => c.id == raid.channelID)
+        let category = guild.channels.cache.find(c => c.name == "Archives" && c.type == "category");
         if (category) {
             try {
                 channel = await channel.setParent(category.id);
