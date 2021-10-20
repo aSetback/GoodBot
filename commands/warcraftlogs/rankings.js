@@ -11,7 +11,7 @@ exports.run = async (client, message, args) => {
     }
   });
 
-  let zones = [1006, 1005, 1002, 1004, 1003, 1000, 1001];
+  let zones = [1009, 1007, 1008, 1006, 1005, 1002, 1004, 1003, 1000, 1001];
   if (zone) {
     zoneObj = {
       'mc': [1000],
@@ -21,6 +21,9 @@ exports.run = async (client, message, args) => {
       'aq40': [1004],
       'aq20': [1005],
       'naxx': [1006],
+      'kara': [1007],
+      'gruul/mag': [1008],
+      'heroics': [1009],
     };
     if (zoneObj[zone]) {
       zones = zoneObj[zone]
@@ -50,8 +53,8 @@ exports.run = async (client, message, args) => {
     metric = 'dps';
   }
 
-  // Set our partition -- Phase 3 is current default.
-  let partition = 5;
+  // Set our partition
+  let partition = 6;
 
   // Allow the user to overwrite
   if (args[2]) {
