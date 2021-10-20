@@ -309,21 +309,29 @@ module.exports = {
 
     },
     archive: async (client, raid) => {
+        // Retrive the guild, then the channel & category within the guild.
         let guild = client.guilds.cache.get(raid.guildID);
-        let channel = guild.channels.cache.find(c => c.id == raid.channelID)
+        let channel = guild.channels.cache.find(c => c.id == raid.channelID);
         let category = guild.channels.cache.find(c => c.name == "Archives" && c.type == "category");
+        
+        // Verify the 'Archives' Category exists
         if (category) {
             try {
+                // Set the channel's parent to 'Archives'
                 channel = await channel.setParent(category.id);
+                // Sync the permissions to the category
                 channel.lockPermissions();
+                // Update the 'archived' bit in the raid table
                 client.models.raid.update({'archived': 1}, {where: {id: raid.id}});
             } catch (e) {
+                // Generally the only reason this fails is that the archvies is full (50 channels).  Inform the user.
                 if (e.message.indexOf('Maximum number') > 0) {
                     let errorArchiveMaxChannel = client.loc('errorMaxChannel', "The category **Archives** is full, this channel could not be moved.");
                     client.messages.errorMessage(channel, errorArchiveMaxChannel, 240);
                 }
             }
         } else {
+            // The archives channel does not exist.  Inform the user.
             let errorArchiveNoChannel = client.loc('errorMaxChannel', "The category **Archives** does not exist, please create the category to use this command.");
             client.messages.errorMessage(channel, errorArchiveNoChannel, 240);
         }
@@ -449,7 +457,7 @@ module.exports = {
             client.embed.update(client, channel);
             channel = await channel.setParent(category.id);
             channel.lockPermissions().catch(console.error);    
-            resolve(channel);
+            resolve(channel);````
 
         });
         return promise;
