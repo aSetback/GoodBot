@@ -457,7 +457,7 @@ module.exports = {
             client.embed.update(client, channel);
             channel = await channel.setParent(category.id);
             channel.lockPermissions().catch(console.error);    
-            resolve(channel);````
+            resolve(channel);
 
         });
         return promise;
