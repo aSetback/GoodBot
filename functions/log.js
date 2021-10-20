@@ -1,4 +1,16 @@
 module.exports = {
+        raidLog: (client, message, event, eventType) => {
+            let record = {
+                'event': event,
+                'eventType': eventType,
+                'channelID': message.raid.channelID,
+                'memberID': message.author.id,
+                'guildID': message.raid.guildID,
+                'raidID': message.raid.id
+            }
+            
+            client.models.raidLog.create(record);
+        },
         write: (client, member, channel, data) => {
 
         // Base message of timestamp, and the data to be logged

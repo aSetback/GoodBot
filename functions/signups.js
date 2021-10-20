@@ -16,14 +16,14 @@ module.exports = {
         let characterName = client.general.ucfirst(name);
         let member = message.guild.members.cache.find(member => member.nickname == characterName ||  member.user.username == characterName);
         let raid = await client.raid.get(client, message.channel);
-
+        message.raid = raid;
         // Locked raid handling
         if (raid.locked) {
             if (client.config.userId != message.author.id) {
                 return message.author.send('This raid is locked -- sign-ups can no longer be modified.');
             } else {
                 return client.messages.send(message.channel, 'This raid is locked -- sign-ups can no longer be modified.', 240);
-z           }
+            }
         }
         
         let playerId = null;
@@ -109,9 +109,10 @@ z           }
         }
 
         let logMessage = 'Sign Up: ' + characterName + ' => ' + signValue;
+        client.log.raidLog(client, message, characterName + " signed up as " + signValue + ".", "Signed up as " + signValue);
         client.log.write(client, message.author, message.channel, logMessage);
     },
-    remove(client, raidID, characterName) {
+    remove: (client, raidID, characterName) => {
         let promise = new Promise((resolve, reject) => {
             client.models.signup.findOne({where: {player: characterName, raidID: raidID}}).then((signup) => {
                 // Only delete the sign-up if it exists.
@@ -124,9 +125,14 @@ z           }
                 }
             });
         });
+        client.log.raidLog(client, message, characterName + " was removed.", "Removed");
+
         return promise;
     },
-    confirm(client, raidID, characterName) {
+    confirm: async (client, raidID, characterName, message) => {
+        let raid = await client.models.raid.findOne({where: {id: raidID}});
+        message.raid = raid;
+
         let promise = new Promise((resolve, reject) => {
             let record = {
                 confirmed: true
@@ -145,9 +151,14 @@ z           }
                 }
             });
         });
+        client.log.raidLog(client, message, characterName + " was confirmed.", "Confirmed");
+
         return promise;
     },
-    unconfirm(client, raidID, characterName) {
+    unconfirm: async (client, raidID, characterName, message) => {
+        let raid = await client.models.raid.findOne({where: {id: raidID}});
+        message.raid = raid;
+
         let promise = new Promise((resolve, reject) => {
             let record = {
                 confirmed: false
@@ -166,9 +177,11 @@ z           }
                 }
             });
         });
+        client.log.raidLog(client, message, characterName + " was unconfirmed.", "Unconfirmed");
+
         return promise;
     },
-    getSignups(client, raid) {
+    getSignups: (client, raid) => {
         let promise = new Promise((resolve, reject) => {
             let includes = [
                 { model: client.models.character, as: 'character', foreignKey: 'characterID' }
@@ -180,7 +193,7 @@ z           }
         });
         return promise;
     },
-    getConfirmed(client, raid) {
+    getConfirmed: (client, raid) => {
         let promise = new Promise((resolve, reject) => {
             client.models.signup.findAll({ where: {'raidID': raid.id, confirmed: 1}}).then((signups) => {
                 resolve(signups);
