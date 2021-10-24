@@ -6,7 +6,7 @@ exports.run = async (client, message, args) => {
     
     let categoryName = args.join(" ");
 
-    let category = message.guild.channels.cache.find(c => c.name == categoryName && c.type == "category");
+    let category = message.guild.channels.cache.find(c => c.name == categoryName && c.type == "GUILD_CATEGORY");
     if (!category) {
         let errorDeleteCategoryNotFound = client.loc('errorDeleteCategoryNotFound', "The category **" + categoryName + "** could not be found.");
         return client.messages.errorMessage(message.channel, errorDeleteCategoryNotFound, 240);

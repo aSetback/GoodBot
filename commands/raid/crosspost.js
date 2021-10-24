@@ -37,7 +37,7 @@ exports.run = async (client, message, args) => {
 	}
 
 	// Retrieve our category from the discord API
-	let discordCategory = crosspostGuild.channels.cache.find(c => c.name.toLowerCase() == category.toLowerCase().trim() && c.type == "category");
+	let discordCategory = crosspostGuild.channels.cache.find(c => c.name.toLowerCase() == category.toLowerCase().trim() && c.type == "GUILD_CATEGORY");
 
 	if (!discordCategory) {
 		return message.channel.send('Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.');

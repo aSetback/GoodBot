@@ -312,7 +312,7 @@ module.exports = {
         // Retrive the guild, then the channel & category within the guild.
         let guild = client.guilds.cache.get(raid.guildID);
         let channel = guild.channels.cache.find(c => c.id == raid.channelID);
-        let category = guild.channels.cache.find(c => c.name == "Archives" && c.type == "category");
+        let category = guild.channels.cache.find(c => c.name == "Archives" && c.type == "GUILD_CATEGORY");
         
         // Verify the 'Archives' Category exists
         if (category) {

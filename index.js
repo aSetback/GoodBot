@@ -1,24 +1,25 @@
-const Discord = require("discord.js");
+const { Client, Intents } = require('discord.js');
+const { MessageActionRow, MessageButton } = require('discord.js');
 const Enmap = require("enmap");
 const fs = require("fs");
-const client = new Discord.Client(); // Creating discord.js client (constructor)
-// client.buttons = {};
-// client.buttons.yes = new client.disbut.MessageButton()
-//   .setStyle('green')
-//   .setLabel('Yes') 
-//   .setID('+');
-// client.buttons.no = new client.disbut.MessageButton()
-//   .setStyle('red')
-//   .setLabel('No') 
-//   .setID('-');
-// client.buttons.maybe = new client.disbut.MessageButton()
-//   .setStyle('grey')
-//   .setLabel('Maybe') 
-//   .setID('m');
-// client.buttons.reserves = new client.disbut.MessageButton()
-//   .setStyle('url')
-//   .setLabel('Reserves')
-//   .setURL('https://goodbot.me/r/');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGES] }); // Creating discord.js client (constructor)
+client.buttons = {};
+client.buttons.yes = new MessageButton()
+  .setStyle('SUCCESS')
+  .setLabel('Yes') 
+  .setCustomId('+');
+client.buttons.no = new MessageButton()
+  .setStyle('DANGER')
+  .setLabel('No') 
+  .setCustomId('-');
+client.buttons.maybe = new MessageButton()
+  .setStyle('SECONDARY')
+  .setLabel('Maybe') 
+  .setCustomId('m');
+client.buttons.reserves = new MessageButton()
+  .setStyle('LINK')
+  .setLabel('Reserves')
+  .setURL('https://goodbot.me/r/');
 
 
 // Our music

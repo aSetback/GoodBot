@@ -6,7 +6,7 @@
   "dependencies": {
     "@google-cloud/storage": "^4.3.1",
     "async": "^3.1.1",
-    "discord.js": "^12.4.1",
+    "discord.js": "^13.2.0",
     "enmap": "^5.2.4",
     "google-spreadsheet": "^3.0.13",
     "luaparse": "^0.3.0",

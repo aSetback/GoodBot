@@ -5,7 +5,7 @@ exports.run = (client, message, args) => {
     }
     
     // Find Category
-    category = message.guild.channels.cache.find(c => c.name == "Get Started" && c.type == "category");
+    category = message.guild.channels.cache.find(c => c.name == "Get Started" && c.type == "GUILD_CATEGORY");
 
     // Set your faction
     let factionChannel = 'select-your-faction';

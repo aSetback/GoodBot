@@ -99,13 +99,13 @@ module.exports = {
 
         // Check if user can manage channels
         message.isAdmin = 0;
-        if (message.member && message.member.hasPermission("MANAGE_CHANNELS")) {
+        if (message.member && message.member.permissions.has("MANAGE_CHANNELS")) {
             message.isAdmin = 1;
         }
 
         // Check if user is a server admin
         message.serverAdmin = 0;
-        if (message.member && message.member.hasPermission("ADMINISTRATOR")) {
+        if (message.member && message.member.permissions.has("ADMINISTRATOR")) {
             message.serverAdmin = 1;
         }
 
