@@ -36,15 +36,16 @@ module.exports = {
 		pinnedMsg = list.last();
 		if (!pinnedMsg) { return false; }
 		
-		let buttonRow = new client.disbut.MessageActionRow()
-			.addComponent(client.buttons.yes)
-			.addComponent(client.buttons.no)
-			.addComponent(client.buttons.maybe);
+		// let buttonRow = new client.disbut.MessageActionRow()
+		// 	.addComponent(client.buttons.yes)
+		// 	.addComponent(client.buttons.no)
+		// 	.addComponent(client.buttons.maybe);
 		if (raid.softreserve) {
 			client.buttons.reserves.setURL('https://goodbot.me/r/' + raid.id);
 			buttonRow.addComponent(client.buttons.reserves);
 		}
-		pinnedMsg.edit({ embed: embed, component: buttonRow });
+		// pinnedMsg.edit({ embed: embed, component: buttonRow });
+		pinnedMsg.edit({ embed: embed });
 	},
 	updateEmbed: async (client, channel, raid) => {
 		let raidName = '';

@@ -2,8 +2,8 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const moment = require('moment');
 
-
 exports.run = async (client, message, args) => {
+    
     if (!message.isAdmin) {
         return false;
     }
@@ -32,5 +32,6 @@ exports.run = async (client, message, args) => {
     raids.forEach((raid) => {
         returnMessage += raid.date + ' @ ' + raid.time + ' - <#' + raid.channelID + '> (' + raid.raid + ', ' + raid.faction + ')' + '\n';
     });
+
     message.channel.send(returnMessage);
 }
