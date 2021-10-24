@@ -1,5 +1,5 @@
 const Youtube = require('simple-youtube-api');
-const ytdl = require('ytdl-core');
+// const ytdl = require('ytdl-core');
 
 module.exports = {
     play: async function(song, guild, client) {
@@ -10,11 +10,11 @@ module.exports = {
         }
     
         client.queue[guild.id].playing = song;
-        let dl = ytdl(song.url, {
-            quality: 'highestaudio',
-            highWaterMark: 1024 * 1024 * 1,
-            filter: 'audioonly'
-        });
+        // let dl = ytdl(song.url, {
+        //     quality: 'highestaudio',
+        //     highWaterMark: 1024 * 1024 * 1,
+        //     filter: 'audioonly'
+        // });
 
         client.queue[guild.id].dispatcher = client.queue[guild.id].conn.play(dl)
         .on("error", () => {
