@@ -2,10 +2,15 @@ const { Guild } = require('discord.js');
 const fs = require('fs');
 
 exports.run = async (client, message, args) => {
+	return message.author.send('The wav command is temporarily disabled as I rewrite the command for discordJS v13.  This should be back up in the next week.');
+
 
 	if (!message.member) {
 		return false;
 	}
+
+	console.log(message.member.voice);
+
 	var vc = message.member.voice.channel;
 	if (!vc) {
 		return client.messages.send(message.channel, 'You must be in a voice channel to play a wav file.', 240);

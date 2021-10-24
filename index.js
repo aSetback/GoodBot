@@ -2,7 +2,7 @@ const { Client, Intents } = require('discord.js');
 const { MessageActionRow, MessageButton } = require('discord.js');
 const Enmap = require("enmap");
 const fs = require("fs");
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGES] }); // Creating discord.js client (constructor)
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] }); // Creating discord.js client (constructor)
 client.buttons = {};
 client.buttons.yes = new MessageButton()
   .setStyle('SUCCESS')
