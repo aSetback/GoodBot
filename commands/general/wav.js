@@ -1,15 +1,14 @@
-const { Guild } = require('discord.js');
 const fs = require('fs');
+const { joinVoiceChannel } = require('@discordjs/voice');
+const { createAudioPlayer } = require('@discordjs/voice');
+const { createAudioResource } = require('@discordjs/voice');
+const { AudioPlayerStatus } = require('@discordjs/voice');
 
 exports.run = async (client, message, args) => {
-	return message.author.send('The wav command is temporarily disabled as I rewrite the command for discordJS v13.  This should be back up in the next week.');
-
 
 	if (!message.member) {
 		return false;
 	}
-
-	console.log(message.member.voice);
 
 	var vc = message.member.voice.channel;
 	if (!vc) {
@@ -28,12 +27,18 @@ exports.run = async (client, message, args) => {
 	var filename = './wav/' + wav + '.wav';
 	fs.exists(filename, async (exists) => {
 		if (exists) {
-			let connection = await vc.join();
-			let dispatcher = connection.play(filename);
-			dispatcher.on('finish', () => {
-				setTimeout(() => {
-					vc.leave();
-				}, 1000);
+			let connection = joinVoiceChannel({
+				channelId: vc.id,
+				guildId: vc.guild.id,
+				adapterCreator: vc.guild.voiceAdapterCreator,
+			});
+			let player = createAudioPlayer();
+			let resource = createAudioResource(filename);
+			player.play(resource);
+			connection.subscribe(player);
+			player.on(AudioPlayerStatus.Idle, () => {
+				connection.destroy();
+				player.stop();
 			});
 		} else {
 			return client.messages.send(message.channel, 'The request wav file does not exist.', 240);
