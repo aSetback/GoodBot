@@ -24,7 +24,7 @@ exports.run = async (client, message, args) => {
 	
     // Verify it's a valid URL
 	let songURL = args[0];
-    if (songURL.indexOf('https://youtube.com') != 0) {
+    if (songURL.indexOf('youtube.com') < 0) {
         return client.messages.send(message.channel, 'You need to include which youtube URL you want played.', 240);
     }
 
