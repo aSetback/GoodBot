@@ -38,7 +38,7 @@ exports.run = async function(client, message, args) {
 				returnMessage = '';
 			}
 			if (fields == 5) {
-				message.author.send(embed);    
+				message.author.send({ embeds: [embed] });    
 				fields = 0;
 				embed = new Discord.MessageEmbed()
 				.setTitle("Reservable items for " + raid.raid.toUpperCase())
@@ -48,7 +48,7 @@ exports.run = async function(client, message, args) {
         });
         if (returnMessage.length) {
 			embed.addField('Reservable Items', returnMessage);    
-            message.author.send(embed);    
+            message.author.send({ embeds: [embed] });
         }
 	
 	});
