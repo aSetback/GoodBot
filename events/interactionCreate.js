@@ -8,7 +8,8 @@ module.exports = async (client, interaction) => {
         if (interaction.customId == 'm') { signUp = 'maybe'; }
         let reply = '<@' + interaction.user.id + '> has been set to ' + signUp + '.';
         await client.signups.set(interaction.customId, interaction.member.displayName, interaction.channel.name, interaction.message, client);
-        let message = interaction.reply({content: reply, ephemeral: true });
+        interaction.reply({content: reply, ephemeral: true }).catch((e) => {
+            console.error('interaction response failed.');
+        });
     }
 };
-
