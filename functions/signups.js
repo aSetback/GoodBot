@@ -18,7 +18,7 @@ module.exports = {
         let raid = await client.raid.get(client, message.channel);
 
         // Locked raid handling
-        if (raid.locked) {
+        if (raid && raid.locked) {
             if (client.config.userId != message.author.id) {
                 return message.author.send('This raid is locked -- sign-ups can no longer be modified.');
             } else {
