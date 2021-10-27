@@ -7,20 +7,20 @@ exports.run = async (client, message, args) => {
     let expansion = await client.guildOption.expansion(client, message.guild.id);
     // Create Categories
     await message.guild.channels.create('Raid Signups', {
-        'type': 'category'
+        'type': 'GUILD_CATEGORY'
     })
     await message.guild.channels.create('Archives', {
-        'type': 'category'
+        'type': 'GUILD_CATEGORY'
     })
     message.guild.channels.create('Get Started', {
-            'type': 'category'
+            'type': 'GUILD_CATEGORY'
         })
         .then((category) => {
 
             // Set your nickname
             let nickChannel = 'set-your-name';
             message.guild.channels.create(nickChannel, {
-                    type: 'text'
+                    type: 'GUILD_TEXT'
                 })
                 .then((channel) => {
                     let signupMessage = 'Please enter your in-game character name in this channel.';
@@ -35,7 +35,7 @@ exports.run = async (client, message, args) => {
             // Set your class
             let classChannel = 'select-your-class';
             message.guild.channels.create(classChannel, {
-                    type: 'text'
+                    type: 'GUILD_TEXT'
                 })
                 .then((channel) => {
                     let signupMessage = 'Please select your class.';
@@ -53,7 +53,7 @@ exports.run = async (client, message, args) => {
             // Set your role
             let roleChannel = 'select-your-role';
             message.guild.channels.create(roleChannel, {
-                    type: 'text'
+                    type: 'GUILD_TEXT'
                 })
                 .then((channel) => {
                     let signupMessage = 'Please select your role. \n';
