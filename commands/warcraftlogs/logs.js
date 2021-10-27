@@ -34,7 +34,7 @@ exports.run = async (client, message, args) => {
         embed.addField(raidTitle, raidLink);
       }
 
-      return message.channel.send(embed);
+      return message.channel.send({embeds: [embed]});
     }
   });
 };
