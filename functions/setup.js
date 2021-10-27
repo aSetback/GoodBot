@@ -68,7 +68,7 @@ module.exports = {
                 client.setup.checkCompleteness(client, member);
                 client.log.write(client, member, channel, 'Faction Added: ' + faction);
             } else {
-                await member.roles.remove(role.id)
+                await member.roles.remove(role.id).catch((e) => {});
                 client.log.write(client, member, channel, 'Faction Removed: ' + faction);
             }
         }
@@ -160,7 +160,7 @@ module.exports = {
             roles.forEach((roleName) => {
                 let memberRole = channel.guild.roles.cache.find(role => role.name.toLowerCase() === roleName.toLowerCase());
                 if (memberRole) {
-                    member.roles.remove(memberRole);
+                    member.roles.remove(memberRole).catch((e) => {});
                 }
             });
 
