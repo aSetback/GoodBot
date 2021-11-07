@@ -9,14 +9,20 @@ exports.run = async (client, message, args) => {
     await message.guild.channels.create('Raid Signups', {
         'type': 'GUILD_CATEGORY'
     })
+    .catch((e) => {
+        message.channel.send("Command failed - GoodBot does not have permission to create channels on your discord, `+setup` failed.  Please give GoodBot administrator rights and try again.");
+    });
+
     await message.guild.channels.create('Archives', {
         'type': 'GUILD_CATEGORY'
     })
+    .catch((e) => {});
+
+
     message.guild.channels.create('Get Started', {
             'type': 'GUILD_CATEGORY'
         })
         .then((category) => {
-
             // Set your nickname
             let nickChannel = 'set-your-name';
             message.guild.channels.create(nickChannel, {
@@ -28,9 +34,11 @@ exports.run = async (client, message, args) => {
                         .then((channel) => {
                             channel.lockPermissions()
                                 .catch(console.error);
-                        });
+                        })
+                        .catch((e) => {});
                     channel.send(signupMessage);
-                });
+                })
+                .catch((e) => {});
 
             // Set your class
             let classChannel = 'select-your-class';
@@ -43,7 +51,11 @@ exports.run = async (client, message, args) => {
                         .then((channel) => {
                             channel.lockPermissions()
                                 .catch(console.error);
+                        })
+                        .catch((e) => {
+                            message.channel.send("Command failed - GoodBot does not have permission to move channels on your discord, `+setup` failed.  Please give GoodBot administrator rights and try again.");
                         });
+        ;
 
                     channel.send(signupMessage).then((botMsg) => {
                         reactClasses(botMsg, expansion);
@@ -71,14 +83,15 @@ exports.run = async (client, message, args) => {
                         .then((channel) => {
                             channel.lockPermissions()
                                 .catch(console.error);
-                        });
+                        }).catch((e) => {});
 
                     channel.send(signupMessage).then((botMsg) => {
                         reactRoles(botMsg, expansion);
                     });
                 });
             message.author.send("GoodBot has been set up for your server!\nI've created a new section called 'Get Started' with channels for users to set their name, class & faction.\nI've also created a category called 'Raid Signups' where all new raid channels will be created by default.\nYou can create your first raid by using `+raid MC may-18 Title`, substituting 'MC' for the raid you'd like to host, 'may-18' for the date of the raid, and 'Title' for the title you'd like to raid to have.");
-        });
+        })
+        .catch(console.error);
 
     async function reactClasses(msg, expansion) {
         
@@ -104,7 +117,7 @@ exports.run = async (client, message, args) => {
             emojis.push(client.emojis.cache.find(emoji => emoji.name === "GBdh").toString());
         }
         for (key in emojis) {
-            await msg.react(emojis[key]);
+            await msg.react(emojis[key]).catch(console.error);
         }
     }
 
@@ -116,7 +129,7 @@ exports.run = async (client, message, args) => {
             client.emojis.cache.find(emoji => emoji.name === "GBcaster").toString(),
         ];
         for (key in emojis) {
-            await msg.react(emojis[key]);
+            await msg.react(emojis[key]).catch(console.error);;
         }
     }
 

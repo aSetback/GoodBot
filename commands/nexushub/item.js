@@ -48,6 +48,6 @@ exports.run = async function(client, message, args) {
 
     embed.setColor(embedColor);
     embed.addField(itemLevel, itemMessage);
-    message.channel.send(embed);
+    message.channel.send({embeds: [embed]});
 
 }

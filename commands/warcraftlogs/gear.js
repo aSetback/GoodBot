@@ -119,6 +119,6 @@ exports.run = async (client, message, args) => {
     }
 
     embed.setFooter('Last seen: ' + apiData.raidTime.split(' ')[0]);
-    return message.channel.send(embed);
+    message.channel.send({embeds: [embed]});
   }
 }

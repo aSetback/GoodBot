@@ -61,7 +61,7 @@ module.exports = {
         });
         if (returnMessage.length) {
 			embed.addField('Items', returnMessage);    
-            channel.send(embed);    
+            message.channel.send({embeds: [embed]});
         }
     }
 }

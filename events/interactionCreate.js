@@ -12,4 +12,13 @@ module.exports = async (client, interaction) => {
             console.error('interaction response failed.');
         });
     }
+    
+    if (interaction.isCommand()) {
+        if (interaction.commandName == 'wav') {
+            let wav = interaction.options.getString('wav');
+            interaction.reply({content: 'Wav Command: ' + wav, ephemeral: true});
+            const cmd = client.commands.get('wav');
+            cmd.run(client, interaction, [wav]);
+        }        
+    }
 };

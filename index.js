@@ -1,5 +1,7 @@
 const { Client, Intents } = require('discord.js');
 const { MessageActionRow, MessageButton } = require('discord.js');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
 const Enmap = require("enmap");
 const fs = require("fs");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] }); // Creating discord.js client (constructor)
@@ -134,12 +136,29 @@ fs.readdir(commandDir, (err, files) => {
   });
 });
 
+// Allow slash commands to be registered
+const commands = [];
+fs.readdir('./slashcommands', (err, files) => {
+  if (err) return console.error(err);
+  console.log('-- Loading Slash Commands');
+  let slashCommands = [];
+  files.forEach(file => {
+    const slashCommand = require(`./slashcommands/${file}`);
+    let slashCommandName = file.split(".")[0];
+    slashCommands.push(slashCommandName);
+    commands.push(slashCommand.data.toJSON());
+  });
+  console.log('    > ' + slashCommands.join(', '));
+});
+
 client.on('ready', () => {
   // Add listener for set-up channels
   client.setup.run(client);
 
-  // Add EPGP watcher
-  client.watch.run(client);
+  // Register our slash commands
+  const rest = new REST({ version: '9' }).setToken(client.config.token);
+  rest.put(Routes.applicationCommands(client.config.userId), { body: commands })
+    .catch(console.error);
 });
 
 client.login(client.config.token);
