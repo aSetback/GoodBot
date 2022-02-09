@@ -308,12 +308,14 @@ module.exports = {
         return category;
 
     },
-    archive: async (client, raid) => {
+    archive: async (client, channel) => {
         // Retrive the guild, then the channel & category within the guild.
-        let guild = client.guilds.cache.get(raid.guildID);
-        let channel = guild.channels.cache.find(c => c.id == raid.channelID);
+        let guild = channel.guild;
         let category = guild.channels.cache.find(c => c.name == "Archives" && c.type == "GUILD_CATEGORY");
-        
+    
+        // Retrieve our raid information
+    	let raid = await client.raid.get(client, channel);
+
         // Verify the 'Archives' Category exists
         if (category) {
             try {
@@ -322,7 +324,9 @@ module.exports = {
                 // Sync the permissions to the category
                 channel.lockPermissions();
                 // Update the 'archived' bit in the raid table
-                client.models.raid.update({'archived': 1}, {where: {id: raid.id}});
+                if (raid) {
+                    client.models.raid.update({'archived': 1}, {where: {id: raid.id}});
+                }
             } catch (e) {
                 // Generally the only reason this fails is that the archvies is full (50 channels).  Inform the user.
                 if (e.message.indexOf('Maximum number') > 0) {
