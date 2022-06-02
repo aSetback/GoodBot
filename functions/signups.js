@@ -100,7 +100,11 @@ module.exports = {
 
         // Verify the player has a character
         let main = await client.character.get(client, playerName, interaction.guild.id);
-    
+        
+        if (!main) {
+            return false;
+        }
+        
         // Character doesn't exist, evidently.
         if (main.mainID) {
             main = await client.character.getByID(client, main.mainID);
