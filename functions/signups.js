@@ -88,7 +88,7 @@ module.exports = {
             });
         }
 
-        return interaction.reply({content: 'Your signup has been changed to ' + character.name + '.'});
+        return interaction.reply({content: 'Your signup has been changed to ' + character.name + '.', ephemeral: true});
     },
     signupReply: async (client, interaction) => {
         const altSelect = new MessageSelectMenu();
