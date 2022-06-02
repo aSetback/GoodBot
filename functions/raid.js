@@ -217,18 +217,25 @@ module.exports = {
             }},
         ];
 
+        let channelID = null;
+        if (typeof channel == 'string') {
+            channelID = channel;
+        } else {
+            channelID = channel.id;
+        }
+
         let promise = new Promise((resolve, reject) => {
             client.models.raid.findOne({ 
                 where: {
                     [Op.or]: [
-                        {channelID: channel.id},
-                        {crosspostID: channel.id}
+                        {channelID: channelID},
+                        {crosspostID: channelID}
                     ]
                 },
                 include: includes
             }).then((raid) => {
                 if (!raid) {
-                    client.models.raid.findOne({ where: { 'crosspostID': channel.id } }).then((raid) => {
+                    client.models.raid.findOne({ where: { 'crosspostID': channelID } }).then((raid) => {
                         resolve(raid);
                     });
                 } else {
