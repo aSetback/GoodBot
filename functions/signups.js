@@ -34,7 +34,6 @@ module.exports = {
                 }
                 client.models.character.update({mainID: mainCharacter.id}, {where: {id: altCharacter.id}}).then(() => {
                     client.signups.selectAlt(client, interaction, altCharacter.id);
-                    return interaction.reply({content: altName + ' has been added as an alt for ' + mainName + '.', ephemeral: true});
                 });
             });
         });		
@@ -104,7 +103,7 @@ module.exports = {
         if (!main) {
             return false;
         }
-        
+
         // Character doesn't exist, evidently.
         if (main.mainID) {
             main = await client.character.getByID(client, main.mainID);
