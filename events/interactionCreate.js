@@ -17,7 +17,6 @@ module.exports = async (client, interaction) => {
 
     if (interaction.isModalSubmit()) {
         if (interaction.customId == 'altModal') {
-            console.log(interaction.components[1].components);
             await client.signups.createAlt(client, interaction);
         }
         if (interaction.customId.indexOf('sc-modal-') > -1) {
@@ -38,6 +37,8 @@ module.exports = async (client, interaction) => {
     }
 
     if (interaction.isCommand()) {
+        client.log.write(client, interaction.member, interaction.channel, 'Slash Command: ' + interaction.commandName);
+
         const cmd = client.slashcommands.get(interaction.commandName);
         cmd.run(client, interaction);
     }

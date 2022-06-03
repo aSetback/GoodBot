@@ -153,9 +153,6 @@ fs.readdir(commandDir, (err, files) => {
   });
 });
 
-
-
-
 client.on('ready', () => {
   // Add listener for set-up channels
   client.setup.run(client);
