@@ -1,7 +1,7 @@
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
-module.exports = (client, message) => {
+module.exports = async (client, message) => {
 	let commands = [];
 	client.slashCommands.forEach((slashCommand) => {
 		commands.push(slashCommand.data.toJSON());
@@ -9,12 +9,23 @@ module.exports = (client, message) => {
 	
 	console.log('-- Registering Slash Commands');
 	// Register our slash commands
+	
 	const rest = new REST({ version: '9' }).setToken(client.config.token);
 	for (key in commands) {
 		console.log('  > ' + commands[key].name);
 	}
-	rest.put(Routes.applicationCommands(client.config.userId), { body: commands })
-		.catch(console.error);
+	try {
+		console.log('-- Started refreshing application (/) commands @ ' + client.timestamp.get());
+
+		await rest.put(
+			Routes.applicationCommands(client.config.userId),
+			{ body: commands },
+		);
+
+		console.log('-- Successfully reloaded application (/) commands @ ' + client.timestamp.get());
+	} catch (error) {
+		console.error(error);
+	}
 
 	console.log('(GB) ===========================================================================')
 	console.log('(GB) -- Startup complete @ ' + client.timestamp.get());
