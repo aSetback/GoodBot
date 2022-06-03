@@ -21,7 +21,7 @@ module.exports = async (client, interaction) => {
         }
         if (interaction.customId.indexOf('sc-modal-') > -1) {
             let slashcmd = interaction.customId.replace('sc-modal-', '').toLowerCase();
-            let cmd = client.slashcommands.get(slashcmd);
+            let cmd = client.slashCommands.get(slashcmd);
             cmd.modalResponse(client, interaction);
         }
     }
@@ -39,7 +39,7 @@ module.exports = async (client, interaction) => {
     if (interaction.isCommand()) {
         client.log.write(client, interaction.member, interaction.channel, 'Slash Command: ' + interaction.commandName);
 
-        const cmd = client.slashcommands.get(interaction.commandName);
+        const cmd = client.slashCommands.get(interaction.commandName);
         cmd.run(client, interaction);
     }
 };
