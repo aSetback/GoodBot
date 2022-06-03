@@ -438,6 +438,13 @@ module.exports = {
                 raid.parsedDate.setFullYear(raid.parsedDate.getFullYear() + 1);
             }
 
+            let memberID = null;
+            if (message.author) {
+                memberID = message.author.id;
+            } else {
+                memberID = message.user.id;
+            }
+
             // Set up our sql record
             let record = {
                 'name': raid.name ? raid.name : raid.raid,
@@ -451,7 +458,7 @@ module.exports = {
                 'time': raid.time ? raid.time : null,
                 'channelID': channel.id,
                 'guildID': channel.guild.id,
-                'memberID': message.author.id,
+                'memberID': memberID,
                 'softreserve': raid.softreserve,
                 'confirmation': raid.confirmation,
                 'reserveLimit': raid.reserveLimit

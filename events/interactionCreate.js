@@ -20,6 +20,11 @@ module.exports = async (client, interaction) => {
             console.log(interaction.components[1].components);
             await client.signups.createAlt(client, interaction);
         }
+        if (interaction.customId.indexOf('sc-modal-') > -1) {
+            let slashcmd = interaction.customId.replace('sc-modal-', '').toLowerCase();
+            let cmd = client.slashcommands.get(slashcmd);
+            cmd.modalResponse(client, interaction);
+        }
     }
     
     if (interaction.isSelectMenu()) {
@@ -33,11 +38,7 @@ module.exports = async (client, interaction) => {
     }
 
     if (interaction.isCommand()) {
-        if (interaction.commandName == 'wav') {
-            let wav = interaction.options.getString('wav');
-            interaction.reply({content: 'Wav Command: ' + wav, ephemeral: true});
-            const cmd = client.commands.get('wav');
-            cmd.run(client, interaction, [wav]);
-        }        
+        const cmd = client.slashcommands.get(interaction.commandName);
+        cmd.run(client, interaction);
     }
 };

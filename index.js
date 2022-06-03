@@ -111,6 +111,23 @@ fs.readdir("./events/", (err, files) => {
   console.log('    > ' + events.join(', '));
 });
 
+// Allow slash commands to be registered
+client.slashcommands = new Enmap();
+const commands = [];
+fs.readdir('./slashcommands', (err, files) => {
+  if (err) return console.error(err);
+  console.log('-- Loading Slash Commands');
+  let slashCommands = [];
+  files.forEach(file => {
+    let slashCommandName = file.split(".")[0];
+    let slashCommand = require('./slashcommands/' + file);
+    slashCommands.push(slashCommandName);
+    client.slashcommands.set(slashCommandName, slashCommand);
+    commands.push(slashCommand.data.toJSON());
+  });
+  console.log('    > ' + slashCommands.join(', '));
+});
+
 // Add the commands from the /commands folder
 client.commands = new Enmap();
 let commandDir = './commands/';
@@ -136,20 +153,8 @@ fs.readdir(commandDir, (err, files) => {
   });
 });
 
-// Allow slash commands to be registered
-const commands = [];
-fs.readdir('./slashcommands', (err, files) => {
-  if (err) return console.error(err);
-  console.log('-- Loading Slash Commands');
-  let slashCommands = [];
-  files.forEach(file => {
-    const slashCommand = require(`./slashcommands/${file}`);
-    let slashCommandName = file.split(".")[0];
-    slashCommands.push(slashCommandName);
-    commands.push(slashCommand.data.toJSON());
-  });
-  console.log('    > ' + slashCommands.join(', '));
-});
+
+
 
 client.on('ready', () => {
   // Add listener for set-up channels
