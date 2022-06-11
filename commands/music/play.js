@@ -41,7 +41,7 @@ exports.run = async (client, message, args) => {
     // Create the stream from Youtube
     let stream = await ytdl(songURL, {
         quality: 'highestaudio',
-        highWaterMark: 1024 * 1024 * 1,
+        highWaterMark: 1 << 25,
         filter: 'audioonly'
     });
 
