@@ -126,7 +126,7 @@ module.exports = {
 			}
 		}
 
-		let icon = 'https://goodbot.me/images/icons/' + raid.raid.toLowerCase() + '.png';
+		let icon = 'https://goodbot.me/images/icons/' + raid.raid.toLowerCase().replace(/\s/g, "") + '.png';
 		let embed = new Discord.MessageEmbed()
 			.setTitle(raidData.title)
 			.setColor(raidData.color)
