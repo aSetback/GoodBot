@@ -40,6 +40,10 @@ client.loc = function (key, defaultText) {
 
 const Sequelize = require('sequelize');
 
+process.on('unhandledRejection', error => {
+	console.error('Unhandled promise rejection:', error);
+});
+
 // Initialize DB
 client.sequelize = new Sequelize(client.config.db.name, client.config.db.user, client.config.db.pass, {
   host: client.config.db.ip,
