@@ -2,8 +2,8 @@ const { MessageActionRow, MessageSelectMenu, Modal, TextInputComponent, SelectMe
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
-    .setName('confirm')
-    .setDescription('Confirm a character for the raid.')
+    .setName('unconfirm')
+    .setDescription('Unconfirm a character for the raid.')
     .addStringOption(option =>
 		option
             .setName('character')
