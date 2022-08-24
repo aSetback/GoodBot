@@ -16,7 +16,71 @@
 		"name": "GoodBot"
 	},
 	"validSpecs": ["Protection", "Fury", "Arms", "Demonology", "Affliction", "Destruction", "Holy", "Discipline", "Shadow", "Feral", "Restoration", "Balance", "Retribution", "Subtlety", "Combat", "Assassination", "Fire", "Frost", "Arcane", "Survival", "Beast Mastery", "Marksmanship", "Elemental", "Enhancement"],
-	"validClasses": ["Warrior", "Paladin", "Hunter", "Shaman", "Rogue", "Druid", "Priest", "Mage", "Warlock"],
+	"validClasses": ["Warrior", "Paladin", "Hunter", "Shaman", "Rogue", "Druid", "Priest", "Mage", "Warlock", "DK"],
+	"validRoles": ["Healer", "Tank", "Caster", "DPS"],
+	"roleOptions": [
+		{
+			"name": "Healer",
+			"value": "healer"
+		},
+		{
+			"name": "Tank",
+			"value": "tank"
+		},
+		{
+			"name": "Caster",
+			"value": "caster",
+			"description": "Warlock, Mage, Shadow Priest, Elemental Shaman, Balance Druid"
+		},
+		{
+			"name": "DPS",
+			"value": "dps",
+			"description": "Hunter, Rogue, Enhancement Shaman, Fury Warrior, Unholy Death Knight, Feral Druid"
+		},
+		"Healer", "Tank", "Caster", "DPS"
+	],
+	"classOptions": [
+		{
+			"name": "Death Knight",
+			"value": "DK"
+		},
+		{
+			"name": "Druid",
+			"value": "druid"
+		},
+		{
+			"name": "Hunter",
+			"value": "hunter"
+		},
+		{
+			"name": "Mage",
+			"value": "mage"
+		},
+		{
+			"name": "Paladin",
+			"value": "paladin"
+		},
+		{
+			"name": "Priest",
+			"value": "priest"
+		},
+		{
+			"name": "Rogue",
+			"value": "rogue"
+		},
+		{
+			"name": "Shaman",
+			"value": "shaman"
+		},
+		{
+			"name": "Warlock",
+			"value": "warlock"
+		},
+		{
+			"name": "Warrior",
+			"value": "warrior"
+		}
+	],
 	"validAdmins": {
 		"Admin1": "XXXXXXXXXXXXXXXXXXX",
 		"Admin2": "XXXXXXXXXXXXXXXXXXX",
