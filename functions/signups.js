@@ -204,10 +204,9 @@ module.exports = {
             'guildID': raid.guildID,
             'memberID': userID
         };
-
         
         let signup = await client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['createdAt', 'DESC']], group: ['player']});
-        if (!signup.id) {
+        if (!signup) {
             await client.models.signup.create(record);
         } else {
             await client.models.signup.update(record, {
