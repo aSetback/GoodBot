@@ -21,7 +21,7 @@ exports.run = async (client, interaction) => {
     let input2 = new TextInputComponent()
         .setCustomId('character')
         .setLabel('Who is the reserve for?')
-        .setValue(interaction.user.username)
+        .setValue(interaction.member.nickname ? interaction.member.nickname : interaction.user.username)
         .setRequired(true)
         .setStyle('SHORT');
 

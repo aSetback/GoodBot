@@ -2,9 +2,17 @@ const { Message } = require("discord.js");
 
 module.exports = async (client, interaction) => {
     if (interaction.isButton()) {
-        let raid = await client.raid.get(client, interaction.channel);
-        await client.signups.set(client, raid, interaction.member.displayName, interaction.customId, interaction.member.id);
-        client.signups.signupReply(client, interaction);
+        if (interaction.customId.indexOf('sc-button-') > -1) {
+            let cmdData = interaction.customId.replace('sc-button-', '').toLowerCase();
+            cmdData = cmdData.split('-');
+            let slashcmd = cmdData.shift();
+            let cmd = client.slashCommands.get(slashcmd);
+            cmd.buttonResponse(client, interaction, cmdData);
+        } else {
+            let raid = await client.raid.get(client, interaction.channel);
+            await client.signups.set(client, raid, interaction.member.displayName, interaction.customId, interaction.member.id);
+            client.signups.signupReply(client, interaction);
+        }
     }
 
     if (interaction.isModalSubmit()) {
