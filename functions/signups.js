@@ -137,7 +137,7 @@ module.exports = {
         }]);
         
         const messageRow = new MessageActionRow().addComponents(altSelect);
-
+        client.embed.update(client, interaction.channel);
         return interaction.reply({content: 'You have signed up for this raid as ' + playerName + '.  Would you like to change signup to an alt?', ephemeral: true, components: [messageRow]});
 
     },
@@ -215,7 +215,7 @@ module.exports = {
                 }
             });
         }
-    
+
         return {result: 1};
     },
     remove(client, raidID, characterName) {
