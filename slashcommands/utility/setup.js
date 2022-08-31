@@ -117,7 +117,7 @@ exports.modalResponse = async (client, interaction) => {
     type = interaction.fields.components[0].components[0].customId;
     if (type == "mainName") {
         character = client.general.ucfirst(interaction.fields.getTextInputValue('mainName'));
-        interaction.guild.members.cache.get(interaction.member.id).setNickname(client.general.ucfirst(character));
+        interaction.guild.members.cache.get(interaction.user.id).setNickname(client.general.ucfirst(character));
     } else {
         character = client.general.ucfirst(interaction.fields.getTextInputValue('altName'));
 
