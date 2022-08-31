@@ -117,7 +117,7 @@ fs.readdir('./slashCommands', (err, files) => {
   if (err) return console.error(err);
 
   // Look for directories within the parent directory
-  let slashCmdDir = './slashCommands/';
+  let slashCmdDir = './slashcommands/';
   console.log('-- Loading Slash Commands');
   files.forEach(directory => {
     if (fs.lstatSync(slashCmdDir + directory).isDirectory()) {
