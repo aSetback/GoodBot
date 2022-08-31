@@ -294,6 +294,69 @@ module.exports = {
             });
         });
         return promise;
+    },
+    unsigned: async (client, interaction, args) => {
+       	// This can't be used via DM
+        if (!interaction.guild) {
+            return false;
+        }
+
+        // Check permissions on the category
+        if (!client.permission.manageChannel(interaction.member, interaction.channel)) {
+            return false;
+        }	
+
+        // Determine type
+        let type = args.shift();
+        let oldRaidChannel = type;
+        if (type == 'confirmed') {
+            oldRaidChannel = args.shift();
+        } 
+
+        // Check for required parameter
+        if (!oldRaidChannel) {
+            return false;
+        }
+
+        // Pull discord.js object
+        oldChannel = await client.general.getChannel(oldRaidChannel, interaction.guild);
+
+        // Check that the channel exists
+        if (!oldChannel) {
+            return false;
+        }
+
+        // Retrieve our old raid & our current raid
+        let oldRaid = await client.raid.get(client, oldChannel);
+        let newRaid = await client.raid.get(client, interaction.channel);
+        
+        // Set up vars
+        let unsigned = [];
+
+        // Filter if necessary
+        let signups = oldRaid.signups;
+        if (type == 'confirmed') {
+            signups = signups.filter(s => s.confirmed == 1);
+        }
+
+        // Loop through and check if each player is signed up
+        signups.forEach((signup) => {
+            if (signup.character && !newRaid.signups.find(s => s.character.id == signup.character.id)) {
+                unsigned.push(signup.character.name);
+            }
+        });
+
+        // Do player/alt looks-ups
+        let mentions = await client.notify.makeList(client, interaction.guild, unsigned);
+
+        // Send message
+        if (mentions.length) {
+            interaction.channel.send("Players who were signed up for " + `${oldChannel}` + ": ");
+            interaction.channel.send(mentions);
+        } else {
+            interaction.channel.send('All players are currently signed up.');
+        }
+
     }
 
 }
