@@ -130,7 +130,7 @@ exports.modalResponse = async (client, interaction) => {
 
         let altCharacter = await client.models.character.findOne({where: {name: character, guildID: interaction.guild.id}})
         if (!altCharacter) {
-            await client.models.character.create({'name': character, guildID: interaction.guild.id, memberID: interaction.user.id });
+            altCharacter = await client.models.character.create({'name': character, guildID: interaction.guild.id, memberID: interaction.user.id });
         }
 
         client.models.character.update({mainID: mainCharacter.id}, {where: {id: altCharacter.id}});
