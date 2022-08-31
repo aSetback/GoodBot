@@ -2,15 +2,15 @@ const { Message } = require("discord.js");
 
 module.exports = async (client, interaction) => {
     if (interaction.isButton()) {
-        let signUp = 'unknown';
-        if (interaction.customId == '+') { signUp = 'yes'; }
-        if (interaction.customId == '-') { signUp = 'no'; }
-        if (interaction.customId == 'm') { signUp = 'maybe'; }
-        if (signUp == 'unknown') {
-            if (interaction.customId == 'alt') {
-            }
+        if (interaction.customId.indexOf('sc-button-') > -1) {
+            let cmdData = interaction.customId.replace('sc-button-', '').toLowerCase();
+            cmdData = cmdData.split('-');
+            let slashcmd = cmdData.shift();
+            let cmd = client.slashCommands.get(slashcmd);
+            cmd.buttonResponse(client, interaction, cmdData);
         } else {
-            await client.signups.set(interaction.customId, interaction.member.displayName, interaction.channel.name, interaction.message, client);
+            let raid = await client.raid.get(client, interaction.channel);
+            await client.signups.set(client, raid, interaction.member.displayName, interaction.customId, interaction.member.id);
             client.signups.signupReply(client, interaction);
         }
     }
@@ -32,6 +32,14 @@ module.exports = async (client, interaction) => {
                 client.signups.altModal(client, interaction);
             } else {
                 client.signups.selectAlt(client, interaction);
+            }
+        } else {
+            if (interaction.customId.indexOf('sc-select-') > -1) {
+                let cmdData = interaction.customId.replace('sc-select-', '').toLowerCase();
+                cmdData = cmdData.split('-');
+                let slashcmd = cmdData.shift();
+                let cmd = client.slashCommands.get(slashcmd);
+                cmd.selectResponse(client, interaction, cmdData);
             }
         }
     }

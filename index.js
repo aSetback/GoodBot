@@ -115,37 +115,23 @@ fs.readdir("./events/", (err, files) => {
 client.slashCommands = new Enmap();
 fs.readdir('./slashCommands', (err, files) => {
   if (err) return console.error(err);
-  console.log('-- Loading Slash Commands');
-  let slashCommands = [];
-  files.forEach(file => {
-    let slashCommandName = file.split(".")[0];
-    let slashCommand = require('./slashCommands/' + file);
-    slashCommands.push(slashCommandName);
-    client.slashCommands.set(slashCommandName, slashCommand);
-  });
-  console.log('    > ' + slashCommands.join(', '));
-});
 
-// Add the commands from the /commands folder
-client.commands = new Enmap();
-let commandDir = './commands/';
-fs.readdir(commandDir, (err, files) => {
-  if (err) return console.error(err);
   // Look for directories within the parent directory
-  console.log('-- Loading Commands');
+  let slashCmdDir = './slashCommands/';
+  console.log('-- Loading Slash Commands');
   files.forEach(directory => {
-    if (fs.lstatSync(commandDir + directory).isDirectory()) {
-      fs.readdir(commandDir + directory, (err, subFiles) => {
-        let subcommands = [];
+    if (fs.lstatSync(slashCmdDir + directory).isDirectory()) {
+      fs.readdir(slashCmdDir + directory, (err, subFiles) => {
+        let slashCommands = [];
         if (err) return console.error(err);
         subFiles.forEach(subFile => {
           if (!subFile.endsWith(".js")) return;
-          let props = require(commandDir + directory + '/' + subFile);
-          let commandName = subFile.split(".")[0];
-          subcommands.push(commandName);
-          client.commands.set(commandName, props);
+          let slashCommand = require(slashCmdDir + directory + '/' + subFile);
+          let slashCommandName = subFile.split(".")[0];
+          slashCommands.push(slashCommandName);
+          client.slashCommands.set(slashCommandName, slashCommand);
         });
-        console.log('    > ' + directory.padEnd(10) + ' =>  ' + subcommands.join(', '));
+        console.log('    > ' + directory.padEnd(15) + ' =>  ' + slashCommands.join(', '));
       });
     }
   });

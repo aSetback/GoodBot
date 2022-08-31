@@ -141,38 +141,25 @@ module.exports = {
         return interaction.reply({content: 'You have signed up for this raid as ' + playerName + '.  Would you like to change signup to an alt?', ephemeral: true, components: [messageRow]});
 
     },
-	set: async function(type, name, channel, message, client) {
-        if (!message.guild.id) {
-            return client.messages.send(message.channel, 'This can only be used in a sign-up channel.', 240);
-        }
-        if (type === '+') {
-            signValue = 'yes';
-        } else if (type === '-') {
-            signValue = 'no';
-        } else if (type.toLowerCase() === 'm') {
-            signValue = 'maybe';
-        }
+	set: async function(client, raid, character, type, userID) {
+        type = type.substr(0, 1).toLowerCase();
+        if (type == '+' || type == 'y') { type = 'yes'}
+        if (type == '-' || type == 'n') { type = 'no'}
+        if (type == 'm') { type = 'maybe'}
 
-        let characterName = client.general.ucfirst(name);
-        let member = message.guild.members.cache.find(member => member.nickname == characterName ||  member.user.username == characterName);
-        let raid = await client.raid.get(client, message.channel);
+        let characterName = client.general.ucfirst(character);
+
+        if (!raid) {
+            return {result: -1, msg: "This can only be used in a sign-up channel."};
+        }
 
         // Locked raid handling
-        if (raid && raid.locked) {
-            if (client.config.userId != message.author.id) {
-                return message.author.send('This raid is locked -- sign-ups can no longer be modified.');
-            } else {
-                return client.messages.send(message.channel, 'This raid is locked -- sign-ups can no longer be modified.', 240);
-           }
+        if (raid.locked) {
+            return {result: -1, msg: "This raid is locked -- sign-ups can no longer be modified."};
         }
         
-        let playerId = null;
-        if (member) {
-            playerId = member.user.id.toString();
-        }
-
         // Check to make sure class & role is set
-        let character = await client.set.getCharacter(client, message.guild, characterName);
+        character = await client.set.getCharacter(client, {id: raid.guildID}, characterName);
         if (!character && raid.crosspostID && raid.crosspostID.length) {
             let otherChannel;
             if (message.channel.id == raid.channelID) {
@@ -183,73 +170,53 @@ module.exports = {
             character = await client.set.getCharacter(client, otherChannel.guild, characterName);
         }
 
-        // Check if the player is avlid
+        // Check if the player is valid
         if (!client.set.validName(characterName)) {
-            let playerMessage = 'Unable to sign "' + characterName + '" for this raid.  Please set your in-game name using +nick first.';
-            if (playerId) {
-                playerMessage = '<@' + playerId + '> ' + playerMessage;
-            }
-            return client.messages.errorMessage(message.channel, playerMessage, 240);
+            let playerMessage = 'Unable to sign up "' + characterName + '" for this raid.  Please set your in-game name using +nick first.';
+            return {result: -1, msg: playerMessage};
         }
 
         // Verify class is set
         if (!character.class) {
-            let playerMessage = 'Unable to sign "' + characterName + '" for this raid, character\'s class is not set.';
-            if (playerId) {
-                playerMessage = '<@' + playerId + '> ' + playerMessage;
-            }
-            return client.messages.errorMessage(message.channel, playerMessage, 240);
+            let playerMessage = 'Unable to sign up "' + characterName + '" for this raid, character\'s class is not set.';
+            return {result: -1, msg: playerMessage};
         }
 
         // Verify role is set
         if (!character.role) {
-            let playerMessage = 'Unable to sign "' + characterName + '" for this raid, character\'s role is not set.';
-            if (playerId) {
-                playerMessage = '<@' + playerId + '> ' + playerMessage;
-            }
-            return client.messages.errorMessage(message.channel, playerMessage, 240);
+            let playerMessage = 'Unable to sign up "' + characterName + '" for this raid, character\'s role is not set.';
+            return {result: -1, msg: playerMessage};
         }
 
         // Verify the player class & role is valid
         if (!client.set.validCombo(character)) {
             let playerMessage = 'Could not sign  "' + characterName + '" for this raid, ' + character.class + '/' + character.role + ' is not a valid combination.';
-            return client.messages.errorMessage(message.channel, playerMessage, 240);
+            return {result: -1, msg: playerMessage};
         }
 
         // Save our sign-up to the db
-        if (raid) {
-
-            let record = {
-                'player': characterName,
-                'signup': signValue,
-                'raidID': raid.id,
-                'characterID': character.id,
-                'channelID': raid.channelID,
-                'guildID': raid.guildID,
-                'memberID': message.author.id
-            };
-
-            client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['createdAt', 'DESC']], group: ['player']}).then((signup) => {
-                if (!signup) {
-                    client.models.signup.create(record).then(() => {
-                        // Update embed
-                        client.embed.update(client, message.channel);
-                    });
-                } else {
-                    client.models.signup.update(record, {
-                        where: {
-                            id: signup.id
-                        }
-                    }).then(() => {
-                        // Update embed
-                        client.embed.update(client, message.channel);
-                    });
+        let record = {
+            'player': characterName,
+            'signup': type,
+            'raidID': raid.id,
+            'characterID': character.id,
+            'channelID': raid.channelID,
+            'guildID': raid.guildID,
+            'memberID': userID
+        };
+        
+        let signup = await client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['createdAt', 'DESC']], group: ['player']});
+        if (!signup) {
+            await client.models.signup.create(record);
+        } else {
+            await client.models.signup.update(record, {
+                where: {
+                    id: signup.id
                 }
             });
         }
-
-        let logMessage = 'Sign Up: ' + characterName + ' => ' + signValue;
-        client.log.write(client, message.author, message.channel, logMessage);
+    
+        return {result: 1};
     },
     remove(client, raidID, characterName) {
         let promise = new Promise((resolve, reject) => {
@@ -327,6 +294,69 @@ module.exports = {
             });
         });
         return promise;
+    },
+    unsigned: async (client, interaction, args) => {
+       	// This can't be used via DM
+        if (!interaction.guild) {
+            return false;
+        }
+
+        // Check permissions on the category
+        if (!client.permission.manageChannel(interaction.member, interaction.channel)) {
+            return false;
+        }	
+
+        // Determine type
+        let type = args.shift();
+        let oldRaidChannel = type;
+        if (type == 'confirmed') {
+            oldRaidChannel = args.shift();
+        } 
+
+        // Check for required parameter
+        if (!oldRaidChannel) {
+            return false;
+        }
+
+        // Pull discord.js object
+        oldChannel = await client.general.getChannel(oldRaidChannel, interaction.guild);
+
+        // Check that the channel exists
+        if (!oldChannel) {
+            return false;
+        }
+
+        // Retrieve our old raid & our current raid
+        let oldRaid = await client.raid.get(client, oldChannel);
+        let newRaid = await client.raid.get(client, interaction.channel);
+        
+        // Set up vars
+        let unsigned = [];
+
+        // Filter if necessary
+        let signups = oldRaid.signups;
+        if (type == 'confirmed') {
+            signups = signups.filter(s => s.confirmed == 1);
+        }
+
+        // Loop through and check if each player is signed up
+        signups.forEach((signup) => {
+            if (signup.character && !newRaid.signups.find(s => s.character.id == signup.character.id)) {
+                unsigned.push(signup.character.name);
+            }
+        });
+
+        // Do player/alt looks-ups
+        let mentions = await client.notify.makeList(client, interaction.guild, unsigned);
+
+        // Send message
+        if (mentions.length) {
+            interaction.channel.send("Players who were signed up for " + `${oldChannel}` + ": ");
+            interaction.channel.send(mentions);
+        } else {
+            interaction.channel.send('All players are currently signed up.');
+        }
+
     }
 
 }

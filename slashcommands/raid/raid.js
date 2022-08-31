@@ -6,6 +6,7 @@ let commandData = new SlashCommandBuilder()
     .setDescription('Open a modal to create a new raid.');
 
 exports.data = commandData;
+
 exports.run = async (client, interaction) => {
     let modal = new Modal()
         .setCustomId('sc-modal-raid')

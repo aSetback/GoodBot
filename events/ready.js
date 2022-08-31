@@ -17,7 +17,7 @@ module.exports = async (client, message) => {
 	try {
 		console.log('-- Started refreshing application (/) commands @ ' + client.timestamp.get());
 
-		await rest.put(
+		let slashResults = await rest.put(
 			Routes.applicationCommands(client.config.userId),
 			{ body: commands },
 		);
