@@ -1,4 +1,21 @@
 module.exports = {
+    getUnsigned: async function(client, newRaid, oldRaid) {
+        
+        // Set up vars
+        let unsigned = [];
+
+        // Filter if necessary
+        let signups = oldRaid.signups;
+
+        // Loop through and check if each player is signed up
+        signups.forEach((signup) => {
+            if (signup.character && !newRaid.signups.find(s => s.character.id == signup.character.id)) {
+                unsigned.push(signup.character.name);
+            }
+        });
+
+        return unsigned;
+    },
     makeList: async function(client, guild, list) {
         let promise = new Promise( async (resolve, reject) => {
             let mentionText = '';
