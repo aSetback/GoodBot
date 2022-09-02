@@ -20,11 +20,11 @@ let commandData = new SlashCommandBuilder()
 exports.data = commandData;
 
 exports.run = async (client, interaction) => {
+    interaction.deferReply();
     // Check permissions on the category
 	if (!client.permission.manageChannel(interaction.member, interaction.channel)) {
 		return interaction.reply('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
-
     let type = interaction.options.getString('type').toLowerCase();
     let channel = interaction.options.getChannel('channel');
     let raid = await client.raid.get(client, interaction.channel);

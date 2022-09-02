@@ -322,6 +322,7 @@ module.exports = {
     
         // Retrieve our raid information
     	let raid = await client.raid.get(client, channel);
+        let errorMessage;
 
         // Verify the 'Archives' Category exists
         if (category) {
@@ -338,14 +339,15 @@ module.exports = {
                 // Generally the only reason this fails is that the archvies is full (50 channels).  Inform the user.
                 if (e.message.indexOf('Maximum number') > 0) {
                     let errorArchiveMaxChannel = client.loc('errorMaxChannel', "The category **Archives** is full, this channel could not be moved.");
-                    client.messages.errorMessage(channel, errorArchiveMaxChannel, 240);
+                    errorMessage = errorArchiveMaxChannel;
                 }
             }
         } else {
             // The archives channel does not exist.  Inform the user.
             let errorArchiveNoChannel = client.loc('errorMaxChannel', "The category **Archives** does not exist, please create the category to use this command.");
-            client.messages.errorMessage(channel, errorArchiveNoChannel, 240);
+            errorMessage = errorArchiveNoChannel;
         }
+        return {success: (errorMessage ? 0 : 1), msg: errorMessage};
     },
     createEventChannel: async (client, message, category, raid, guild) => {
         let promise = new Promise(async (resolve, reject) => {
