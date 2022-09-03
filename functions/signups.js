@@ -220,9 +220,10 @@ module.exports = {
     },
     remove(client, raidID, characterName) {
         let promise = new Promise((resolve, reject) => {
-            client.models.signup.findOne({where: {player: characterName, raidID: raidID}}).then((signup) => {
+            client.models.signup.findOne({where: {player: characterName, raidID: raidID}}).then(async (signup) => {
                 // Only delete the sign-up if it exists.
                 if (signup) {
+                    await client.models.raidReserve.destroy({ where: {signupID: signup.id}});
                     client.models.signup.destroy({ where: {raidID: raidID, player: characterName}}).then(() => {
                         resolve(true);
                     });
