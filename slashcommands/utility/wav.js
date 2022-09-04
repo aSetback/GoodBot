@@ -25,6 +25,7 @@ exports.run = async (client, interaction) => {
 	let filename = './wav/' + wav + '.wav';
 	fs.exists(filename, async (exists) => {
 		if (exists) {
+            interaction.reply({content: 'Playing ' + wav + '.', ethereal: true});
 			let connection = joinVoiceChannel({
 				channelId: vc.id,
 				guildId: vc.guild.id,

@@ -7,7 +7,11 @@ let commandData = new SlashCommandBuilder()
 exports.data = commandData;
 
 exports.run = async (client, interaction) => {
-    // Get our raid information
+	if (!client.permission.manageChannel(interaction.member, interaction.channel)) {
+		return interaction.reply('Unable to complete command -- you do not have permission to manage this channel.');
+	}	
+	
+	// Get our raid information
     let raid = await client.raid.get(client, interaction.channel);
 
 	let softreserve = 1;
