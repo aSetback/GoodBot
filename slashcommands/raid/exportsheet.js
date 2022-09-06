@@ -191,7 +191,7 @@ exports.run = async (client, interaction) => {
 		});
 		await sheet.saveUpdatedCells();
 
-		interaction.reply('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
+		interaction.editReply('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
 
 	}
 
