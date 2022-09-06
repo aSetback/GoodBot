@@ -6,16 +6,19 @@ module.exports = async (client, interaction) => {
             let cmdData = interaction.customId.replace('sc-button-', '').toLowerCase();
             cmdData = cmdData.split('-');
             let slashcmd = cmdData.shift();
+            client.log.write(client, interaction.member, interaction.channel, 'Button Press: ' + slashcmd);
             let cmd = client.slashCommands.get(slashcmd);
             cmd.buttonResponse(client, interaction, cmdData);
         } else {
             let raid = await client.raid.get(client, interaction.channel);
+            client.log.write(client, interaction.member, interaction.channel, 'Signup: ' + interaction.customId);
             await client.signups.set(client, raid, interaction.member.displayName, interaction.customId, interaction.member.id);
             client.signups.signupReply(client, interaction);
         }
     }
 
     if (interaction.isModalSubmit()) {
+        client.log.write(client, interaction.member, interaction.channel, 'Modal Submit: ' + interaction.customId);
         if (interaction.customId == 'altModal') {
             await client.signups.createAlt(client, interaction);
         }
@@ -27,6 +30,7 @@ module.exports = async (client, interaction) => {
     }
     
     if (interaction.isSelectMenu()) {
+        client.log.write(client, interaction.member, interaction.channel, 'Select Menu Used: ' + interaction.customId);
         if (interaction.customId == 'altSelect') {
             if (interaction.values[0] == 'new') {
                 client.signups.altModal(client, interaction);
@@ -46,7 +50,6 @@ module.exports = async (client, interaction) => {
 
     if (interaction.isCommand()) {
         client.log.write(client, interaction.member, interaction.channel, 'Slash Command: ' + interaction.commandName);
-
         const cmd = client.slashCommands.get(interaction.commandName);
         cmd.run(client, interaction);
     }
