@@ -114,13 +114,6 @@ module.exports = {
         altSelect.setCustomId('altSelect')
             .setPlaceholder("Select a character.");
 
-        altSelect.addOptions([{
-            label: main.name,
-            description: client.general.ucfirst(main.class) + ' ' + client.general.ucfirst(main.role),
-            value: main.id.toString()
-        }]);
-
-        
         for (key in alts) {
             let alt = alts[key];
             altSelect.addOptions([{
