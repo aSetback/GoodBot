@@ -1,10 +1,18 @@
-exports.run = async (client, message, args) => {
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
+let commandData = new SlashCommandBuilder()
+    .setName('invitemacro')
+    .setDescription('Get an invite macro DM.');
+    
+exports.data = commandData;
+
+exports.run = async (client, interaction) => {
+
     // Get our raid information
-    let raid = await client.raid.get(client, message.channel);
+    let raid = await client.raid.get(client, interaction.channel);
     // Make sure this is actually a raid!
     if (!raid) {
-        client.messages.errorMessage(message.channel, 'This does not appear to be a raid channel, item reserve has failed.', 240);
-        return false;
+        return interaction.reply({content:'This must be used in a raid channel.', ephemeral: true});
     }
 
     let list = raid.signups.filter(signup => signup.confirmed == 1);
@@ -14,13 +22,14 @@ exports.run = async (client, message, args) => {
             if (players.length > 10) {
                 let playerString = players.join(", ");
                 let macroString = "```lua\n/run for key, member in pairs({" + playerString + "}) do InviteUnit(member) end```"
-                message.author.send(macroString);
+                interaction.author.send(macroString);
                 players = [];
             }
     });
     if (players.length) {
         let playerString = players.join(", ");
         let macroString = "```lua\n/run for key, member in pairs({" + playerString + "}) do InviteUnit(member) end```"
-        message.author.send(macroString);
+        interaction.author.send(macroString);
     }
+    return interaction.reply({content:'Invite macros sent.', ephemeral: true});
 }

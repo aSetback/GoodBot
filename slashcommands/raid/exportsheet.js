@@ -7,9 +7,10 @@ let commandData = new SlashCommandBuilder()
 exports.data = commandData;
 
 exports.run = async (client, interaction) => {
-	// Check permissions on the category
+	interaction.deferReply();
+    // Check permissions on the category
 	if (!client.permission.manageChannel(interaction.member, interaction.channel)) {
-		return interaction.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
+		return interaction.reply({content: 'Unable to complete command -- you do not have permission to manage this channel.', ephemeral: true});
 	}	
 
 	let sheetID = await client.customOptions.get(client, interaction.guild, 'sheet');
@@ -190,7 +191,7 @@ exports.run = async (client, interaction) => {
 		});
 		await sheet.saveUpdatedCells();
 
-		interaction.author.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
+		interaction.reply('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
 
 	}
 

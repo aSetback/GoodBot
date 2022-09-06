@@ -1,10 +1,10 @@
-exports.run = async function(client, message, args) {
+exports.run = async function(client, interaction, args) {
 	// Check permissions on the category
-	if (!client.permission.manageChannel(message.member, message.channel)) {
-		return message.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
+	if (!client.permission.manageChannel(interaction.member, interaction.channel)) {
+		return interaction.channel.send('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
 
-	let sheetID = await client.customOptions.get(client, message.guild, 'sheet');
+	let sheetID = await client.customOptions.get(client, interaction.guild, 'sheet');
 	if (sheetID) {
 		sheedID = sheetID.trim();
 	}
@@ -18,7 +18,7 @@ exports.run = async function(client, message, args) {
 	var creds = require("../../google.json");
 	await doc.useServiceAccountAuth(creds);
 	await doc.loadInfo();
-	let raid = await client.raid.get(client, message.channel);
+	let raid = await client.raid.get(client, interaction.channel);
 
 	const sheetCols = {
 		'warrior-tank': 1,
@@ -40,7 +40,7 @@ exports.run = async function(client, message, args) {
 		'shaman-healer': 17
 	};
 
-	let expansion = client.guildOption.expansion(client, message.guild.id);
+	let expansion = client.guildOption.expansion(client, interaction.guild.id);
 	if (expansion >= 2) {
 		sheetCols['dk-dps'] = 18;
 		sheetCols['dk-tank'] = 19;
@@ -186,7 +186,7 @@ exports.run = async function(client, message, args) {
 		});
 		await sheet.saveUpdatedCells();
 
-		message.author.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
+		interaction.author.send('Line-up has been exported to https://docs.google.com/spreadsheets/d/' + sheetID);
 
 	}
 
