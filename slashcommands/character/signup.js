@@ -3,39 +3,32 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
     .setName('signup')
-    .setDescription('Sign a character up for a raid.');
-
+    .setDescription('Sign a character up for a raid.')
+    .addStringOption(option =>
+		option
+            .setName('character')
+			.setDescription('Character Name')
+			.setRequired(true)
+    )
+    .addStringOption(option =>
+		option
+            .setName('signup')
+			.setDescription('Sign As')
+			.setRequired(true)
+            .addChoices(
+                { name: 'Yes', value: 'y' },
+                { name: 'Maybe', value: 'm' },
+                { name: 'No', value: 'n' }
+            )
+    );
 exports.data = commandData;
 
 exports.run = async (client, interaction) => {
-    let modal = new Modal()
-        .setCustomId('sc-modal-signup')
-        .setTitle('Sign up for raid');
-
-    let input1 = new TextInputComponent()
-        .setCustomId('character')
-        .setLabel('Which character are you signing up?')
-        .setRequired(true)
-        .setStyle('SHORT');
-
-    let input2 = new TextInputComponent()
-        .setCustomId('signup')
-        .setLabel('What would you like to set this signup to?')
-        .setRequired(true)
-        .setStyle('SHORT');
-
-        let ActionRow1 = new MessageActionRow().addComponents(input1);
-        let ActionRow2 = new MessageActionRow().addComponents(input2);
-        modal.addComponents([ActionRow1, ActionRow2]);
-
-    await interaction.showModal(modal);
-}
-
-exports.modalResponse = async (client, interaction) => {
     let args = {
-        character: interaction.fields.getTextInputValue('character'),
-        signup: interaction.fields.getTextInputValue('signup')
+        character: interaction.options.getString('character'),
+        signup: interaction.options.getString('signup')
     };
+    if (!args.signup) { args.signup = 'y'; }
  
     // Get our raid information
     let raid = await client.raid.get(client, interaction.channel);
@@ -54,4 +47,6 @@ exports.modalResponse = async (client, interaction) => {
         let signupText = client.general.ucfirst(args.character) + "'s signup has been updated.";
         interaction.reply({content: signupText, ephemeral: true});
     }
+
+
 }
