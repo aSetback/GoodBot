@@ -66,211 +66,148 @@
 
 ## Character Management Commands
 ```
-+set <Player> <class> <role>
+/set Player
   Manually set a player's class and role.  Valid roles are DPS, Tank, Healer, Caster.
 
-+alt <altName> <mainName>
+/alt Player
   Set a character as an alt of your main character.
 
-+info <character>
+/info Player
   Returns the main and all alts attached to this character, along with signed up raid and resistances.
 
-+resist <character> <type> <amount>
-  Set a player's resistance of a type (fire, frost, shadow, nature) to a number for export on spreadsheet.
-
-+resistlist
-  Outputs the resistances for all players signed up for a raid.
-
-+reservehistory <character>
-  Returns a complete history of all items this player has reserved.
 ```
 
 ## Raid Sign-up Commands
 ```
- +raid <RaidName> <Date> <Title?> <Faction?>
+/raid
   Create a new raid channel under the raid category called mar-21-RaidName
 
-+dupe <days?>
+/dupe Days
   Creates a duplicate raid <days> days later, and pings all players who were signed up for the previous raid.  Default days is 7.
 
-+crosspost <Discord Server Name>
-  Crossposts the raid to a second discord server so that players can sign up in both locations.
-  Caveats:
-    * The user using the command needs to have 'Manage Channels' permissions in both servers to be able to crosspost.
-    * A raid can only be crossposted once.  If it is crossposted a second time, the first crosspost will cease to work.
-
-+lineup
+/lineup
   The bot will DM you a link to the page for managing your raid lineup.
   
-+lock
+/lock
   Locks a raid, preventing all further signups & reserves.
 
-+unlock
+/unlock
   Unlocks a raid, allowing additional signups & reserves.
 
-+exportsheet <SheetID?>
+/exportsheet <SheetID?>
   Attempt to export your spreadsheet to Google Sheets  (Will only work if this has been set up, and bot has permissions)
   This will ping only confirmed players if confirmation mode is enabled.
   
-+setcolor <#HexCode>
+/raidcolor <#HexCode>
   Set the color of the sidebar of the embed
 
-+setdate <Valid Date>
+/raiddate <Valid Date>
   Sets the date of the raid, in 
 
-+setdescription <New Raid Description>
+/raiddescription <New Raid Description>
   Alter the raid description in the embed
 
-+setleader <@Leader>
+/raidleader <@Leader>
   Sets the raid leader of the raid
 
-+addleader <@Leader>
-  Adds an additional leader to the raid sign-up
-
-+removeleader <@Leader>
-  Removes an additional leader from the raid sign-up (there must always be one!)
-
-+settime <Valid Time>
+/raidtime <Valid Time>
   Set the time for the raid start
 
-+settitle <New Raid Title>
+/raidtitle <New Raid Title>
   Alter the raid title in the embed
 
-+remove <Player>, <Player>, ...
-  Removes player(s) from sign-ups completely.
-
-+resistlist
-  Sends a DM to the player with the resistances of all signed up players
+/remove <Player>
+  Removes player from sign-ups completely.
 
 ```
 
 ## Confirmations
 ```
-+confirmation
+/confirmation
   Toggle 'confirmation mode' for a raid.
 
-+confirm <Player>, <Player>, ...
+/confirm <Player>, <Player>, ...
   Confirms player for the raid (Confirmation mode must be enabled!)
 
-+unconfirm <Player>, <Player>, ...
+/unconfirm <Player>, <Player>, ...
   Unconfirms player for the raid (Confirmation mode must be enabled!)
 
-+copyconfirmation <#Previous Raid Channel>
+/copyconfirmation <#Previous Raid Channel>
   Copies the confirmed players from the previous raid to the current one.
 ```
 
 
 ## Rules
 ```
-+rules add <Rules Name> <Rules Go Here>
+/rules add <Rules Name>
   Add a rule to be displayed later with a name of <Rules Name>.
 
-+rules <Rules Name>
-  Have the bot display rules with the name of <Rules Name>.
+/rules show <Rules Name>
+  Display a rule set
 
-+setrules <Rules Name>
+/raidrules <Rules Name>
   Set raid rules that will display when the raid is duped.
 
 ```
 
 ## Pings
 ```
-+ping raid
+/ping raid
   Pings every signed up for this raid.
 
-+ping confirmed
+/ping confirmed
   Pings all players who are confirmed for this raid.
 
-+ping class <Class>
-  Pings all signed up players of that class that are signed up for the raid.
-
-+ping role <Role>
-  Pings all signed up players of that role that are signed up for the raid.
-
-+unsigned <#Previous Raid Channel>
+/ping unsigned <#Previous Raid Channel>
   Compare the current lineup to the specified raid, and send a notification to all players not currently signed up.
-
-+noreserve
-  Pings all players who do not currently have a reserve.
-
 ```
 
 ## Soft Reserves
 ```
-  +softreserve
+  /softreserve
     Toggle a raid to have soft reserve as the loot system (reservable items are keyed off of the selected raid type)
 
-  +reserve <Character Name?> <Item Name>
-    Save a reserve for the specificed item for the specified character name.  Include character name if your discord name doesn't match the name you signed up with.
+  /reserve
+    Set a reserve for the specificed item for the specified character name.  Include character name if your discord name doesn't match the name you signed up with.
 
-  +reservelist
+  /reservelist
     The bot will DM the user a list of all reserves that have been made for this raid, ordered by item name
 
-  +reservelist channel
+  /reservelist channel
     The bot will list all reserves that have been made for this raid in the channel
 
-  +reserveitems
+  /reserveitems
     The bot will DM the user a list of all items that are available for reserve for this raid
 
 ```
 
 ## Configuration Options
 ```
-  +setoption factionrequired 1
+  /setoption factionrequired 1
     Require a faction when creating a raid and setting a raid category
 
-  +raidcategory raid (faction?) Category Name
+  /raidcategory raid (faction?) Category Name
     Set a category for a raid to be set up under (for a specific faction, if factionrequired is enabled)
 ```
 
 ## Nexushub Commands
 ```
-+item <Item>
+/item <Item>
   Does a fuzzy search for the item string and returns the top result as an embed.
 
-+price <Item>
+/price <Item>
   Does a fuzzy search for the item string and returns AH price information for it as an embed.
 ```
 
 ## Wav Files
 ```
-+wav <Wav Name>
+/wav <Wav Name>
   Plays a specified wav in the channel you're in.
 
-+wavlist
+/wavlist
   DMs a list of all wav files to the user.
 ```
 
-## Warcraft Logs Commands
-```
-+compare <Raid ID> <Raid ID>
-  Generate a side by side comparison of two raids for boss kills, time between bosses, and overall time elasped after each boss.
-
-+gear <Player
-  Retrieve a player's gear from the last attended raid.  Server defaults to Mankrik, region defaults to US.
-
-+enchants <Player>
-  Lists all enchantable gear a player was wearing during the last raid, and which pieces are enchanted with what.
-
-+logs <Guild Name>
-  Display a list of the last 10 raids uploaded to WarcraftLogs for the guild
-
-+rankings <Player> <Role?>
-  Display a player's best rankings for the specified role.  Roles is defaulted to DPS, Server is defaulted to Mankrik, and region is defaulted to US.  Other role options are HPS or Tank.
-
-+report <Raid ID>
-  Retrieve basic information about a Warcraft Logs Report  
-```
-
-## Raid Signups
-* All players need to have a class and role set up to be able to sign up for raids.  Once that's done, the player can use the 'Yes', 'No' or 'Maybe' buttons directly under the sign-up list to sign up for the raid.
-* A player's class and role can be manually set using the +set command.
-  * `+set Taunt warrior tank`
-* A player can sign up an alt, or another player by using +, - or m, followed by the player's name
-```  
-  + Tagalong
-  m Tagalong
-  - Tagalong
 ```
 ## Spreadsheets
 ```
@@ -308,6 +245,6 @@ dh tank => 24
 ```
 To set up your spreadsheet:
 * The sheet must be shared with **discord@api-project-483394155093.iam.gserviceaccount.com**
-* Set your server's sheet ID using: +setoption sheet SheetID 
+* Set your server's sheet ID using: /setoption sheet SheetID 
   * In the example above, sheetID would be 1mH9UD5luAV3YiSy4OCuzw1Lbd5xe0eF4VCYp013h7eo
-* Export your sheet using `+exportsheet` within a raid channel.
+* Export your sheet using `/exportsheet` within a raid channel.
