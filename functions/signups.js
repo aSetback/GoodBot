@@ -83,7 +83,7 @@ module.exports = {
                     id: signup.id,                
                 }
             }).then(() => {
-                client.log.write(client, interaction.member, interaction.channel, 'Swap to Alt: ' + mainName + ' => ' + character.name + '.');
+                client.log.write(client, interaction.member, interaction.channel, 'Swap to Alt: ' + mainName + ' => ' + character.name);
 
                 // Update embed
                 client.embed.update(client, interaction.channel);

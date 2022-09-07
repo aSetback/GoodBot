@@ -20,10 +20,10 @@ let commandData = new SlashCommandBuilder()
 exports.data = commandData;
 
 exports.run = async (client, interaction) => {
-    interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
     // Check permissions on the category
 	if (!client.permission.manageChannel(interaction.member, interaction.channel)) {
-		return interaction.reply('Unable to complete command -- you do not have permission to manage this channel.');
+		return interaction.editReply('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
     let type = interaction.options.getString('type').toLowerCase();
     let channel = interaction.options.getChannel('channel');
@@ -33,9 +33,13 @@ exports.run = async (client, interaction) => {
         oldRaid = await client.raid.get(client, channel);
     }
     if (!raid || (channel & !oldRaid)) {
-		return interaction.reply('This command can only be used in a raid channel.');
+		return interaction.editReply({content: 'This command can only be used in a raid channel.', ephemeral: true});
+    }
+    if (type == 'unsigned' && !channel) {
+		return interaction.editReply({content: 'You must specify a raid channel to ping unsigned.', ephemeral: true});
     }
 
+    let pingList = [];
     let list = [];
 
     if (type == 'confirmed') {
@@ -52,21 +56,21 @@ exports.run = async (client, interaction) => {
     }
     if (type == 'unsigned') {  
         if (!oldRaid) {
-            return interaction.reply('This command can only be used on a raid channel.');
+            return interaction.editReply('This command can only be used on a raid channel.');
         }
-        list = client.notify.getUnsigned(client, raid, oldRaid);
-    }
 
-    let pingList = [];
-    for (key in list) {
-        pingList.push(list[key].character.name);
+        pingList = await client.notify.getUnsigned(client, raid, oldRaid);
+    } else {
+        for (key in list) {
+            pingList.push(list[key].character.name);
+        }
     }
-   
+        
     if (pingList.length == 0) {
         interaction.channel.send('No players were found.');
     } else {
         let notifications = await client.notify.makeList(client, interaction.guild, pingList);
         interaction.channel.send(notifications);
     }
-    return interaction.reply('Command successful.');
+    return interaction.editReply('Command successful.');
 }

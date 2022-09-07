@@ -9,42 +9,38 @@ module.exports = {
 
         // Loop through and check if each player is signed up
         signups.forEach((signup) => {
-            if (signup.character && !newRaid.signups.find(s => s.character.id == signup.character.id)) {
+            if (!newRaid.signups.find(s => s.character.id == signup.character.id)) {
                 unsigned.push(signup.character.name);
             }
         });
-
         return unsigned;
     },
     makeList: async function(client, guild, list) {
-        let promise = new Promise( async (resolve, reject) => {
-            let mentionText = '';
-            let noMatch = [];
+        let mentionText = '';
+        let noMatch = [];
 
-            for (key in list) {
-                let character = list[key];
-                let search = character.toLowerCase();
-                let main = await client.notify.getMain(client, guild, search);
-                main = main.toLowerCase();
-                let member = await client.notify.findUser(client, guild, main);
-                // Maybe they're not cached .. let's try fetching them.
-                if (!member) {
-                    await guild.members.fetch({ query: main, limit: 10});
-                    member = await client.notify.findUser(client, guild, main);
-                }
-
-                if (member) {
-                    mentionText += '<@' + member.user.id + '> ';
-                } else {
-                    noMatch.push(character);
-                }
+        for (key in list) {
+            let character = list[key];
+            let search = character.toLowerCase();
+            let main = await client.notify.getMain(client, guild, search);
+            main = main.toLowerCase();
+            let member = await client.notify.findUser(client, guild, main);
+            // Maybe they're not cached .. let's try fetching them.
+            if (!member) {
+                await guild.members.fetch({ query: main, limit: 10});
+                member = await client.notify.findUser(client, guild, main);
             }
-            if (noMatch.length) 
-                mentionText += '\n' + 'Could not find: ' + noMatch.join(', ');
 
-            resolve(mentionText);
-        });
-        return promise;
+            if (member) {
+                mentionText += '<@' + member.user.id + '> ';
+            } else {
+                noMatch.push(character);
+            }
+        }
+        if (noMatch.length) 
+            mentionText += '\n' + 'Could not find: ' + noMatch.join(', ');
+
+        return mentionText;
     },
     findUser: async (client, guild, search) => {
         let promise = new Promise(async (resolve, reject) => {
