@@ -22,21 +22,43 @@ module.exports = {
         for (key in list) {
             let character = list[key];
             let search = character.toLowerCase();
-            let main = await client.notify.getMain(client, guild, search);
-            main = main.toLowerCase();
-            let member = await client.notify.findUser(client, guild, main);
-            // Maybe they're not cached .. let's try fetching them.
-            if (!member) {
-                await guild.members.fetch({ query: main, limit: 10});
+            let characterData = await client.models.character.findOne({where: {name: search, guildID: guild.id}});
+            let memberID, member;
+
+            if (characterData.pingID) {
+                memberID = characterData.pingID;
+            } else {
+                // Retrieve the name of their main, or the current character name if no main is found
+                let main = await client.notify.getMain(client, guild, search);
+
+                // Attempt to retrieve the member
+                main = main.toLowerCase();
                 member = await client.notify.findUser(client, guild, main);
+
+                // Maybe they're not cached .. let's try fetching them.
+                if (!member) {
+                    await guild.members.fetch({ query: main, limit: 10});
+                    member = await client.notify.findUser(client, guild, main);
+                }
+                
+                // Update the character model with the discord member ID for this user.
+                if (member) {
+                    memberID = member.id
+                    client.models.character.update({ pingID: member.id }, {
+                        where: {
+                            id: characterData.id
+                        }
+                    });
+                }
             }
 
-            if (member) {
-                mentionText += '<@' + member.user.id + '> ';
+            if (memberID) {
+                mentionText += '<@' + memberID + '> ';
             } else {
                 noMatch.push(character);
             }
         }
+
         if (noMatch.length) 
             mentionText += '\n' + 'Could not find: ' + noMatch.join(', ');
 
