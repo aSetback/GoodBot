@@ -26,7 +26,7 @@ module.exports = (client, Sequelize) => {
         },
         pingID: {
             type: Sequelize.BIGINT(20),
-            allowNull: false
+            allowNull: true
         },
         shadowResist: {
             type: Sequelize.BIGINT(20),
