@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
