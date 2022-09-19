@@ -52,6 +52,19 @@ exports.run = async (client, interaction) => {
         whereClause.faction = faction;
     }
 
+    client.models.raidCategory.findOne({ where: whereClause }).then((raidCategory) => {
+        if (!raidCategory) {
+            client.models.raidCategory.create(record);
+        } else {
+            client.models.raidCategory.update(record, {
+                where: {
+                    id: raidCategory.id
+                }
+            });
+
+        }
+    });
+    
     if (faction) {
         return interaction.reply({ content: 'Raid category for "' + type + '" is set as "' + category + '" for ' + faction + '.', ephemeral: true});
     } else {
