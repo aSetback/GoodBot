@@ -227,26 +227,19 @@ module.exports = {
         });
         return promise;
     },
-    confirm(client, raidID, characterName) {
-        let promise = new Promise((resolve, reject) => {
-            let record = {
-                confirmed: true
-            };
-            client.models.signup.findOne({where: {player: characterName, raidID: raidID, signup: 'yes'}}).then((signup) => {
-                if (!signup) {
-                    resolve(false);
-                } else {
-                    client.models.signup.update(record, {
-                        where: {
-                            id: signup.id
-                        }
-                    }).then((rows) => {
-                        resolve(true);
-                    });
+    confirm: async (client, raidID, characterName) => {
+        let record = {
+            confirmed: true
+        };
+        let signup = await client.models.signup.findOne({where: {player: characterName, raidID: raidID, signup: 'yes'}});
+        if (signup) {
+            await client.models.signup.update(record, {
+                where: {
+                    id: signup.id
                 }
             });
-        });
-        return promise;
+        }
+        return signup;
     },
     unconfirm(client, raidID, characterName) {
         let promise = new Promise((resolve, reject) => {
