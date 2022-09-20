@@ -32,34 +32,16 @@
 
 ## General Commands
 ```
-+archive
+/archive
   Move the channel to the 'Archives' category, and syncs the permissions with the category
 
-+clean X
+/clean X
   Delete the previous X messages in chat (Note: this does not work on mesages older than 14 days)
 
-+removeallpins
-  Unpin all current pins in the current channel.
-
-+serverid
-  The bot will DM you the server's ID
-
-+sort
-  The bot will organize a raid category by raid date.
-
-+setup
+/setup
   Generate the 'Getting Started' channels & 'Raid Signups' Category.
 
-+setupfaction
-  Generate a channel under 'Getting Started' for choosing faction
-
-+joinmessage <message>
-  Sets a message that will be sent to all new players when they join your discord server.
-
-+archiveold
-  Clones the current 'Archives' category (complete with all permissions), then renames the current 'Archives' to 'Archives-Old'
-
-+deletecategory <Category Name>
+/deletecategory <Category Name>
   Deletes a channel category and all sub-channels.  **BE VERY CAREFUL WITH THIS, THERE IS NO UNDO BUTTON**
 
 ```
@@ -139,13 +121,13 @@
 
 ## Rules
 ```
-/rules add <Rules Name>
+/addrules
   Add a rule to be displayed later with a name of <Rules Name>.
 
-/rules show <Rules Name>
+/showrules <Rules Name>
   Display a rule set
 
-/raidrules <Rules Name>
+/setrules <Rules Name>
   Set raid rules that will display when the raid is duped.
 
 ```
