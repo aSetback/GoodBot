@@ -72,7 +72,14 @@ exports.run = async (client, interaction) => {
             guild: interaction.guild,
             member: interaction.member
         };
-        client.signups.unsigned(client, interaction, args);
+
+        // Send out notifications of duped raid
+        let dupeRaid = await client.raid.get(client, dupeChannel);
+        pingList = await client.notify.getUnsigned(client, dupeRaid, raid);
+        let notifications = await client.notify.makeList(client, interaction.guild, pingList);
+        dupeChannel.send(notifications);
+
+        // Inform the user!
         return interaction.reply({content: "Raid has been successfully duped: <#" + dupeChannel.id + '>' , ephemeral: true, components: []});
     });
 }
