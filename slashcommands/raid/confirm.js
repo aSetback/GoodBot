@@ -25,6 +25,13 @@ exports.run = async (client, interaction) => {
     if (character == 'All') {
         await client.models.signup.update({ 'confirmed': 1 }, {where: {raidID: raid.id, signup: 'yes'}})
         confirmReply = 'All players have been confirmed for this raid.';
+    } else if (character.indexOf(',') >= 0) {
+        let characters = character.split(',');
+        for (key in characters) {
+            let tempChar = characters[key].trim();
+            await client.signups.confirm(client, raid.id, tempChar);
+        }
+        confirmReply = 'Confirmations for this raid have been updated.';
     } else {
         await client.signups.confirm(client, raid.id, character);
         confirmReply = character + ' has been confirmed for this raid.';
