@@ -13,7 +13,15 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: true
         },
-        region: {
+        multifaction: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true
+        },
+        classrole: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true
+        },
+        completerole: {
             type: Sequelize.STRING,
             allowNull: true
         },
@@ -21,11 +29,7 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: true
         },
-        welcomeMessage: {
-            type: Sequelize.TEXT,
-            allowNull: true
-        },
-        raidcategory: {
+        warcraftlogskey: {
             type: Sequelize.STRING,
             allowNull: true
         },
@@ -33,8 +37,8 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: true
         },
-        wizard: {
-            type: Sequelize.BOOLEAN,
+        raidcategory: {
+            type: Sequelize.STRING,
             allowNull: true
         }
     }, {

@@ -8,6 +8,16 @@ let commandData = new SlashCommandBuilder()
             .setName('name')
 			.setDescription('Option Name')
 			.setRequired(true)
+			.addChoices(
+                { name: 'Faction', value: 'faction' },
+                { name: 'WoW Server', value: 'server' },
+                { name: 'Multi Faction Server', value: 'multifaction'},
+                { name: 'Enable Class Roles', value: 'classrole'},
+                { name: 'Complete Role', value: 'completerole'},
+                { name: 'Google Sheet ID', value: 'sheet'},
+                { name: 'Warcraft Logs API Key', value: 'warcraftlogskey'},
+                { name: 'Expansion', value: 'expansion'}
+            )
     )
     .addStringOption(option =>
 		option
@@ -27,33 +37,21 @@ exports.run = async (client, interaction) => {
     let optionName = interaction.options.getString('name');
     let optionValue = interaction.options.getString('value');
     
-	if (optionName == 'raidcategory' || optionName == 'server' || optionName == 'region') {
-		client.models.settings.findOne({where: {guildID: interaction.guild.id}}).then((settings) => {
-			let record = {
-				guildID: interaction.guild.id
-			}
-			record[optionName] = optionValue;
-			if (settings) {
-				client.models.settings.update(record, {where: {id: settings.id}}).then(() => {
-                    return interaction.reply({ content: 'Option saved.', ephemeral: true});
-				});
-			} else {
-				client.models.settings.create(record).then(() => {
-                    return interaction.reply({ content: 'Option saved.', ephemeral: true});
-				});
-			}
-		});
-	} else {
-		// Write to class json file
-		let fileName = 'data/' + interaction.guild.id + '-options.json';
-		let parsedList = {};
-		if (fs.existsSync(fileName)) {
-			currentList = fs.readFileSync(fileName, 'utf8');
-			parsedList = JSON.parse(currentList);
+	client.models.settings.findOne({where: {guildID: interaction.guild.id}}).then((settings) => {
+		let record = {
+			guildID: interaction.guild.id
 		}
-		parsedList[optionName] = optionValue;
-		fs.writeFileSync(fileName, JSON.stringify(parsedList)); 
-        return interaction.reply({ content: 'Option saved.', ephemeral: true});
-	}
+		record[optionName] = optionValue;
+		if (settings) {
+			client.models.settings.update(record, {where: {id: settings.id}}).then(() => {
+				return interaction.reply({ content: 'Option saved.', ephemeral: true});
+			});
+		} else {
+			client.models.settings.create(record).then(() => {
+				return interaction.reply({ content: 'Option saved.', ephemeral: true});
+			});
+		}
+	});
+
 
 }
