@@ -42,14 +42,11 @@ exports.run = async (client, interaction) => {
 		'paladin-tank': 14,
 		'shaman-dps': 15,
 		'shaman-caster': 16,
-		'shaman-healer': 17
+		'shaman-healer': 17,
+		'dk-dps': 18,
+		'dk-tank': 19
 	};
 
-	let expansion = client.guildOption.expansion(client, interaction.guild.id);
-	if (expansion >= 2) {
-		sheetCols['dk-dps'] = 18;
-		sheetCols['dk-tank'] = 19;
-	}
 	if (expansion >= 4) {
 		sheetCols['monk-dps'] = 20;
 		sheetCols['monk-tank'] = 21;
