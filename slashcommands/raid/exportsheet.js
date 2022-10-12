@@ -47,16 +47,6 @@ exports.run = async (client, interaction) => {
 		'dk-tank': 19
 	};
 
-	if (expansion >= 4) {
-		sheetCols['monk-dps'] = 20;
-		sheetCols['monk-tank'] = 21;
-		sheetCols['monk-healer'] = 22;
-	}
-	if (expansion >= 6) {
-		sheetCols['dk-dps'] = 23;
-		sheetCols['dk-tank'] = 24;
-	}
-
 	cellData = [];
 	rowCounter = [];
 	raid.signups.forEach((player) => {
