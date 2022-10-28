@@ -61,7 +61,7 @@ module.exports = {
                     possibleItems.push(likeItem[key].name);
                 }
 
-                return {result: -1, msg: "I found " + possibleItems.length + " items that matched " + item + ": " + possibleItems.join(", ") + ".  Please re-enter your reserve using the full item name!"};
+                return {result: -1, msg: "I found " + possibleItems.length + " items that matched `" + item + "`:\n" + possibleItems.join("\n") + "\nPlease re-enter your reserve using the full item name!"};
             }
         }
         
