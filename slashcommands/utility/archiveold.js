@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
-    .setName('archive')
+    .setName('archiveold')
     .setDescription('Archive a raid channel.');
 
 exports.data = commandData;
