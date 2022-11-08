@@ -11,8 +11,11 @@ module.exports = async (client, interaction) => {
             cmd.buttonResponse(client, interaction, cmdData);
         } else {
             let raid = await client.raid.get(client, interaction.channel);
+            let signup = await client.signups.set(client, raid, interaction.member.displayName, interaction.customId, interaction.member.id);
+            if (signup.result < 0) {
+                return interaction.reply({content: signup.msg, ephemeral: true});
+            }
             client.log.write(client, interaction.member, interaction.channel, 'Signup: ' + interaction.customId);
-            await client.signups.set(client, raid, interaction.member.displayName, interaction.customId, interaction.member.id);
             client.signups.signupReply(client, interaction);
         }
     }
