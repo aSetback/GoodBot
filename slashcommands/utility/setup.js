@@ -115,9 +115,12 @@ exports.buttonResponse = async (client, interaction, data) => {
 
 exports.modalResponse = async (client, interaction) => {
     type = interaction.fields.components[0].components[0].customId;
+    let content = '';
     if (type == "mainName") {
         character = client.general.ucfirst(interaction.fields.getTextInputValue('mainName'));
-        interaction.guild.members.cache.get(interaction.user.id).setNickname(client.general.ucfirst(character));
+        await interaction.guild.members.cache.get(interaction.user.id).setNickname(client.general.ucfirst(character)).catch((e) => {
+            content += "**Please Note:** Goodbot was unable to change your nickname due to permissions - You will need to change your nickname to match your character name manually.\n\n";
+        });
     } else {
         character = client.general.ucfirst(interaction.fields.getTextInputValue('altName'));
 
@@ -148,6 +151,6 @@ exports.modalResponse = async (client, interaction) => {
 
     let ActionRow1 = new MessageActionRow().addComponents(input1);
     let ActionRow2 = new MessageActionRow().addComponents(input2);
-
-    return interaction.reply({content: 'What class and role is ' + client.general.ucfirst(character) + '?', ephemeral: true, components: [ActionRow1, ActionRow2]});
+    content += 'What class and role is ' + client.general.ucfirst(character) + '?';
+    return interaction.reply({content: content, ephemeral: true, components: [ActionRow1, ActionRow2]});
 }
