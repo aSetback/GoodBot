@@ -80,6 +80,13 @@ async function reserveItem(client, interaction, args) {
     if (reserve.result == -1) {
         interaction.editReply({content: reserve.msg, ephemeral: true});
     } else {
+        let record = {
+            raidID: raid.id,
+            memberID: interaction.user.id,
+            guildID: interaction.guild.id,
+            log: 'Command: ' + reserve.data.item + '" has been reserved for ** " + args.character + "**.'
+        }
+        await client.models.reserveLog.create(record);
         let reserveText = 'A soft reserve has been set on ' + reserve.data.item + ' for ' + client.general.ucfirst(args.character) + '.';
         interaction.editReply({content: reserveText, ephemeral: true});
     }
