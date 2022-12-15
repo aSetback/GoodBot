@@ -14,7 +14,7 @@ let commandData = new SlashCommandBuilder()
 		option
             .setName('signup')
 			.setDescription('Sign As')
-			.setRequired(true)
+			.setRequired(false)
             .addChoices(
                 { name: 'Yes', value: 'y' },
                 { name: 'Maybe', value: 'm' },
@@ -26,7 +26,7 @@ exports.data = commandData;
 exports.run = async (client, interaction) => {
     let args = {
         character: interaction.options.getString('character'),
-        signup: interaction.options.getString('signup')
+        signup: interaction.options.getString('signup') ? interaction.options.getString('signup') : 'y'
     };
     if (!args.signup) { args.signup = 'y'; }
  
@@ -39,7 +39,7 @@ exports.run = async (client, interaction) => {
         return false;
     }
 
-    let signup = await client.signups.set(client, raid, args.character, args.signup, interaction.member.id);
+    let signup = await client.signups.set(client, raid, args.character, args.signup, interaction);
     if (signup.result == -1) {
         interaction.reply({content: signup.msg, ephemeral: true});
     } else {

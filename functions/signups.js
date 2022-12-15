@@ -134,7 +134,9 @@ module.exports = {
         return interaction.reply({content: 'You have signed up for this raid as ' + playerName + '.  Would you like to change signup to an alt?', ephemeral: true, components: [messageRow]});
 
     },
-	set: async function(client, raid, character, type, userID) {
+	set: async function(client, raid, character, type, interaction) {
+        let userID = interaction.user.id;
+
         type = type.substr(0, 1).toLowerCase();
         if (type == '+' || type == 'y') { type = 'yes'}
         if (type == '-' || type == 'n') { type = 'no'}
@@ -152,17 +154,8 @@ module.exports = {
         }
         
         // Check to make sure class & role is set
-        character = await client.set.getCharacter(client, {id: raid.guildID}, characterName);
-        if (!character && raid.crosspostID && raid.crosspostID.length) {
-            let otherChannel;
-            if (message.channel.id == raid.channelID) {
-                otherChannel = await client.channels.cache.find(c => c.id == raid.crosspostID);
-            } else {
-                otherChannel = await client.channels.cache.find(c => c.id == raid.channelID);
-            }
-            character = await client.set.getCharacter(client, otherChannel.guild, characterName);
-        }
-
+        character = await client.character.get(client, characterName, interaction.guild.id);
+        
         // Check if the player is valid
         if (!client.set.validName(characterName)) {
             let playerMessage = 'Unable to sign up "' + characterName + '" for this raid.  Please set your in-game name using +nick first.';
@@ -202,8 +195,6 @@ module.exports = {
            let alt = alts[key]; 
             whereStatement.push({'player': alt.name, 'raidID': raid.id});
         }
-        console.log(alts);
-        console.log(whereStatement);
 
         let signup = await client.models.signup.findOne({ where: {[Op.or]: whereStatement}, order: [['createdAt', 'DESC']], group: ['player']});
 

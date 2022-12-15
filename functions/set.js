@@ -98,18 +98,6 @@ module.exports = {
         });
         return promise;
     },
-    getCharacter: (client, guild, characterName) => {
-        let promise = new Promise((resolve, reject) => {
-            client.models.character.findOne({ where: {'name': characterName, 'guildID': guild.id}}).then((character) => {
-                if (character) {
-                    resolve(character);
-                } else {
-                    resolve(false);
-                }
-            });
-        });
-        return promise;
-    },
     hasFaction: (client, member) => {
         let horde = member.guild.roles.cache.find(role => role.name.toLowerCase() === 'horde');
         let alliance = member.guild.roles.cache.find(role => role.name.toLowerCase() === 'alliance');

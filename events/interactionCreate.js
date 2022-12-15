@@ -1,5 +1,3 @@
-const { Message } = require("discord.js");
-
 module.exports = async (client, interaction) => {
     if (interaction.isButton()) {
         if (interaction.customId.indexOf('sc-button-') > -1) {
@@ -11,7 +9,7 @@ module.exports = async (client, interaction) => {
             cmd.buttonResponse(client, interaction, cmdData);
         } else {
             let raid = await client.raid.get(client, interaction.channel);
-            let signup = await client.signups.set(client, raid, interaction.member.displayName, interaction.customId, interaction.member.id);
+            let signup = await client.signups.set(client, raid, interaction.member.displayName, interaction.customId, interaction);
             if (signup.result < 0) {
                 return interaction.reply({content: signup.msg, ephemeral: true});
             }
