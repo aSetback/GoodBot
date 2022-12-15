@@ -187,7 +187,27 @@ module.exports = {
             return {result: -1, msg: playerMessage};
         }
 
-        // Save our sign-up to the db
+        // Check if the player is already signed up on a character
+        let main = character;
+        
+        // If main.mainID is set, this is an alt.  Retrieve the actual main.
+        if (character.mainID) {
+            main = await client.character.getByID(client, main.mainID);
+        }
+        let alts = await client.character.getAlts(client, main);
+
+        // Generate a where statement to see if this player is already signed up
+        let whereStatement = [{'player': main.name, 'raidID': raid.id}];
+        for (key in alts) {
+           let alt = alts[key]; 
+            whereStatement.push({'player': alt.name, 'raidID': raid.id});
+        }
+        console.log(alts);
+        console.log(whereStatement);
+
+        let signup = await client.models.signup.findOne({ where: {[Op.or]: whereStatement}, order: [['createdAt', 'DESC']], group: ['player']});
+
+        // Generate our record
         let record = {
             'player': characterName,
             'signup': type,
@@ -197,8 +217,18 @@ module.exports = {
             'guildID': raid.guildID,
             'memberID': userID
         };
-        
-        let signup = await client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['createdAt', 'DESC']], group: ['player']});
+
+        // if signup exists, modify existing signup, otherwise create a new signup
+        if (signup) {
+            client.models.signup.update(record, {
+                where: {
+                    id: signup.id,                
+                }
+            })
+        } else {
+            signup = await client.models.signup.findOne({ where: {'player': characterName, 'raidID': raid.id}, order: [['createdAt', 'DESC']], group: ['player']});
+        }
+
         if (!signup) {
             await client.models.signup.create(record);
         } else {
