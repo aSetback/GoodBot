@@ -80,6 +80,6 @@ exports.run = async (client, interaction) => {
         dupeChannel.send(notifications);
 
         // Inform the user!
-        return interaction.reply({content: "Raid has been successfully duped: <#" + dupeChannel.id + '>' , ephemeral: true, components: []});
+        return interaction.reply({content: "Raid has been successfully duped: <#" + dupeChannel.id + '>' , ephemeral: false, components: []});
     });
 }
