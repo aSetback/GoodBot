@@ -84,7 +84,7 @@ async function reserveItem(client, interaction, args) {
             raidID: raid.id,
             memberID: interaction.user.id,
             guildID: interaction.guild.id,
-            log: 'Command: ' + reserve.data.item + '" has been reserved for ** " + args.character + "**.'
+            log: 'Command: "' + reserve.data.item + '" has been reserved for **' + args.character + '**.'
         }
         await client.models.reserveLog.create(record);
         let reserveText = 'A soft reserve has been set on ' + reserve.data.item + ' for ' + client.general.ucfirst(args.character) + '.';

@@ -37,6 +37,8 @@ exports.run = async (client, interaction) => {
             if (!item)  {
                 client.models.reserveItem.create(record);
                 console.log('Item created: ' + record.name);
+            } else {
+                console.log('Item exists: ' + record.name);
             }
         });
     
