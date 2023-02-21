@@ -25,7 +25,7 @@ module.exports = {
             let characterData = await client.models.character.findOne({where: {name: search, guildID: guild.id}});
             let memberID, member;
 
-            if (characterData.pingID) {
+            if (characterData && characterData.pingID) {
                 memberID = characterData.pingID;
             } else {
                 // Retrieve the name of their main, or the current character name if no main is found
