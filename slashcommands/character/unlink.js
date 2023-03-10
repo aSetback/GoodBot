@@ -14,7 +14,7 @@ let commandData = new SlashCommandBuilder()
 exports.data = commandData;
 
 exports.run = async (client, interaction) => {
-	let character = interaction.options.getString('wav').toLowerCase();
+	let character = interaction.options.getString('character').toLowerCase();
 
     // Retrieve our main
 	let mainCharacter = await client.models.character.findOne({where: {name: character, guildID: interaction.guild.id}})
