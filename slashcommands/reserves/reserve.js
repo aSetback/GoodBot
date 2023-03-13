@@ -14,7 +14,7 @@ let commandData = new SlashCommandBuilder()
 		option
             .setName('character')
 			.setDescription('Character Name')
-			.setRequired(true)
+			.setRequired(false)
     );
 
 exports.data = commandData;
