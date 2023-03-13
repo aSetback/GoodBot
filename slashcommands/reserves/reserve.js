@@ -8,13 +8,13 @@ let commandData = new SlashCommandBuilder()
 		option
             .setName('reserve')
 			.setDescription('Item Name')
-			.setRequired(false)
+			.setRequired(true)
     )
     .addStringOption(option =>
 		option
             .setName('character')
 			.setDescription('Character Name')
-			.setRequired(false)
+			.setRequired(true)
     );
 
 exports.data = commandData;
@@ -25,45 +25,11 @@ exports.run = async (client, interaction) => {
         reserve: interaction.options.getString('reserve')
     };
 
-    if (args.reserve) {
     interaction.deferReply({ephemeral: true});
         if (!args.character) {
             args.character = interaction.member.nickname ? interaction.member.nickname : interaction.user.username;
         }
         reserveItem(client, interaction, args);
-    } else {
-        let modal = new Modal()
-            .setCustomId('sc-modal-reserve')
-            .setTitle('Reserve an Item');
-
-        let input1 = new TextInputComponent()
-            .setCustomId('reserve')
-            .setLabel('What would you like to reserve?')
-            .setRequired(true)
-            .setStyle('SHORT');
-
-        let input2 = new TextInputComponent()
-            .setCustomId('character')
-            .setLabel('Who is the reserve for?')
-            .setValue(interaction.member.nickname ? interaction.member.nickname : interaction.user.username)
-            .setRequired(true)
-            .setStyle('SHORT');
-
-        let ActionRow1 = new MessageActionRow().addComponents(input1);
-        let ActionRow2 = new MessageActionRow().addComponents(input2);
-        modal.addComponents([ActionRow1, ActionRow2]);
-
-        await interaction.showModal(modal);
-    }
-}
-
-exports.modalResponse = async (client, interaction) => {
-    interaction.deferReply({ephemeral: true});
-    let args = {
-        character: interaction.fields.getTextInputValue('character'),
-        reserve: interaction.fields.getTextInputValue('reserve')
-    };
-    reserveItem(client, interaction, args);
 }
  
 async function reserveItem(client, interaction, args) {
