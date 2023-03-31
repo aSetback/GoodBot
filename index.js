@@ -113,7 +113,7 @@ fs.readdir("./events/", (err, files) => {
 
 // Allow slash commands to be registered
 client.slashCommands = new Enmap();
-fs.readdir('./slashCommands', (err, files) => {
+fs.readdir('./slashcommands', (err, files) => {
   if (err) return console.error(err);
 
   // Look for directories within the parent directory
