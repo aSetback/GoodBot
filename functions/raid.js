@@ -345,7 +345,7 @@ module.exports = {
             let errorArchiveNoChannel = client.loc('errorMaxChannel', "The category **Archives** does not exist, please create the category to use this command.");
             errorMessage = errorArchiveNoChannel;
         }
-        return {success: (errorMessage ? 0 : 1), msg: errorMessage};
+        return {success: (errorMessage ? 0 : 1), message: errorMessage};
     },
     createEventChannel: async (client, message, category, raid, guild) => {
         let promise = new Promise(async (resolve, reject) => {
