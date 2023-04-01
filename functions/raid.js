@@ -337,10 +337,8 @@ module.exports = {
                 }
             } catch (e) {
                 // Generally the only reason this fails is that the archvies is full (50 channels).  Inform the user.
-                if (e.message.indexOf('Maximum number') > 0) {
-                    let errorArchiveMaxChannel = client.loc('errorMaxChannel', "The category **Archives** is full, this channel could not be moved.");
-                    errorMessage = errorArchiveMaxChannel;
-                }
+                let errorArchiveMaxChannel = client.loc('errorMaxChannel', "The category **Archives** is full, this channel could not be moved.");
+                errorMessage = errorArchiveMaxChannel;
             }
         } else {
             // The archives channel does not exist.  Inform the user.
