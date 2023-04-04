@@ -44,7 +44,7 @@ async function reserveItem(client, interaction, args) {
 
     let reserve = await client.reserves.reserveItem(client, raid, args.character,  args.reserve);
     if (reserve.result == -1) {
-        interaction.editReply({content: reserve.msg, ephemeral: true});
+        interaction.editReply({content: reserve.message, ephemeral: true});
     } else {
         let record = {
             raidID: raid.id,

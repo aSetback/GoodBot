@@ -11,17 +11,17 @@ module.exports = {
         // Make sure the user is signed up!
         let signup = await client.reserves.findSignup(client, raid.id, player);
         if (!signup) {
-            return {result: -1, msg: "We couldn't find " + player + " in the sign-ups for this raid."};
+            return {result: -1, message: "We couldn't find " + player + " in the sign-ups for this raid."};
         } 
 
         // You can't reserve if soft reserve is not enabled
         if (!raid.softreserve) {
-            return {result: -1, msg: "Soft reserve is not currently enabled for this raid."};
+            return {result: -1, message: "Soft reserve is not currently enabled for this raid."};
         }
     
         // You can't reserve if the raid is locked!
         if (raid.locked) {
-            return {result: -1, msg: "This raid is locked -- new reserves can not currently be added."};
+            return {result: -1, message: "This raid is locked -- new reserves can not currently be added."};
         }
     
         // Initial check, hoping for a perfect match
@@ -61,13 +61,13 @@ module.exports = {
                     possibleItems.push(likeItem[key].name);
                 }
 
-                return {result: -1, msg: "I found " + possibleItems.length + " items that matched `" + item + "`:\n" + possibleItems.join("\n") + "\nPlease re-enter your reserve using the full item name!"};
+                return {result: -1, message: "I found " + possibleItems.length + " items that matched `" + item + "`:\n" + possibleItems.join("\n") + "\nPlease re-enter your reserve using the full item name!"};
             }
         }
         
         if (!reserveMade) {
             // We failed :(
-            return {result: -1, msg: "I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**."};
+            return {result: -1, message: "I'm sorry, I was unable to find **" + item + "** in the list of available items for **" + raid.raid.toUpperCase() + "**."};
         } else {
             // Return the reserve!
             reserve = await client.models.raidReserve.findOne({ where: { signupID: signup.id, raidID: raid.id }, order: [['updatedAt', 'DESC']], include: includes });

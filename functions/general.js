@@ -2,7 +2,7 @@ const fs = require("fs");
 
 module.exports = {
     ucfirst: (text) => {
-        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+        return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : '';
     },
     getChannel: async (channelName, guild) => {
         if (channelName.substring(0, 2) == '<#') {

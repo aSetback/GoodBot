@@ -162,6 +162,12 @@ module.exports = {
             return {result: -1, msg: playerMessage};
         }
 
+        // Verify character exists
+        if (!character) {
+            let playerMessage = 'You have not set up a character yet -- please use the get-started-goodbot channel.';
+            return {result: -1, msg: playerMessage};
+        }
+
         // Verify class is set
         if (!character.class) {
             let playerMessage = 'Unable to sign up "' + characterName + '" for this raid, character\'s class is not set.';
