@@ -14,13 +14,14 @@ exports.data = commandData;
 
 exports.run = async (client, interaction) => {
 
+    interaction.deferReply();
     let character = interaction.options.getString('character');
 
     let main = await client.character.get(client, character, interaction.guild.id);
 
     // Character doesn't exist, evidently.
     if (!main) {
-        return interaction.reply({content: "Could not find player: **" + character + "**", ephemeral: true});
+        return interaction.editReply({content: "Could not find player: **" + character + "**", ephemeral: true});
     }
     if (main.mainID) {
         main = await client.character.getByID(client, main.mainID);
@@ -86,7 +87,7 @@ exports.run = async (client, interaction) => {
     signupMsg += '```';
 
 	// Completed successfully!
-    await interaction.reply({content: returnMsg, ephemeral: true});
+    await interaction.editReply({content: returnMsg, ephemeral: true});
     interaction.followUp({content: signupMsg, ephemeral: true});
 }
  

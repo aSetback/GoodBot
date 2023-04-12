@@ -24,9 +24,9 @@ exports.run = async (client, interaction) => {
 
     // Set the main character as a "main" if it's not already.
     if (mainCharacter.mainID) {
-        client.models.character.update({altID: null}, {where: {id: mainCharacter.id}});
+        client.models.character.update({mainID: null}, {where: {id: mainCharacter.id}});
     }
         
-    return interaction.reply({content: 'Alt unlinked.', ephemeral: true});
+    return interaction.reply({content: 'Character unlinked.', ephemeral: true});
 }
 
