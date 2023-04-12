@@ -14,7 +14,7 @@ exports.data = commandData;
 
 exports.run = async (client, interaction) => {
 
-    interaction.deferReply();
+    interaction.deferReply({ephemeral: true});
     let character = interaction.options.getString('character');
 
     let main = await client.character.get(client, character, interaction.guild.id);
@@ -27,19 +27,17 @@ exports.run = async (client, interaction) => {
         main = await client.character.getByID(client, main.mainID);
     }
 
-    main = await client.character.getAttendance(client, main, interaction.guild.id);
     let alts = await client.character.getAlts(client, main);
     let characterNames = [main.name];
 
     let returnMsg = '**Characters**\n```md\n';
     returnMsg += '  Character'.padEnd(30) + 'Class'.padEnd(20) + 'Role'.padEnd(20) + 'Sign-ups'.padEnd(20) + 'No Shows'.padEnd(20) + '\n';
     returnMsg += ''.padEnd(100, '=') + '\n';
-    returnMsg += '* ' + main.name.padEnd(28) + client.general.ucfirst(main.class).padEnd(20) + client.general.ucfirst(main.role).padEnd(20) + main.signups.toString().padEnd(20) + main.noshows.toString().padEnd(20) + '\n';
+    returnMsg += '* ' + main.name.padEnd(28) + client.general.ucfirst(main.class).padEnd(20) + client.general.ucfirst(main.role).padEnd(20) + '\n';
     for (key in alts) {
         let alt = alts[key];
-        alt = await client.character.getAttendance(client, alt, interaction.guild.id);
         characterNames.push(alt.name);
-        returnMsg += '  ' + alt.name.padEnd(28) + client.general.ucfirst(alt.class).padEnd(20) + client.general.ucfirst(alt.role).padEnd(20) + alt.signups.toString().padEnd(20) + alt.noshows.toString().padEnd(20) + '\n';
+        returnMsg += '  ' + alt.name.padEnd(28) + client.general.ucfirst(alt.class).padEnd(20) + client.general.ucfirst(alt.role).padEnd(20) + '\n';
     }
     returnMsg += '```';
 
