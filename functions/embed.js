@@ -1,8 +1,5 @@
 const Discord = require("discord.js");
 const { MessageActionRow, MessageButton } = require('discord.js');
-const { Op } = require('sequelize');
-const character = require("./character");
-const raid = require("./raid");
 
 module.exports = {
 	update: async (client, channel) => {
@@ -132,18 +129,6 @@ module.exports = {
 			.setColor(raidData.color)
 			.setThumbnail(icon);
 
-		// // Generate calendar links if the time is set.
-		// if (raid.time) {
-		// 	let subject = raidData.title ? raidData.title + ' (' + instanceName + ')' : raidName;
-		// 	let parsedTime = client.general.parseTime(raid.time);
-		// 	if (parsedTime) {
-		// 		let formattedDate = raidDate.toISOString().slice(0, 11) + parsedTime + '-04:00';
-		// 		let zDate = new Date(Date.parse(formattedDate));
-		// 		let icsLink = 'http://ics.agical.io/?subject=' + subject + '&reminder=45&location=' + instanceName + '&dtstart=' + formattedDate;
-		// 		let gcalLink = 'https://www.google.com/calendar/render?action=TEMPLATE&text=' + subject + '&location=' + instanceName + '&dates=' + zDate.toISOString().replace(/-/g, '').replace(/:/g, '').replace('.000', '') + '/' + zDate.toISOString().replace(/-/g, '').replace(/:/g, '').replace('.000', '');
-		// 		raidData.description += '\n[ics](' + encodeURI(icsLink) + ') [gcal](' + encodeURI(gcalLink) + ')'
-		// 	}
-		// }
 		embed.setDescription(raidData.description);
 
 		if (raid.locked) {
@@ -185,6 +170,9 @@ module.exports = {
 		// Preserve our original key to display sign-up order
 		raid.signups.forEach((signup, key) => {
 			raid.signups[key].order = key + 1;
+			if (signup.role) {
+				raid.signups[key].character.role = signup.role;
+			}
 		});
 
 		cleanSignups = raid.signups.filter(s => s.character != null);

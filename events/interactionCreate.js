@@ -38,6 +38,8 @@ module.exports = async (client, interaction) => {
             } else {
                 client.signups.selectAlt(client, interaction);
             }
+        } else if (interaction.customId == 'roleSelect') {
+            client.signups.roleChange(client, interaction);
         } else {
             if (interaction.customId.indexOf('sc-select-') > -1) {
                 let cmdData = interaction.customId.replace('sc-select-', '').toLowerCase();

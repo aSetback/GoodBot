@@ -92,8 +92,35 @@ module.exports = {
 
         return interaction.reply({content: 'Your signup has been changed to ' + character.name + '.', ephemeral: true});
     },
+    createRoleSelect: () => {        
+        let roleSelect = new MessageSelectMenu();
+        roleSelect.addOptions([{
+            label: 'Tank',
+            value: 'tank',
+            description: 'Tank (eg Protection, Blood, Feral)'
+        },
+        {
+            label: 'Caster',
+            value: 'caster',
+            description: 'Caster DPS (eg Balance, Elemental, Shadow)'
+        },
+        {
+            label: 'Healer',
+            value: 'healer',
+            description: 'Healer (eg Holy, Restoration)'
+        },
+        {
+            label: 'DPS',
+            value: 'dps',
+            description: 'Non-caster DPS (eg Enhancement, Feral, Fury)'
+        }]);
+        roleSelect.setCustomId('roleSelect')
+            .setPlaceholder("Select a role.");
+        let roleRow = new MessageActionRow().addComponents(roleSelect);
+        return {'content': `You can change your current role by selecting a different option.`, ephemeral: true, components: [roleRow]};
+    },
     signupReply: async (client, interaction) => {
-        const altSelect = new MessageSelectMenu();
+        client.embed.update(client, interaction.channel);
         
         // Retrieve Player Name
         let playerName = interaction.member.nickname ? interaction.member.nickname : interaction.user.username;
@@ -101,18 +128,23 @@ module.exports = {
 
         // Verify the player has a character
         let main = await client.character.get(client, playerName, interaction.guild.id);
-        
+
         if (!main) {
             return false;
         }
+
+        let roleSelect = client.signups.createRoleSelect();
+        await interaction.reply(roleSelect);
+
+        let altSelect = new MessageSelectMenu();
+        altSelect.setCustomId('altSelect')
+            .setPlaceholder("Select a character.");
 
         // Character doesn't exist, evidently.
         if (main.mainID) {
             main = await client.character.getByID(client, main.mainID);
         }
         let alts = await client.character.getAlts(client, main);
-        altSelect.setCustomId('altSelect')
-            .setPlaceholder("Select a character.");
 
         for (key in alts) {
             let alt = alts[key];
@@ -130,9 +162,27 @@ module.exports = {
         }]);
         
         const messageRow = new MessageActionRow().addComponents(altSelect);
-        client.embed.update(client, interaction.channel);
-        return interaction.reply({content: 'You have signed up for this raid as ' + playerName + '.  Would you like to change signup to an alt?', ephemeral: true, components: [messageRow]});
-
+        return interaction.followUp({content: `You have signed up for this raid as ${playerName}.  Would you like to change signup to an alt?`, ephemeral: true, components: [messageRow]});
+    },
+    roleChange: async function(client, interaction) {
+        let role = interaction.values[0];
+        let mainName = client.general.ucfirst(interaction.member.nickname ? interaction.member.nickname : interaction.user.username);
+        let main = await client.character.get(client, mainName, interaction.guild.id);
+        let alts = await client.character.getAlts(client, main);
+        let raid = await client.raid.get(client, interaction.channelId);
+        let whereStatement = [{'player': mainName, 'raidID': raid.id}];
+        for (key in alts) {
+           let alt = alts[key]; 
+            whereStatement.push({'player': alt.name, 'raidID': raid.id});
+        }
+        let signup = await client.models.signup.findOne({ where: {[Op.or]: whereStatement}, order: [['createdAt', 'DESC']], group: ['player']});
+        if (signup) {
+            await client.models.signup.update({role: role}, {where: {id: signup.id}});
+            client.embed.update(client, interaction.channel);
+            return interaction.reply({content: `Your role has been changed to **${role}**.`, ephemeral: true});
+        } else {
+            return interaction.reply({content: `An error has occurred, unable to change your role.`, ephemeral: true});
+        }
     },
 	set: async function(client, raid, character, type, interaction) {
         let userID = interaction.user.id;

@@ -7,24 +7,26 @@
 * Invite GoodBot to your server using the following link: [Invite Link](https://discordapp.com/oauth2/authorize?client_id=525115228686516244&permissions=8&scope=bot)
 
 ### Setup Class & Role Channels
-* Use the +setup command -- this will do the following:
+* Use the /setup command -- this will do the following:
   * Create a 'Getting Started' category
   * Create a 'set-your-name' channel, where users can set their in-game nickname.
   * Create a 'set-your-class' channel, where users can set the class the bot will use for their sign-ups.
   * Create a 'set-your-role' channel, where users can set the role the bot will use for their sign-ups.
   * Create a 'Raid Signups' category, where your new raid channels will be created.
 
-### Optional Setup
-* +setupfaction
-  * This will add an additional set-up channel for 'set-your-faction' -- use this only if your discord is both horde & alliance.
-* +setoption completerole <Setup>
-  * This will direct the bot to add a role to players who have completed the set-up channels -- replace <Setup> with the role you'd like the bot to give.
-* Set your spreadsheet ID: +setoption sheet <GoogleSheetID>
-  * This is covered further in the "Spreadsheet" section.
+### Options
+* Using the /options command, you can set the following options:
+  * Faction
+  * WoW Server
+  * Multi Faction Server
+  * Complete Role
+  * Google Sheet ID
+  * Warcraft Logs API Key
+  * Expansion
+  * Default Raid Category
 
 ### Gear Check / Logs Setup
-* Set your guild's server: +setoption server <Server Name>
-* Set your guild's region: +setoption region <Region> // (US or EU)
+* Set your guild's server: /setoption server <Server Name>
 
 ### Command/Error Logging
 * If you create a channel called 'server-logs', the bot will automatically log all commands & sign-ups to this channel.
@@ -57,6 +59,11 @@
 /info Player
   Returns the main and all alts attached to this character, along with signed up raid and resistances.
 
+/remove Player
+  Completely remove a player from the current signup
+
+/signup Player
+  Add a player from the current signup
 ```
 
 ## Raid Sign-up Commands
@@ -76,13 +83,10 @@
 /unlock
   Unlocks a raid, allowing additional signups & reserves.
 
-/exportsheet <SheetID?>
+/exportsheet
   Attempt to export your spreadsheet to Google Sheets  (Will only work if this has been set up, and bot has permissions)
   This will ping only confirmed players if confirmation mode is enabled.
   
-/raidcolor <#HexCode>
-  Set the color of the sidebar of the embed
-
 /raiddate <Valid Date>
   Sets the date of the raid, in 
 
@@ -98,15 +102,18 @@
 /raidtitle <New Raid Title>
   Alter the raid title in the embed
 
-/remove <Player>
-  Removes player from sign-ups completely.
-
 ```
 
 ## Confirmations
 ```
 /confirmation
   Toggle 'confirmation mode' for a raid.
+
+/confirm all
+  Confirms all players for the current raid
+
+/unconfirm all
+  Unconfirms all players for the current raid
 
 /confirm <Player>, <Player>, ...
   Confirms player for the raid (Confirmation mode must be enabled!)
@@ -122,7 +129,7 @@
 ## Rules
 ```
 /addrules
-  Add a rule to be displayed later with a name of <Rules Name>.
+  Open a modal to add rules to be displayed later
 
 /showrules <Rules Name>
   Display a rule set
@@ -161,24 +168,6 @@
   /reserveitems
     The bot will DM the user a list of all items that are available for reserve for this raid
 
-```
-
-## Configuration Options
-```
-  /setoption factionrequired 1
-    Require a faction when creating a raid and setting a raid category
-
-  /raidcategory raid (faction?) Category Name
-    Set a category for a raid to be set up under (for a specific faction, if factionrequired is enabled)
-```
-
-## Nexushub Commands
-```
-/item <Item>
-  Does a fuzzy search for the item string and returns the top result as an embed.
-
-/price <Item>
-  Does a fuzzy search for the item string and returns AH price information for it as an embed.
 ```
 
 ## Wav Files

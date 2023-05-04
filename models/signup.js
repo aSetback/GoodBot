@@ -9,6 +9,10 @@ module.exports = (client, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
+        role: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
         confirmed: {
             type: Sequelize.BOOLEAN,
             allowNull: true
