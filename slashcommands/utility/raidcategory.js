@@ -47,7 +47,7 @@ exports.run = async (client, interaction) => {
     let whereClause = {'raid': type, 'guildID': interaction.guild.id};
 	
     // Add faction args if faction is required
-    if (factionRequired) {
+    if (faction) {
         record.faction = faction;
         whereClause.faction = faction;
     }
