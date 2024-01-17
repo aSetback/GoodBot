@@ -42,7 +42,7 @@ module.exports = {
                 }
                 
                 // Update the character model with the discord member ID for this user.
-                if (member) {
+                if (member && characterData) {
                     memberID = member.id
                     client.models.character.update({ pingID: member.id }, {
                         where: {
