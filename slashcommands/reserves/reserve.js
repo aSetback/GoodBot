@@ -25,7 +25,7 @@ exports.run = async (client, interaction) => {
         reserve: interaction.options.getString('reserve')
     };
 
-    interaction.deferReply({ephemeral: true});
+    await interaction.deferReply({ephemeral: true});
         if (!args.character) {
             args.character = interaction.member.nickname ? interaction.member.nickname : interaction.user.username;
         }
@@ -54,6 +54,7 @@ async function reserveItem(client, interaction, args) {
         }
         await client.models.reserveLog.create(record);
         let reserveText = 'A soft reserve has been set on ' + reserve.data.item + ' for ' + client.general.ucfirst(args.character) + '.';
+        console.log(interaction)
         interaction.editReply({content: reserveText, ephemeral: true});
     }
 }
