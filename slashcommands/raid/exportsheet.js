@@ -162,7 +162,7 @@ exports.run = async (client, interaction) => {
 		if (!sheet) {
 			sheet = doc.sheetsByIndex[0];
 		}
-		await sheet.loadCells('B3:V35');
+		await sheet.loadCells('B2:Z35');
 		for (row = 2; row < 23; row++) {
 			for (col = 1; col <  22; col++) {
 				sheet.getCell(row, col).value = '';
