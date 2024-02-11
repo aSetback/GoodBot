@@ -42,19 +42,20 @@ async function reserveItem(client, interaction, args) {
         return false;
     }
 
-    let reserve = await client.reserves.reserveItem(client, raid, args.character,  args.reserve);
+    let reserve = await client.reserves.reserveItem(client, raid, args.character, args.reserve);
     if (reserve.result == -1) {
         interaction.editReply({content: reserve.message, ephemeral: false});
     } else {
+        let reserveString = 'Reserve: "' + reserve.data.item + '" has been reserved for **' + reserve.data.name + '**.';
         let record = {
             raidID: raid.id,
             memberID: interaction.user.id,
             guildID: interaction.guild.id,
-            log: 'Command: "' + reserve.data.item + '" has been reserved for **' + args.character + '**.'
+            log: reserveString 
         }
+        client.log.write(client, interaction.member, interaction.channel, reserveString);
         await client.models.reserveLog.create(record);
-        let reserveText = 'A soft reserve has been set on ' + reserve.data.item + ' for ' + client.general.ucfirst(args.character) + '.';
-        console.log(interaction)
+        let reserveText = 'A soft reserve has been set on ' + reserve.data.item + ' for ' + client.general.ucfirst(reserve.data.name) + '.';
         interaction.editReply({content: reserveText, ephemeral: true});
     }
 }

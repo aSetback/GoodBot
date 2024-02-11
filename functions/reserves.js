@@ -10,6 +10,16 @@ module.exports = {
     
         // Make sure the user is signed up!
         let signup = await client.reserves.findSignup(client, raid.id, player);
+
+        // The user isn't signed up -- maybe they are trying to put in a reserve for an alt?
+        if (!signup) {
+            let main = await client.character.get(client, player, raid.guildID);
+            let alts = await client.character.getAlts(client, main);
+            signup = await client.reserves.findAltSignup(client, raid.id, alts);
+            player = signup.name;
+        }
+
+        // No alts were found either .. bummer!
         if (!signup) {
             return {result: -1, message: "We couldn't find " + player + " in the sign-ups for this raid."};
         } 
@@ -74,7 +84,8 @@ module.exports = {
             return {
                 result: 1, 
                 data: {
-                    item: reserve.item.name
+                    item: reserve.item.name,
+                    name: signup.player
                 }
             };
         }
@@ -97,13 +108,24 @@ module.exports = {
     
         return promise;
     },
+    findAltSignup: (client, raidID, alts) => {
+        let promise = new Promise((resolve, reject) => {
+            alts.forEach((alt) => {
+                signup = client.reserves.findSignup(client, raidID, alt.name);
+                if (signup) {
+                    resolve(signup);
+                }
+            });
+            resolve(null);
+        });   
+        return promise;
+    },
     findSignup: (client, raidID, player) => {
         let promise = new Promise((resolve, reject) => {
             client.models.signup.findOne({ where: { raidID: raidID, player: player } }).then((signup) => {
                 resolve(signup);
             });
-        });
-    
+        });   
     
         return promise;
     },
