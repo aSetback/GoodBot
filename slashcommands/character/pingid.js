@@ -8,6 +8,10 @@ let commandData = new SlashCommandBuilder()
 exports.data = commandData;
 
 exports.run = async (client, interaction) => {
+    if (!client.permission.manageChannel(interaction.member, interaction.channel)) {
+		return interaction.editReply('Unable to complete command -- you do not have permission to manage this channel.');
+	}	
+    
     let modal = new Modal()
         .setCustomId('sc-modal-pingid')
         .setTitle('Set up an ping ID');
