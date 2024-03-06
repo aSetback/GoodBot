@@ -42,7 +42,7 @@ async function reserveItem(client, interaction, args) {
         return false;
     }
 
-    let reserve = await client.reserves.reserveItem(client, raid, args.character, args.reserve);
+    let reserve = await client.reserves.reserveItem(client, raid, args.character, args.reserve, interaction.user.id);
     if (reserve.result == -1) {
         interaction.editReply({content: reserve.message, ephemeral: false});
     } else {

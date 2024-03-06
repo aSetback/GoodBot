@@ -43,7 +43,7 @@ exports.run = async (client, interaction) => {
     let list = [];
 
     if (type == 'confirmed') {
-        list = raid.signups.filter(signup => signup.confirmed == 1);
+        list = raid.signups.filter(signup => signup.confirmed == 1 && signup.signup == 'yes');
     }
     if (type == 'raid') {
         list = raid.signups.filter(signup => signup.signup == 'yes');

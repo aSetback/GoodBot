@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 module.exports = {    
-    reserveItem: async (client, raid, character, item) => {
+    reserveItem: async (client, raid, character, item, memberID) => {
     
         // Check if the first arg is a playername
         let player = character.toLowerCase();
@@ -35,13 +35,13 @@ module.exports = {
         }
     
         // Initial check, hoping for a perfect match
-        let reserveMade = await client.reserves.signupReserve(client, signup.id, raid, item);
+        let reserveMade = await client.reserves.signupReserve(client, signup.id, raid, item, memberID);
     
         // Hey, we added a reserve item alias table!  Maybe there's a match in there!
         if (!reserveMade) {
             let alias = await client.reserves.aliasSearch(client, item);
             if (alias) {
-                reserveMade = await client.reserves.signupReserve(client, signup.id, raid, parseInt(alias.reserveItemID));
+                reserveMade = await client.reserves.signupReserve(client, signup.id, raid, parseInt(alias.reserveItemID), memberID);
             }
         }
     
@@ -50,7 +50,7 @@ module.exports = {
             if (item.length > 2 && item.length < 100) {
                 let itemInfo = await client.nexushub.item(item);
                 if (itemInfo) {
-                    reserveMade = await client.reserves.signupReserve(client, signup.id, raid, itemInfo.name);
+                    reserveMade = await client.reserves.signupReserve(client, signup.id, raid, itemInfo.name, memberID);
                 }
             }
         }
@@ -61,7 +61,7 @@ module.exports = {
             // Hooray, it worked!
             if (likeItem.length == 1) {
                 let itemInfo = likeItem.shift();
-                reserveMade = await client.reserves.signupReserve(client, signup.id, raid, itemInfo.name);
+                reserveMade = await client.reserves.signupReserve(client, signup.id, raid, itemInfo.name, memberID);
             }
     
             // Uh oh, we found multiple.  Better let the user know!
@@ -145,7 +145,7 @@ module.exports = {
         };
         return returnObj;
     },
-    signupReserve: (client, signupID, raid, item) => {
+    signupReserve: (client, signupID, raid, item, memberID) => {
         let promise = new Promise((resolve, reject) => {
             let whereClause;
             if (Number.isInteger(item)) {
@@ -160,9 +160,9 @@ module.exports = {
                     record = {
                         raidID: raid.id,
                         reserveItemID: reserveItem.id,
-                        signupID: signupID
+                        signupID: signupID,
+                        memberID: memberID
                     };
-    
                     includes = [
                         {model: client.models.reserveItem, as: 'item', foreignKey: 'reserveItemID'}
                     ];
@@ -180,7 +180,7 @@ module.exports = {
                         let reserveLimit = raid.reserveLimit ? raid.reserveLimit : 1;
                         if (raidReserves.length >= reserveLimit) {
                             let raidReserve = raidReserves[0];
-                            await client.models.raidReserve.update({ reserveItemID: reserveItem.id }, { where: { id: raidReserve.id } });
+                            await client.models.raidReserve.update({ reserveItemID: reserveItem.id, memberID: memberID }, { where: { id: raidReserve.id } });
                             return resolve(true);
                         } else {
                             client.models.raidReserve.create(record).then((record) => {

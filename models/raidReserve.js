@@ -12,6 +12,10 @@ module.exports = (client, Sequelize) => {
         signupID: {
             type: Sequelize.INTEGER,
             allowNull: false
+        },
+        memberID: {
+            type: Sequelize.BIGINT(20),
+            allowNull: false
         }
     }, {
     // options
