@@ -27,8 +27,8 @@ exports.run = async (client, interaction) => {
         .addOptions(client.config.roleOptions);
    
 
-    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
-    let ActionRow2 = new ActionRowBuilder ().addComponents(input2);
+    let ActionRow1 = new ActionRowBuilder().addComponents(input1);
+    let ActionRow2 = new ActionRowBuilder().addComponents(input2);
 
     return interaction.reply({content: 'What class and role is ' + client.general.ucfirst(character) + '?', ephemeral: true, components: [ActionRow1, ActionRow2]});
 }

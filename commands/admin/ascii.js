@@ -8,7 +8,7 @@ exports.run = async (client, message, args) => {
         .setLabel('Quack') 
         .setID('quack');
 
-    let buttonRow = new client.disbut.ActionRowBuilder ()
+    let buttonRow = new client.disbut.ActionRowBuilder()
         .addComponent(muffin)
         .addComponent(quack)
  

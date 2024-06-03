@@ -32,10 +32,10 @@ exports.run = async (client, interaction) => {
         .setRequired(false)
         .setStyle('Short');        
 
-    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
-    let ActionRow2 = new ActionRowBuilder ().addComponents(input2);
-    let ActionRow3 = new ActionRowBuilder ().addComponents(input3);
-    let ActionRow4 = new ActionRowBuilder ().addComponents(input4);
+    let ActionRow1 = new ActionRowBuilder().addComponents(input1);
+    let ActionRow2 = new ActionRowBuilder().addComponents(input2);
+    let ActionRow3 = new ActionRowBuilder().addComponents(input3);
+    let ActionRow4 = new ActionRowBuilder().addComponents(input4);
     modal.addComponents([ActionRow1, ActionRow2, ActionRow3, ActionRow4]);
 
     await interaction.showModal(modal);

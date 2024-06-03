@@ -22,8 +22,8 @@ exports.run = async (client, interaction) => {
         .setRequired(true)
         .setStyle('Paragraph');  
 
-    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
-    let ActionRow2 = new ActionRowBuilder ().addComponents(input2);
+    let ActionRow1 = new ActionRowBuilder().addComponents(input1);
+    let ActionRow2 = new ActionRowBuilder().addComponents(input2);
     modal.addComponents([ActionRow1, ActionRow2]);
 
     await interaction.showModal(modal);

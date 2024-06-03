@@ -66,7 +66,7 @@ exports.run = async (client, interaction) => {
         .setColor(0xb00b00)
         .setThumbnail('https://goodbot.me/images/GoodBot.png');
 
-    let buttonRow = new ActionRowBuilder ()
+    let buttonRow = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
                 .setStyle('Success')
@@ -107,7 +107,7 @@ exports.buttonResponse = async (client, interaction, data) => {
             .setStyle('Short');
     }
 
-    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
+    let ActionRow1 = new ActionRowBuilder().addComponents(input1);
     modal.addComponents([ActionRow1]);
 
     await interaction.showModal(modal);
@@ -149,8 +149,8 @@ exports.modalResponse = async (client, interaction) => {
         .addOptions(client.config.roleOptions);
    
 
-    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
-    let ActionRow2 = new ActionRowBuilder ().addComponents(input2);
+    let ActionRow1 = new ActionRowBuilder().addComponents(input1);
+    let ActionRow2 = new ActionRowBuilder().addComponents(input2);
     content += 'What class and role is ' + client.general.ucfirst(character) + '?';
     return interaction.reply({content: content, ephemeral: true, components: [ActionRow1, ActionRow2]});
 }
