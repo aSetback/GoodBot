@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageSelectMenu, Modal, TextInputComponent } = require("discord.js");
+const { ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -12,24 +12,24 @@ exports.run = async (client, interaction) => {
 		return interaction.editReply('Unable to complete command -- you do not have permission to manage this channel.');
 	}	
     
-    let modal = new Modal()
+    let modal = new ModalBuilder()
         .setCustomId('sc-modal-pingid')
         .setTitle('Set up an ping ID');
 
-    let input1 = new TextInputComponent()
+    let input1 = new TextInputBuilder()
         .setCustomId('main')
         .setLabel('What is the character name?')
         .setRequired(true)
-        .setStyle('SHORT');
+        .setStyle('Short');
 
-    let input2 = new TextInputComponent()
+    let input2 = new TextInputBuilder()
         .setCustomId('pingid')
         .setLabel('What is the ping ID?')
         .setRequired(true)
-        .setStyle('SHORT');
+        .setStyle('Short');
 
-        let ActionRow1 = new MessageActionRow().addComponents(input1);
-        let ActionRow2 = new MessageActionRow().addComponents(input2);
+        let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
+        let ActionRow2 = new ActionRowBuilder ().addComponents(input2);
         modal.addComponents([ActionRow1, ActionRow2]);
 
     await interaction.showModal(modal);

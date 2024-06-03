@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageSelectMenu, Modal, TextInputComponent } = require("discord.js");
+const { ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -8,34 +8,34 @@ let commandData = new SlashCommandBuilder()
 exports.data = commandData;
 
 exports.run = async (client, interaction) => {
-    let modal = new Modal()
+    let modal = new ModalBuilder()
         .setCustomId('sc-modal-raid')
         .setTitle('Create a raid');
-    let input1 = new TextInputComponent()
+    let input1 = new TextInputBuilder()
         .setCustomId('raidName')
         .setLabel('Raid Name')
         .setRequired(true)
-        .setStyle('SHORT');
-    let input2 = new TextInputComponent()
+        .setStyle('Short');
+    let input2 = new TextInputBuilder()
         .setCustomId('raidDate')
         .setLabel('Raid Date (eg, Jun-15)')
         .setRequired(true)
-        .setStyle('SHORT');
-    let input3 = new TextInputComponent()
+        .setStyle('Short');
+    let input3 = new TextInputBuilder()
         .setCustomId('raidType')
         .setLabel('What instance are you raiding?  (eg, SSC)')
         .setRequired(true)
-        .setStyle('SHORT');
-    let input4 = new TextInputComponent()
+        .setStyle('Short');
+    let input4 = new TextInputBuilder()
         .setCustomId('raidFaction')
         .setLabel('What faction is this for? (not required)')
         .setRequired(false)
-        .setStyle('SHORT');        
+        .setStyle('Short');        
 
-    let ActionRow1 = new MessageActionRow().addComponents(input1);
-    let ActionRow2 = new MessageActionRow().addComponents(input2);
-    let ActionRow3 = new MessageActionRow().addComponents(input3);
-    let ActionRow4 = new MessageActionRow().addComponents(input4);
+    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
+    let ActionRow2 = new ActionRowBuilder ().addComponents(input2);
+    let ActionRow3 = new ActionRowBuilder ().addComponents(input3);
+    let ActionRow4 = new ActionRowBuilder ().addComponents(input4);
     modal.addComponents([ActionRow1, ActionRow2, ActionRow3, ActionRow4]);
 
     await interaction.showModal(modal);

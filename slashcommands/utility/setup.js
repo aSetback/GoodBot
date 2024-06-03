@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { MessageActionRow, MessageButton, Modal, TextInputComponent, MessageSelectMenu } = require("discord.js");
+const { ActionRowBuilder , ButtonBuilder, ModalBuilder, TextInputBuilder, StringSelectMenuBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -66,14 +66,14 @@ exports.run = async (client, interaction) => {
         .setColor(0xb00b00)
         .setThumbnail('https://goodbot.me/images/GoodBot.png');
 
-    let buttonRow = new MessageActionRow()
+    let buttonRow = new ActionRowBuilder ()
         .addComponents(
-            new MessageButton()
-                .setStyle('SUCCESS')
+            new ButtonBuilder()
+                .setStyle('Success')
                 .setLabel('Set Up Main') 
                 .setCustomId('sc-button-setup-main'),
-            new MessageButton()
-                .setStyle('DANGER')
+            new ButtonBuilder()
+                .setStyle('Danger')
                 .setLabel('Set Up Alt') 
                 .setCustomId('sc-button-setup-alt'),
         );
@@ -88,26 +88,26 @@ exports.buttonResponse = async (client, interaction, data) => {
     let type = data.shift();
     let modal, input1;
     if (type == "main") {
-        modal = new Modal()
+        modal = new ModalBuilder()
             .setCustomId('sc-modal-setup')
             .setTitle('Set up your main');
-        input1 = new TextInputComponent()
+        input1 = new TextInputBuilder()
             .setCustomId('mainName')
             .setLabel('Main Character Name')
             .setRequired(true)
-            .setStyle('SHORT');
+            .setStyle('Short');
     } else {
-        modal = new Modal()
+        modal = new ModalBuilder()
             .setCustomId('sc-modal-setup')
             .setTitle('Set up your alt');
-        input1 = new TextInputComponent()
+        input1 = new TextInputBuilder()
             .setCustomId('altName')
             .setLabel('Alt Character Name')
             .setRequired(true)
-            .setStyle('SHORT');
+            .setStyle('Short');
     }
 
-    let ActionRow1 = new MessageActionRow().addComponents(input1);
+    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
     modal.addComponents([ActionRow1]);
 
     await interaction.showModal(modal);
@@ -138,19 +138,19 @@ exports.modalResponse = async (client, interaction) => {
 
         client.models.character.update({mainID: mainCharacter.id}, {where: {id: altCharacter.id}});
     }
-    let input1 = new MessageSelectMenu()
+    let input1 = new StringSelectMenuBuilder()
         .setCustomId('sc-select-set-class-' + character)
         .setPlaceholder("Select a Class.")
         .addOptions(client.config.classOptions);
 
-    let input2 = new MessageSelectMenu()
+    let input2 = new StringSelectMenuBuilder()
         .setCustomId('sc-select-set-role-' + character)
         .setPlaceholder("Select a Role.")
         .addOptions(client.config.roleOptions);
    
 
-    let ActionRow1 = new MessageActionRow().addComponents(input1);
-    let ActionRow2 = new MessageActionRow().addComponents(input2);
+    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
+    let ActionRow2 = new ActionRowBuilder ().addComponents(input2);
     content += 'What class and role is ' + client.general.ucfirst(character) + '?';
     return interaction.reply({content: content, ephemeral: true, components: [ActionRow1, ActionRow2]});
 }

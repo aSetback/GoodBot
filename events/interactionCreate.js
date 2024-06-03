@@ -30,7 +30,7 @@ module.exports = async (client, interaction) => {
         }
     }
     
-    if (interaction.isSelectMenu()) {
+    if (interaction.isStringSelectMenu()) {
         client.log.write(client, interaction.member, interaction.channel, 'Select Menu Used: ' + interaction.customId);
         if (interaction.customId == 'altSelect') {
             if (interaction.values[0] == 'new') {

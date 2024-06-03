@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageSelectMenu, Modal, TextInputComponent, SelectMenuBuilder, ActionRowBuilder } = require("discord.js");
+const { ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -16,19 +16,19 @@ exports.data = commandData;
 exports.run = async (client, interaction) => {
 
     let character = interaction.options.getString('character');
-    let input1 = new MessageSelectMenu()
+    let input1 = new StringSelectMenuBuilder()
         .setCustomId('sc-select-set-class-' + character)
         .setPlaceholder("Select a Class.")
         .addOptions(client.config.classOptions);
 
-    let input2 = new MessageSelectMenu()
+    let input2 = new StringSelectMenuBuilder()
         .setCustomId('sc-select-set-role-' + character)
         .setPlaceholder("Select a Role.")
         .addOptions(client.config.roleOptions);
    
 
-    let ActionRow1 = new MessageActionRow().addComponents(input1);
-    let ActionRow2 = new MessageActionRow().addComponents(input2);
+    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
+    let ActionRow2 = new ActionRowBuilder ().addComponents(input2);
 
     return interaction.reply({content: 'What class and role is ' + client.general.ucfirst(character) + '?', ephemeral: true, components: [ActionRow1, ActionRow2]});
 }
