@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageSelectMenu, Modal, TextInputComponent } = require("discord.js");
+const { ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -8,22 +8,22 @@ let commandData = new SlashCommandBuilder()
 exports.data = commandData;
 
 exports.run = async (client, interaction) => {
-    let modal = new Modal()
+    let modal = new ModalBuilder()
         .setCustomId('sc-modal-addrules')
         .setTitle('Create a Rule');
-    let input1 = new TextInputComponent()
+    let input1 = new TextInputBuilder()
         .setCustomId('name')
         .setLabel('Rules Name')
         .setRequired(true)
-        .setStyle('SHORT');
-    let input2 = new TextInputComponent()
+        .setStyle('Short');
+    let input2 = new TextInputBuilder()
         .setCustomId('rules')
         .setLabel('Rules')
         .setRequired(true)
-        .setStyle('PARAGRAPH');  
+        .setStyle('Paragraph');  
 
-    let ActionRow1 = new MessageActionRow().addComponents(input1);
-    let ActionRow2 = new MessageActionRow().addComponents(input2);
+    let ActionRow1 = new ActionRowBuilder ().addComponents(input1);
+    let ActionRow2 = new ActionRowBuilder ().addComponents(input2);
     modal.addComponents([ActionRow1, ActionRow2]);
 
     await interaction.showModal(modal);

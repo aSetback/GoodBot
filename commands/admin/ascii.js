@@ -1,14 +1,14 @@
 exports.run = async (client, message, args) => {
-    let muffin = new client.disbut.MessageButton()
+    let muffin = new client.disbut.ButtonBuilder()
         .setStyle('blurple')
         .setLabel('Muffin') 
         .setID('muffin');
-    let quack = new client.disbut.MessageButton()
+    let quack = new client.disbut.ButtonBuilder()
         .setStyle('blurple')
         .setLabel('Quack') 
         .setID('quack');
 
-    let buttonRow = new client.disbut.MessageActionRow()
+    let buttonRow = new client.disbut.ActionRowBuilder ()
         .addComponent(muffin)
         .addComponent(quack)
  
