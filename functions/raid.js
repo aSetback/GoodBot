@@ -1,4 +1,5 @@
 const { Op } = require('sequelize');
+const { ChannelType } = require("discord.js");
 
 module.exports = {
     async factionRequired(client, guild) {
@@ -403,6 +404,77 @@ module.exports = {
             let botMsg = await channel.send(signupMessage, client.buttonRow)
             await botMsg.pin();
             client.embed.eventUpdate(client, channel);
+            channel = await channel.setParent(category.id);
+            channel.lockPermissions().catch(console.error);    
+            resolve(channel);
+
+        });
+        return promise;
+    },
+    createRaidThread: async (client, message, raid, guild) => {
+        let promise = new Promise(async (resolve, reject) => {
+            if (!raid.dateString || !raid.raid) {
+                return message.channel.send('Invalid parameters.  Please use the following format: +raid MC Oct-15 <name?>');
+            }
+
+            let channelName = raid.dateString + '-' + raid.name;
+            if (!guild) {
+                guild = message.guild;
+            }
+            let forum = await guild.channels.create({
+                name: "Test",
+                type: ChannelType.GuildForum
+            })
+            let channel = await forum.threads.create({
+                name: channelName,
+                message: "-"
+            });
+
+            let raidDateParts = raid.dateString.split('-');
+            // Parse out our date
+            raid.parsedDate = new Date(Date.parse(raidDateParts[0] + " " + raidDateParts[1]));
+            raid.parsedDate.setFullYear(new Date().getFullYear());
+
+            // If 'date' appears to be in the past, assume it's for the next calendar year (used for the dec => jan swapover)
+            if (raid.parsedDate.getTime() < new Date().getTime()) {
+                raid.parsedDate.setFullYear(raid.parsedDate.getFullYear() + 1);
+            }
+
+            let memberID = null;
+            if (message.author) {
+                memberID = message.author.id;
+            } else {
+                memberID = message.user.id;
+            }
+
+            // Set up our sql record
+            let record = {
+                'name': raid.name ? raid.name : raid.raid,
+                'raid': raid.raid,
+                'date': raid.parsedDate,
+                'title': raid.title ? raid.title : null,
+                'faction': raid.faction ? raid.faction.toLowerCase() : null,
+                'color': raid.color ? raid.color : '#02a64f',
+                'description': raid.description ? raid.description : null,
+                'rules': raid.rules ? raid.rules : null,
+                'time': raid.time ? raid.time : null,
+                'channelID': channel.id,
+                'guildID': channel.guild.id,
+                'memberID': memberID,
+                'softreserve': raid.softreserve,
+                'confirmation': raid.confirmation,
+                'reserveLimit': raid.reserveLimit
+            };
+            if (raid.id) {
+                await client.models.raid.update({crosspostID: channel.id}, {where: {id: raid.id}});
+            } else {
+                await client.models.raid.create(record);
+            }
+
+            let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
+            let botMsg = await channel.send(signupMessage, client.buttonRow);
+            await botMsg.pin();
+            client.embed.update(client, channel);
             channel = await channel.setParent(category.id);
             channel.lockPermissions().catch(console.error);    
             resolve(channel);
