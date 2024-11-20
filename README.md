@@ -63,7 +63,7 @@
   Completely remove a player from the current signup
 
 /signup Player
-  Add a player from the current signup
+  Add a player to the current signup
 ```
 
 ## Raid Sign-up Commands
@@ -88,13 +88,13 @@
   This will ping only confirmed players if confirmation mode is enabled.
   
 /raiddate <Valid Date>
-  Sets the date of the raid, in 
+  Sets the date of the raid, needs to be in the format "Mar-15"
 
 /raiddescription <New Raid Description>
   Alter the raid description in the embed
 
 /raidleader <@Leader>
-  Sets the raid leader of the raid
+  Sets the raid leader of the raid, use the player tag within the commmand
 
 /raidtime <Valid Time>
   Set the time for the raid start
@@ -179,40 +179,36 @@
   DMs a list of all wav files to the user.
 ```
 
-```
 ## Spreadsheets
-```
 Spreadsheet export can be set up by providing the bot access to a Google Sheet.
-
 An example sheet can be found here: https://docs.google.com/spreadsheets/d/1KJz86pYn7rHx1Aru9Uc2xcTwl-QZrxJb8_4BRRkapZs
-
 All sign-ups are exported to the first page of the spreadsheet, by column.  Export begins on the third row.
-
+```
 Columns:
-warrior tank => 1
-warrior dps => 2
-hunter dps => 3
-rogue dps => 4
-mage caster => 5
-warlock caster => 6
-priest healer => 7
-paladin healer => 8
-druid healer => 9
-druid caster => 10
-druid dps => 11
-priest caster => 12
-paladin dps => 13
-paladin tank => 14
-shaman dps => 15
-shaman caster => 16
-shaman healer => 17
-dk dps => 18
-dk tank => 19
-monk dps => 20
-monk tank => 21
-monk healer => 22
-dh dps => 23
-dh tank => 24
+1  => warrior tank 
+2  => warrior dps 
+3  => hunter dps 
+4  => rogue dps 
+5  => mage caster 
+6  => warlock caster 
+7  => priest healer 
+8  => paladin healer 
+9  => druid healer 
+10 => druid caster 
+11 => druid dps 
+12 => priest caster 
+13 => paladin dps 
+14 => paladin tank 
+15 => shaman dps 
+16 => shaman caster 
+17 => shaman healer 
+18 => dk dps 
+19 => dk tank 
+20 => monk dps 
+21 => monk tank 
+22 => monk healer 
+23 => dh dps 
+24 => dh tank 
 ```
 To set up your spreadsheet:
 * The sheet must be shared with **discord@api-project-483394155093.iam.gserviceaccount.com**
