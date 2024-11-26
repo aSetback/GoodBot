@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageSelectMenu, Modal, TextInputComponent } = require("discord.js");
+const { ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
