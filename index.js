@@ -2,7 +2,7 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { ActionRowBuilder , ButtonBuilder } = require('discord.js');
 const Enmap = require("enmap");
 const fs = require("fs");
-const client = new Client({ intents: [GatewayIntentBits.Guilds] }); // Creating discord.js client (constructor)
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] }); // Creating discord.js client (constructor)
 client.buttons = {};
 client.buttons.yes = new ButtonBuilder()
   .setStyle('Success')
