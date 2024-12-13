@@ -274,7 +274,7 @@ module.exports = {
 
 		// keep an even number of rows
 		if (embeds.length % 3 == 2) {
-			embed.addField({name: '-', value: '-', inline: true});
+			embedFields.push({name: '-', value: '-', inline: true});
 		}
 
 		let confirmedText = raid.confirmation ? '**Confirmed:** ' + confirmed + '\n' : '';

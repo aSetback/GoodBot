@@ -9,7 +9,7 @@ module.exports = {
 
         // Loop through and check if each player is signed up
         signups.forEach((signup) => {
-            if (!newRaid.signups.find(s => s.character.id == signup.character.id)) {
+            if (!newRaid.signups.find(s => s.character.mainID == signup.character.mainID || s.character.id == signup.character.id)) {
                 unsigned.push(signup.character.name);
             }
         });
