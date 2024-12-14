@@ -18,14 +18,14 @@ exports.run = async (client, interaction) => {
 
     let vc = interaction.member.voice.channel;
 	if (!vc) {
-        return interaction.reply({content: 'You must be in a voice channel to play a wav file.', ethereal: true});
+        return interaction.reply({content: 'You must be in a voice channel to play a wav file.', ephemeral: true});
 	}
 	
 	let wav = interaction.options.getString('wav').toLowerCase();
 	let filename = './wav/' + wav + '.wav';
 	fs.exists(filename, async (exists) => {
 		if (exists) {
-            interaction.reply({content: 'Playing ' + wav + '.', ethereal: true});
+            interaction.reply({content: 'Playing ' + wav + '.', ephemeral: true});
 			let connection = joinVoiceChannel({
 				channelId: vc.id,
 				guildId: vc.guild.id,
@@ -33,14 +33,17 @@ exports.run = async (client, interaction) => {
 			});
 			let player = createAudioPlayer();
 			let resource = createAudioResource(filename);
-			player.play(resource);
 			connection.subscribe(player);
+			player.play(resource);
+			player.on('error', error => {
+				console.error("Error: " + error.message);
+			});
 			player.on(AudioPlayerStatus.Idle, () => {
 				connection.destroy();
 				player.stop();
 			});
 		} else {
-            interaction.reply({content: 'The request wav file does not exist.', ethereal: true});
+            interaction.reply({content: 'The request wav file does not exist.', ephemeral: true});
 		}
 	})
 }

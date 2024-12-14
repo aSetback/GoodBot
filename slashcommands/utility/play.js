@@ -1,6 +1,7 @@
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const ytdl = require('ytdl-core-discord');
+const fs = require('fs');
+const ytdl = require('@distube/ytdl-core');
 
 let commandData = new SlashCommandBuilder()
     .setName('play')
@@ -19,13 +20,13 @@ exports.run = async (client, interaction) => {
     // Verify the user is in a voice chat
 	var vc = interaction.member.voice.channel;
     if (!vc) {
-        return interaction.reply({content: 'You must be in a voice channel to play a youtube URL.', ethereal: true});
+        return interaction.reply({content: 'You must be in a voice channel to play a youtube URL.', ephemeral: true});
 	}
 
     // Verify it's a valid URL
 	let songURL = interaction.options.getString('video');
     if (songURL.indexOf('youtube.com') < 0) {
-        return interaction.reply({content: 'You need to include which youtube URL you want played.', ethereal: true});
+        return interaction.reply({content: 'You need to include which youtube URL you want played.', ephemeral: true});
     }
 
     // Join the voice channel
@@ -39,11 +40,9 @@ exports.run = async (client, interaction) => {
     let player = createAudioPlayer();
 
     // Create the stream from Youtube
-    let stream = await ytdl(songURL, {
-        quality: 'highestaudio',
-        highWaterMark: 1 << 25,
-        filter: 'audioonly'
-    });
+    var info = await ytdl.getBasicInfo(songURL)
+    var title = info.videoDetails.title;
+    let stream = ytdl(songURL).pipe(fs.createWriteStream('video.mp4'));
 
     // Create our audio resource
     let resource = createAudioResource(stream);
@@ -59,5 +58,5 @@ exports.run = async (client, interaction) => {
         connection.destroy();
         player.stop();
     });
-    interaction.reply({content: 'Playing video.', ethereal: true});
+    interaction.reply({content: 'Playing: ' + title, ephemeral: true});
 }
