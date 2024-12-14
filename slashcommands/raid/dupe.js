@@ -45,7 +45,7 @@ exports.run = async (client, interaction) => {
         }
 
         // Retrieve our category from the discord API
-        let discordCategory = interaction.guild.channels.cache.find(c => c.name == category.trim() && c.type == "GUILD_CATEGORY");
+        let discordCategory = interaction.guild.channels.cache.find(c => c.name == category.trim() && c.type == 4);
 
         if (!discordCategory) {
             return interaction.reply({content: 'Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.', ephemeral: true, components: []});

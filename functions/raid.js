@@ -496,8 +496,9 @@ module.exports = {
             if (!guild) {
                 guild = message.guild;
             }
-            let channel = await guild.channels.create(channelName, {
-                type: 'GUILD_TEXT'
+            let channel = await guild.channels.create({
+                name: channelName,
+                type: 0
             })
 
             let raidDateParts = raid.dateString.split('-');
