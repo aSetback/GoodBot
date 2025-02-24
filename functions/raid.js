@@ -319,7 +319,7 @@ module.exports = {
     archive: async (client, channel) => {
         // Retrive the guild, then the channel & category within the guild.
         let guild = channel.guild;
-        let category = guild.channels.cache.find(c => c.name == "Archives" && c.type == "GUILD_CATEGORY");
+        let category = guild.channels.cache.find(c => c.name == "Archives" && c.type == 4);
     
         // Retrieve our raid information
     	let raid = await client.raid.get(client, channel);
@@ -363,7 +363,7 @@ module.exports = {
                 guild = message.guild;
             }
             let channel = await guild.channels.create(channelName, {
-                type: 'GUILD_TEXT'
+                type: 0
             })
 
             let raidDateParts = raid.dateString.split('-');

@@ -1,4 +1,4 @@
-const { ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder } = require("discord.js");
+const { ActionRowBuilder, PermissionsBitField, ModalBuilder, TextInputBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -82,21 +82,21 @@ exports.modalResponse = async (client, interaction) => {
 			category = raidCategory.category; 
 		}
 
-		// // Retrieve our category from the discord API
-		// let discordCategory = interaction.guild.channels.cache.find(c => c.name.toLowerCase() == category.toLowerCase().trim() && c.type == "GUILD_CATEGORY");
+		// Retrieve our category from the discord API
+		let discordCategory = interaction.guild.channels.cache.find(c => c.name.toLowerCase() == category.toLowerCase().trim() && c.type == 4);
 
-		// if (!discordCategory) {
-		// 	return interaction.reply('Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.');
-		// }
+		if (!discordCategory) {
+			return interaction.reply('Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.');
+		}
 
-		// // Retrieve this user's permission for the raid category
-		// let permissions = discordCategory.permissionsFor(interaction.user);
-		// if (!permissions.has("MANAGE_CHANNELS")) {
-		// 	return interaction.reply('You do not have the manage channels permission for "' + category + '".  Unable to complete command.');
-		// }
+		// Retrieve this user's permission for the raid category
+		let permissions = discordCategory.permissionsFor(interaction.user);
+		if (!permissions.has(PermissionsBitField.Flags.ManageChannels)) {
+			return interaction.reply('You do not have the manage channels permission for "' + category + '".  Unable to complete command.');
+		}
 
-		// client.raid.createRaidChannel(client, interaction, discordCategory, raid, interaction.guild);
-		client.raid.createRaidThread(client, interaction, raid, interaction.guild);
+		client.raid.createRaidChannel(client, interaction, discordCategory, raid, interaction.guild);
+		// client.raid.createRaidThread(client, interaction, raid, interaction.guild);
         interaction.reply({content: 'Raid has been created!', ephemeral: true});
 	});
 
