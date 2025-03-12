@@ -18,6 +18,7 @@ exports.run = async (client, interaction) => {
 
     let vc = interaction.member.voice.channel;
 	if (!vc) {
+		console.log(interaction.member);
         return interaction.reply({content: 'You must be in a voice channel to play a wav file.', ethereal: true});
 	}
 	

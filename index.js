@@ -1,23 +1,23 @@
-const { Client, Intents } = require('discord.js');
-const { MessageActionRow, MessageButton } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
+const { ActionRowBuilder , ButtonBuilder } = require('discord.js');
 const Enmap = require("enmap");
 const fs = require("fs");
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] }); // Creating discord.js client (constructor)
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] }); // Creating discord.js client (constructor)
 client.buttons = {};
-client.buttons.yes = new MessageButton()
-  .setStyle('SUCCESS')
+client.buttons.yes = new ButtonBuilder()
+  .setStyle('Success')
   .setLabel('Yes') 
   .setCustomId('+');
-client.buttons.no = new MessageButton()
-  .setStyle('DANGER')
+client.buttons.no = new ButtonBuilder()
+  .setStyle('Danger')
   .setLabel('No') 
   .setCustomId('-');
-client.buttons.maybe = new MessageButton()
-  .setStyle('SECONDARY')
+client.buttons.maybe = new ButtonBuilder()
+  .setStyle('Secondary')
   .setLabel('Maybe') 
   .setCustomId('m');
-client.buttons.reserves = new MessageButton()
-  .setStyle('LINK')
+client.buttons.reserves = new ButtonBuilder()
+  .setStyle('Link')
   .setLabel('Reserves')
   .setURL('https://goodbot.me/r/');
 

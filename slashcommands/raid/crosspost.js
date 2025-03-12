@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageSelectMenu, Modal, TextInputComponent, SelectMenuBuilder, ActionRowBuilder } = require("discord.js");
+const { ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder, PermissionsBitField } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -52,7 +52,7 @@ exports.run = async (client, interaction) => {
 	}
 
 	// Retrieve our category from the discord API
-	let discordCategory = crosspostGuild.channels.cache.find(c => c.name.toLowerCase() == category.toLowerCase().trim() && c.type == "GUILD_CATEGORY");
+	let discordCategory = crosspostGuild.channels.cache.find(c => c.name.toLowerCase() == category.toLowerCase().trim() && c.type == 4);
 
 	if (!discordCategory) {
         return interaction.reply({ephemeral: true, content: client.loc('crosspostCategoryExist', "The specified channel category for your raid type on the crosspost server does not exist.")});
@@ -61,7 +61,7 @@ exports.run = async (client, interaction) => {
 	await crosspostGuild.members.fetch(interaction.user.id);
 	// Retrieve this user's permission for the raid category
 	let permissions = discordCategory.permissionsFor(interaction.user);
-	if (!permissions.has("MANAGE_CHANNELS")) {
+	if (!permissions.has(PermissionsBitField.Flags.ManageChannels)) {
         return interaction.reply({ephemeral: true, content: client.loc('crosspostNoPermission', "You do not have the correct permissions to post raids on the crosspost server.")});
 	}
 

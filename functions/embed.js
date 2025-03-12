@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { MessageActionRow, MessageButton } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
 
 module.exports = {
 	update: async (client, channel) => {
@@ -34,7 +34,7 @@ module.exports = {
 		pinnedMsg = list.last();
 		if (!pinnedMsg) { return false; }
 		
-		let buttonRow = new MessageActionRow()
+		let buttonRow = new ActionRowBuilder()
 			.addComponents(
 				client.buttons.yes,
 				client.buttons.no,
@@ -68,7 +68,13 @@ module.exports = {
 			'uld': 'Ulduar',
 			'toc': 'Trial of the Crusader',
 			'icc': 'Icecrown Citadel',
-			'ny': "Ny'alotha"
+			'ny': "Ny'alotha",
+			'bwd': "Blackwing Descent",
+			'bot': "The Bastion of Twilight",
+			'tofw': "Throne of the Four Winds",
+			'bh': "Baradin Hold",
+			'fl': "Firelands",
+			'ds': "Dragon Soul"
 		}
 		if (raids[raid.raid.toLowerCase()]) {
 			instanceName = raids[raid.raid.toLowerCase()];
@@ -124,15 +130,15 @@ module.exports = {
 		}
 
 		let icon = 'https://goodbot.me/images/icons/' + raid.raid.toLowerCase().replace(/\s/g, "") + '.png';
-		let embed = new Discord.MessageEmbed()
+		let embed = new Discord.EmbedBuilder()
 			.setTitle(raidData.title)
 			.setColor(raidData.color)
 			.setThumbnail(icon);
-
 		embed.setDescription(raidData.description);
+		let embedFields = [];
 
 		if (raid.locked) {
-			embed.addField('**Status**', '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*');
+			embedFields.push({name: '**Status**', value: '**Locked**\n\n__Please note__: *Players can not currently sign up for this raid or add new reserves.*'});
 		}
 
 		let leaders = [];
@@ -157,15 +163,15 @@ module.exports = {
 		
 
 		if (leaders.length) {
-			embed.addField('**Raid Leader**', leaders.join('\n'), true);
+			embedFields.push({name: '**Raid Leader**', value: leaders.join('\n'), inline: true});
 		}
 
-		embed.addField('**Date**', dateString, true);
+		embedFields.push({name: '**Date**', value: dateString, inline: true});
 		if (!raid.time) {
 			raid.time = '-';
 		}
 
-		embed.addField('**Time**', raid.time, true);
+		embedFields.push({name: '**Time**', value: raid.time, inline: true});
 
 		// Preserve our original key to display sign-up order
 		raid.signups.forEach((signup, key) => {
@@ -262,13 +268,13 @@ module.exports = {
 		// Add our fields
 		embeds.forEach((embedField) => {
 			if (embedField.signups.length > 0) {
-				embed.addField(embedField.name, embedField.signups.join('\n'), true);
+				embedFields.push({name: embedField.name, value: embedField.signups.join('\n'), inline: true});
 			}
 		});
 
 		// keep an even number of rows
 		if (embeds.length % 3 == 2) {
-			embed.addField('-', '-', true);
+			embedFields.push({name: '-', value: '-', inline: true});
 		}
 
 		let confirmedText = raid.confirmation ? '**Confirmed:** ' + confirmed + '\n' : '';
@@ -279,20 +285,20 @@ module.exports = {
 		raidComp += emojis['dps'] + ' ' + roleCount['dps'] + '   '; 
 		raidComp += emojis['caster'] + ' ' + roleCount['caster'] + '\n'; 
 
-		embed.addField('Sign-ups', 
+		embedFields.push({name: 'Sign-ups', value: 
 			maybeText +
 			noText +
 			confirmedText + 
 			'**Total:** ' + cleanSignups.filter(s => s.signup == 'yes').length + '\n' +
 			raidComp
-		);
+		});
 
 		if (raid.confirmation) {
-			embed.addField('**Confirmation Mode**', 
+			embedFields.push({name: '**Confirmation Mode**', value:
 				'Please note that confirmation mode has been enabled!\n' +
 				'**Bold** names are currently confirmed for the raid. \n' +
 				'*Italicized* names may or may not be brought to this raid.'
-			);
+			});
 		}
 
 		if (raid.softreserve) {
@@ -302,10 +308,10 @@ module.exports = {
 			if (raidHash) {
 				softReserveText += "\nYou can also manage your soft reserve at: http://goodbot.me/r/" + raid.id
 			}
-			embed.addField('**Soft Reserve**', softReserveText);
+			embedFields.push({name: '**Soft Reserve**', value: softReserveText});
 		}
 
-
+		embed.addFields(embedFields);
 		embed.setTimestamp();
 
 		return embed;

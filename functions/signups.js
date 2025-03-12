@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageSelectMenu, Modal, TextInputComponent, SelectInputComponent } = require("discord.js");
+const { ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder, SelectInputBuilder } = require("discord.js");
 const { Op } = require('sequelize');
 
 module.exports = {
@@ -39,25 +39,25 @@ module.exports = {
         });		
     },
     altModal: async (client, interaction) => {
-        let altModal = new Modal()
+        let altModal = new ModalBuilder()
             .setCustomId('altModal')
             .setTitle('Set Up Alt');
-        let nameInput = new TextInputComponent()
+        let nameInput = new TextInputBuilder()
             .setCustomId('altName')
             .setLabel('Character Name')
-            .setStyle('SHORT');
-        let classInput = new TextInputComponent()
+            .setStyle('Short');
+        let classInput = new TextInputBuilder()
             .setCustomId('className')
             .setLabel('Class')
-            .setStyle('SHORT');
-        let roleInput = new TextInputComponent()
+            .setStyle('Short');
+        let roleInput = new TextInputBuilder()
             .setCustomId('roleName')
             .setLabel('Role (Tank, Healer, Caster, DPS)')
-            .setStyle('SHORT');
+            .setStyle('Short');
 
-        let ActionRow1 = new MessageActionRow().addComponents(nameInput);
-        let ActionRow2 = new MessageActionRow().addComponents(classInput);
-        let ActionRow3 = new MessageActionRow().addComponents(roleInput);
+        let ActionRow1 = new ActionRowBuilder().addComponents(nameInput);
+        let ActionRow2 = new ActionRowBuilder().addComponents(classInput);
+        let ActionRow3 = new ActionRowBuilder().addComponents(roleInput);
         altModal.addComponents([ActionRow1, ActionRow2, ActionRow3]);
         
         await interaction.showModal(altModal);
@@ -93,7 +93,7 @@ module.exports = {
         return interaction.reply({content: 'Your signup has been changed to ' + character.name + '.', ephemeral: true});
     },
     createRoleSelect: () => {        
-        let roleSelect = new MessageSelectMenu();
+        let roleSelect = new StringSelectMenuBuilder();
         roleSelect.addOptions([{
             label: 'Tank',
             value: 'tank',
@@ -116,7 +116,7 @@ module.exports = {
         }]);
         roleSelect.setCustomId('roleSelect')
             .setPlaceholder("Select a role.");
-        let roleRow = new MessageActionRow().addComponents(roleSelect);
+        let roleRow = new ActionRowBuilder().addComponents(roleSelect);
         return {'content': `You can change your current role by selecting a different option.`, ephemeral: true, components: [roleRow]};
     },
     signupReply: async (client, interaction) => {
@@ -136,7 +136,7 @@ module.exports = {
         let roleSelect = client.signups.createRoleSelect();
         await interaction.reply(roleSelect);
 
-        let altSelect = new MessageSelectMenu();
+        let altSelect = new StringSelectMenuBuilder();
         altSelect.setCustomId('altSelect')
             .setPlaceholder("Select a character.");
 
@@ -161,7 +161,7 @@ module.exports = {
             value: 'new'
         }]);
         
-        const messageRow = new MessageActionRow().addComponents(altSelect);
+        const messageRow = new ActionRowBuilder().addComponents(altSelect);
         return interaction.followUp({content: `You have signed up for this raid as ${playerName}.  Would you like to change signup to an alt?`, ephemeral: true, components: [messageRow]});
     },
     roleChange: async function(client, interaction) {
