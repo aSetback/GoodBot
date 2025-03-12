@@ -1,3 +1,5 @@
+const { PermissionsBitField } = require('discord.js');
+
 module.exports = {
 	manageChannel: (member, channel) => {
 	
@@ -7,7 +9,7 @@ module.exports = {
 
         // Retrieve this user's permission for the raid category
         let permissions = channel.permissionsFor(member);
-        if (permissions.has("MANAGE_CHANNELS")) {
+        if (permissions.has(PermissionsBitField.Flags.ManageChannels)) {
             return true;
         }
         return false;

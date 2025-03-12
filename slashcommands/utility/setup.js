@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { ActionRowBuilder , ButtonBuilder, ModalBuilder, TextInputBuilder, StringSelectMenuBuilder } = require("discord.js");
+const { ActionRowBuilder , ButtonBuilder, ModalBuilder, TextInputBuilder, StringSelectMenuBuilder, PermissionsBitField, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -8,18 +8,17 @@ let commandData = new SlashCommandBuilder()
 
 exports.data = commandData;
 exports.run = async (client, interaction) => {
-    // Check permissions on the category
-	if (!client.permission.manageChannel(interaction.member, interaction.channel)) {
-		return interaction.reply('Unable to complete command -- you do not have permission to manage this channel.');
-	}	
-    
-    // Create Categories
+    let permissions = interaction.channel.permissionsFor(interaction.user);
+    if (!permissions.has(PermissionsBitField.Flags.ManageChannels)) {
+        return interaction.reply({ephemeral: true, content: client.loc('crosspostNoPermission', "You do not have the correct permissions.")});
+    }
 
     // Create Raid Signups
-    let signupCategory = interaction.guild.channels.cache.find(c => c.name == "Raid Signups" && c.type == "GUILD_CATEGORY");
+    let signupCategory = interaction.guild.channels.cache.find(c => c.name == "Raid Signups" && c.type == 4);
     if (!signupCategory) {
-        signupCategory = await interaction.guild.channels.create('Raid Signups', {
-            'type': 'GUILD_CATEGORY'
+        signupCategory = await interaction.guild.channels.create({
+            name: 'Raid Signups',
+            type: 4
         })
         .catch((e) => {
             return interaction.reply("Command failed 4 - GoodBot does not have permission to create channels on your discord, `/setup` failed.  Please give GoodBot administrator rights and try again.");
@@ -27,10 +26,11 @@ exports.run = async (client, interaction) => {
     }
 
     // Create Archives
-    let archiveCategory = interaction.guild.channels.cache.find(c => c.name == "Archives" && c.type == "GUILD_CATEGORY");
+    let archiveCategory = interaction.guild.channels.cache.find(c => c.name == "Archives" && c.type == 4);
     if (!archiveCategory) {
-        archiveCategory = await interaction.guild.channels.create('Archives', {
-            'type': 'GUILD_CATEGORY'
+        archiveCategory = await interaction.guild.channels.create({
+            name: 'Archives',
+            type: 4
         })
         .catch((e) => {
             return interaction.reply("Command failed 3 - GoodBot does not have permission to create channels on your discord, `/setup` failed.  Please give GoodBot administrator rights and try again.");
@@ -38,10 +38,11 @@ exports.run = async (client, interaction) => {
     }
 
     // Create Get Started
-    let setupCategory  = interaction.guild.channels.cache.find(c => c.name == "Get Started" && c.type == "GUILD_CATEGORY");
+    let setupCategory  = interaction.guild.channels.cache.find(c => c.name == "Get Started" && c.type == 4);
     if (!setupCategory) {
-        setupCategory = await interaction.guild.channels.create('Get Started', {
-            'type': 'GUILD_CATEGORY'
+        setupCategory = await interaction.guild.channels.create({
+            name: 'Get Started',
+            type: 4
         })
         .catch((e) => {
             return interaction.reply("Command failed 2 - GoodBot does not have permission to create channels on your discord, `/setup` failed.  Please give GoodBot administrator rights and try again.");
@@ -51,8 +52,9 @@ exports.run = async (client, interaction) => {
     // Create Setup Channel
     let setupChannel = interaction.guild.channels.cache.find(c => c.name.toLowerCase() == 'get-started-goodbot');
     if (!setupChannel) {
-        setupChannel = await interaction.guild.channels.create('Get-Started-GoodBot', {
-            type: 'GUILD_TEXT'
+        setupChannel = await interaction.guild.channels.create({
+            name: 'Get-Started-GoodBot',
+            type: 0
         });
         setupChannel.setParent(setupCategory.id).then((channel) => {
             channel.lockPermissions().catch(console.error);
@@ -60,7 +62,7 @@ exports.run = async (client, interaction) => {
 
     }
 
-    let embed = new Discord.MessageEmbed()
+    let embed = new EmbedBuilder()
         .setTitle('GoodBot Character Setup')
         .setDescription('Please click the "Set Up Main" button to get started setting up your first character.\n\nA modal will pop up asking your character\'s name.  Enter it, and press "submit"\n\nThe bot will reply to you asking the character\'s class and role.  Select each of these and your character will be set up.')
         .setColor(0xb00b00)
@@ -133,7 +135,7 @@ exports.modalResponse = async (client, interaction) => {
 
         let altCharacter = await client.models.character.findOne({where: {name: character, guildID: interaction.guild.id}})
         if (!altCharacter) {
-            altCharacter = await client.models.character.create({'name': character, guildID: interaction.guild.id, memberID: interaction.user.id });
+            altCharacter = await client.models.character.create({name: character, guildID: interaction.guild.id, memberID: interaction.user.id });
         }
 
         client.models.character.update({mainID: mainCharacter.id}, {where: {id: altCharacter.id}});

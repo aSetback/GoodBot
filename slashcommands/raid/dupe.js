@@ -1,4 +1,4 @@
-const { ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder } = require("discord.js");
+const { PermissionsBitField, ActionRowBuilder , StringSelectMenuBuilder, ModalBuilder, TextInputBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -45,7 +45,7 @@ exports.run = async (client, interaction) => {
         }
 
         // Retrieve our category from the discord API
-        let discordCategory = interaction.guild.channels.cache.find(c => c.name == category.trim() && c.type == "GUILD_CATEGORY");
+        let discordCategory = interaction.guild.channels.cache.find(c => c.name == category.trim() && c.type == 4);
 
         if (!discordCategory) {
             return interaction.reply({content: 'Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.', ephemeral: true, components: []});
@@ -53,7 +53,7 @@ exports.run = async (client, interaction) => {
 
         // Retrieve this user's permission for the raid category
         let permissions = discordCategory.permissionsFor(interaction.member);
-        if (!permissions.has("MANAGE_CHANNELS")) {
+        if (!permissions.has(PermissionsBitField.Flags.ManageChannels)) {
             return interaction.reply({content: 'Channel category "' + category + '" does not exist.  Make sure to check your capitalization, as these are case sensitive.', ephemeral: true, components: []});                
         }
         delete raid.dataValues.id;
