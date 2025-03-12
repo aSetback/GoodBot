@@ -209,6 +209,8 @@ Columns:
 22 => monk healer 
 23 => dh dps 
 24 => dh tank 
+25 => evoker dps 
+26 => evoker healer
 ```
 To set up your spreadsheet:
 * The sheet must be shared with **discord@api-project-483394155093.iam.gserviceaccount.com**

@@ -30,7 +30,4 @@ module.exports = async (client, packet) => {
                 });
         }
     }
-    if (channel.type == 'dm' && action == 'add') {
-        client.wizard.handleEmoji(client, channel, emoji, packet.d.user_id);
-    }
 };
