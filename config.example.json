@@ -1,95 +1,98 @@
 { 
 	"botname": "GoodBot Dev",
 	"botactivity": "World of Warcraft: Classic",
-	"token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-	"userId": 721420612400316456,
-	"prefix" : "+",
+	"token": "",
+	"userId": "",
 	"owner" : 93398761979514880,
 	"googleProjectId": "api-project-483394155093",
-	"bankFile": "F:\\World of Warcraft\\_classic_\\WTF\\Account\\SITUATIONSOAP\\SavedVariables\\GoodBank.lua",
-	"epgpFile": "F:\\World of Warcraft\\_classic_\\WTF\\Account\\LAD\\SavedVariables\\GoodEPGP.lua",
-	"warcraftlogs": "XXXXXXXXXXXXXXXXXXXXXXXXXXX",
 	"db": {
-		"ip": "localhost",
+		"ip": "127.0.0.1",
 		"user": "root",
 		"pass": "",
-		"name": "GoodBot"
+		"name": "goodbotdev"
 	},
 	"validSpecs": ["Protection", "Fury", "Arms", "Demonology", "Affliction", "Destruction", "Holy", "Discipline", "Shadow", "Feral", "Restoration", "Balance", "Retribution", "Subtlety", "Combat", "Assassination", "Fire", "Frost", "Arcane", "Survival", "Beast Mastery", "Marksmanship", "Elemental", "Enhancement"],
 	"validClasses": ["Warrior", "Paladin", "Hunter", "Shaman", "Rogue", "Druid", "Priest", "Mage", "Warlock", "DK"],
-	"validRoles": ["Healer", "Tank", "Caster", "DPS"],
 	"roleOptions": [
 		{
-			"name": "Healer",
+			"label": "Healer",
 			"value": "healer"
 		},
 		{
-			"name": "Tank",
+			"label": "Tank",
 			"value": "tank"
 		},
 		{
-			"name": "Caster",
+			"label": "Caster",
 			"value": "caster",
 			"description": "Warlock, Mage, Shadow Priest, Elemental Shaman, Balance Druid"
 		},
 		{
-			"name": "DPS",
+			"label": "DPS",
 			"value": "dps",
 			"description": "Hunter, Rogue, Enhancement Shaman, Fury Warrior, Unholy Death Knight, Feral Druid"
-		},
-		"Healer", "Tank", "Caster", "DPS"
+		}
 	],
 	"classOptions": [
 		{
-			"name": "Death Knight",
+			"label": "Death Knight",
 			"value": "DK"
 		},
 		{
-			"name": "Druid",
+			"label": "Druid",
 			"value": "druid"
 		},
 		{
-			"name": "Hunter",
+			"label": "Hunter",
 			"value": "hunter"
 		},
 		{
-			"name": "Mage",
+			"label": "Mage",
 			"value": "mage"
 		},
 		{
-			"name": "Paladin",
+			"label": "Paladin",
 			"value": "paladin"
 		},
 		{
-			"name": "Priest",
+			"label": "Priest",
 			"value": "priest"
 		},
 		{
-			"name": "Rogue",
+			"label": "Rogue",
 			"value": "rogue"
 		},
 		{
-			"name": "Shaman",
+			"label": "Shaman",
 			"value": "shaman"
 		},
 		{
-			"name": "Warlock",
+			"label": "Warlock",
 			"value": "warlock"
 		},
 		{
-			"name": "Warrior",
+			"label": "Warrior",
 			"value": "warrior"
 		}
 	],
-	"validAdmins": {
-		"Admin1": "XXXXXXXXXXXXXXXXXXX",
-		"Admin2": "XXXXXXXXXXXXXXXXXXX",
-		"Admin3": "XXXXXXXXXXXXXXXXXXX"
+	"specs": {
+		"Death Knight": ["Blood", "Frost", "Unholy"],
+		"Druid": ["Balance", "Feral Bear", "Feral Cat", "Restoration"],
+		"Hunter": ["Beast Mastery", "Marksmanship", "Survival"],
+		"Mage": ["Arcane", "Fire", "Frost"],
+		"Paladin": ["Holy", "Protection", "Retribution"],
+		"Priest": ["Discipline", "Holy", "Shadow"],
+		"Rogue": ["Assassination", "Combat", "Subtlety"],
+		"Shaman": ["Elemental", "Enhancement", "Restoration"],
+		"Warlock": ["Affliction", "Demonology", "Destruction"],
+		"Warrior": ["Arms", "Fury", "Protection"]
 	},
-	"validRaids": ["MC", "BWL", "ONY", "ZG", "AQ20", "AQ40", "NAXX", "GL", "KARA", "ML", "SSC", "TK", "BT", "MH"],
-	"validCharacters": "^[a-zàâäåªæÆçÇœŒÐéèêëËƒíìîïÏñÑóòôöõºúùûÜýÿßØø]+$",
-	"WCL": { 
-		"id": "id-goes-here",
-		"secret": "secret-goes-here"
+	"WCL": {
+		"id": "",
+		"secret": ""
+	},
+	"goodbot": {
+		"id": "", 
+		"key": ""
 	}
 }
