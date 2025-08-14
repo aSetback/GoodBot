@@ -64,5 +64,5 @@ exports.buttonResponse = async (client, interaction, data) => {
     let buttonPress = data.shift();
     let role = interaction.guild.roles.cache.find(role => role.name.toLowerCase() === buttonPress);
     interaction.member.roles.add(role)
-    return interaction.reply('You have been given the ' + buttonPress + ' role.');
+    return interaction.reply({content: 'You have been given the ' + buttonPress + ' role.', ephemeral: true});
 }
