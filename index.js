@@ -140,6 +140,7 @@ fs.readdir('./slashcommands', (err, files) => {
 client.on('ready', () => {
   // Add listener for set-up channels
   client.setup.run(client);
+  client.watch.run(client);
 });
 
 client.login(client.config.token);
