@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus, entersState, VoiceConnectionStatus } = require('@discordjs/voice');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let commandData = new SlashCommandBuilder()
@@ -32,14 +32,20 @@ exports.run = async (client, interaction) => {
 				guildId: vc.guild.id,
 				adapterCreator: vc.guild.voiceAdapterCreator,
 			});
-			let player = createAudioPlayer();
-			let resource = createAudioResource(filename);
-			player.play(resource);
-			connection.subscribe(player);
-			player.on(AudioPlayerStatus.Idle, () => {
+			try {
+				await entersState(connection, VoiceConnectionStatus.Ready, 10_000);
+				let player = createAudioPlayer();
+				let resource = createAudioResource(filename);
+				connection.subscribe(player);
+				player.play(resource);
+				player.on(AudioPlayerStatus.Idle, () => {
+					connection.destroy();
+					player.stop();
+				});
+			} catch (err) {
 				connection.destroy();
-				player.stop();
-			});
+				console.error('[wav] Failed to connect to voice channel:', err.message);
+			}
 		} else {
             interaction.reply({content: 'The request wav file does not exist.', ethereal: true});
 		}
