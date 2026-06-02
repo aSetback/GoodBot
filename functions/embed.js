@@ -107,6 +107,7 @@ module.exports = {
 				"dk": client.emojis.cache.find(emoji => emoji.name === "GBdk").toString(),
 				"monk": client.emojis.cache.find(emoji => emoji.name === "GBmonk").toString(),
 				"dh": client.emojis.cache.find(emoji => emoji.name === "GBdh").toString(),
+				"evoker": client.emojis.cache.find(emoji => emoji.name === "GBevoker").toString(),
 				"tank": client.emojis.cache.find(emoji => emoji.name === "GBtank").toString(),
 				"healer": client.emojis.cache.find(emoji => emoji.name === "GBhealer").toString(),
 				"dps": client.emojis.cache.find(emoji => emoji.name === "GBdps").toString(),
@@ -125,7 +126,8 @@ module.exports = {
 				"shaman": "",
 				"dk": "",
 				"monk": "",
-				"dh": ""
+				"dh": "",
+				"evoker": ""
 			}
 		}
 

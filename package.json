@@ -4,7 +4,7 @@
     "@discordjs/voice": "^0.19.2",
     "discord.js": "^14.16.3",
     "enmap": "^5.9.3",
-    "google-spreadsheet": "^3.0.13",
+    "google-spreadsheet": "^5.0.2",
     "mariadb": "^3.4.0",
     "node-fetch": "^2.6.1",
     "request": "^2.88.2",

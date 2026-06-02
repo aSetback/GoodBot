@@ -6,8 +6,5 @@ module.exports = (client, member) => {
         if (settings && settings.welcomeMessage) {
             member.send(settings.welcomeMessage);
         }
-        if (settings && settings.wizard) {
-            client.wizard.run(client, member);
-        }
     });
 };

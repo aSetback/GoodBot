@@ -73,6 +73,17 @@
 		{
 			"label": "Warrior",
 			"value": "warrior"
+		}		{
+			"label": "Evoker",
+			"value": "evoker"
+		},
+		{
+			"label": "Monk",
+			"value": "monk"
+		},
+		{
+			"label": "Demon Hunter",
+			"value": "dh"
 		}
 	],
 	"specs": {
