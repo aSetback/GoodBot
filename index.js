@@ -1,6 +1,5 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const { ActionRowBuilder , ButtonBuilder } = require('discord.js');
-const Enmap = require("enmap");
 const fs = require("fs");
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] }); // Creating discord.js client (constructor)
 client.buttons = {};
@@ -112,7 +111,7 @@ fs.readdir("./events/", (err, files) => {
 });
 
 // Allow slash commands to be registered
-client.slashCommands = new Enmap();
+client.slashCommands = new Map();
 fs.readdir('./slashcommands', (err, files) => {
   if (err) return console.error(err);
 

@@ -6,3 +6,4 @@ wav/*
 keys/*
 signups/*
 package-lock.json
+*.code-workspace

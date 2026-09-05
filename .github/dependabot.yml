@@ -9,9 +9,6 @@ updates:
       # uses a synchronous require(), which crashes on any 3.5.x version.
       - dependency-name: "mariadb"
         versions: [">=3.5.0"]
-      # 6.x is ESM-only; index.js loads it with require().
-      - dependency-name: "enmap"
-        versions: [">=6.0.0"]
       # 5.0.2+ pulls in ky, which is ESM-only in every release (1.x and
       # 2.x alike); crashes require() the moment /exportsheet runs.
       - dependency-name: "google-spreadsheet"
@@ -19,7 +16,3 @@ updates:
       # 3.x is ESM-only; functions/watch.js requires it with require().
       - dependency-name: "node-fetch"
         versions: [">=3.0.0"]
-      # 13.x tightened its "exports" map and no longer allows the deep
-      # require("better-sqlite3/lib/...") that enmap does internally.
-      - dependency-name: "better-sqlite3"
-        versions: [">=13.0.0"]

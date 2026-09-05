@@ -3,21 +3,19 @@
     "@discordjs/opus": "^0.10.0",
     "@discordjs/voice": "^0.19.2",
     "discord.js": "^14.16.3",
-    "enmap": "^5.9.3",
     "google-spreadsheet": "5.0.1",
     "mariadb": "3.4.7",
     "node-fetch": "^2.6.1",
     "sequelize": "^6.37.5"
   },
   "overrides": {
-    "better-sqlite3": "12.4.1"
+    "tar": "^7.5.22"
   },
   "scripts": {
     "test": "node --test"
   },
   "type": "commonjs",
   "allowScripts": {
-    "@discordjs/opus@0.10.0": true,
-    "better-sqlite3@12.4.1": true
+    "@discordjs/opus@0.10.0": true
   }
 }
