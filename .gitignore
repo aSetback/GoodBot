@@ -3,5 +3,6 @@ node_modules/*
 data/*.json
 google.json
 wav/*
+keys/*
 signups/*
 package-lock.json
