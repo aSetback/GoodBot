@@ -5,7 +5,7 @@
     "discord.js": "^14.16.3",
     "enmap": "^5.9.3",
     "google-spreadsheet": "^5.0.2",
-    "mariadb": "3.5.2",
+    "mariadb": "3.4.7",
     "node-fetch": "^2.6.1",
     "sequelize": "^6.37.5",
     "simple-youtube-api": "^5.2.1",
