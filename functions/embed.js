@@ -92,44 +92,31 @@ module.exports = {
 		raidData.description = raid.description ? raid.description : 'To sign up for this raid, please click on one of the emojis directly below this post.'
 		raidData.title = raid.title ? raid.title : title;
 
-		let emojis = {};
-		try {
-			emojis = {
-				"warrior": client.emojis.cache.find(emoji => emoji.name === "GBwarrior").toString(),
-				"druid": client.emojis.cache.find(emoji => emoji.name === "GBdruid").toString(),
-				"paladin": client.emojis.cache.find(emoji => emoji.name === "GBpaladin").toString(),
-				"priest": client.emojis.cache.find(emoji => emoji.name === "GBpriest").toString(),
-				"mage": client.emojis.cache.find(emoji => emoji.name === "GBmage").toString(),
-				"warlock": client.emojis.cache.find(emoji => emoji.name === "GBwarlock").toString(),
-				"rogue": client.emojis.cache.find(emoji => emoji.name === "GBrogue").toString(),
-				"hunter": client.emojis.cache.find(emoji => emoji.name === "GBhunter").toString(),
-				"shaman": client.emojis.cache.find(emoji => emoji.name === "GBshaman").toString(),
-				"dk": client.emojis.cache.find(emoji => emoji.name === "GBdk").toString(),
-				"monk": client.emojis.cache.find(emoji => emoji.name === "GBmonk").toString(),
-				"dh": client.emojis.cache.find(emoji => emoji.name === "GBdh").toString(),
-				"evoker": client.emojis.cache.find(emoji => emoji.name === "GBevoker").toString(),
-				"tank": client.emojis.cache.find(emoji => emoji.name === "GBtank").toString(),
-				"healer": client.emojis.cache.find(emoji => emoji.name === "GBhealer").toString(),
-				"dps": client.emojis.cache.find(emoji => emoji.name === "GBdps").toString(),
-				"caster": client.emojis.cache.find(emoji => emoji.name === "GBcaster").toString(),
-			}
-		} catch (error) {
-			emojis = {
-				"warrior": "",
-				"druid": "",
-				"paladin": "",
-				"priest": "",
-				"mage": "",
-				"warlock": "",
-				"rogue": "",
-				"hunter": "",
-				"shaman": "",
-				"dk": "",
-				"monk": "",
-				"dh": "",
-				"evoker": ""
-			}
-		}
+		// Look up each class/role emoji independently so one missing emoji
+		// (e.g. a role emoji not yet created on a given server) doesn't blank
+		// out every other emoji too -- the previous single try/catch around
+		// the whole object made the whole thing fail as soon as any one
+		// .find() came back undefined.
+		const getEmoji = (name) => client.emojis.cache.find(emoji => emoji.name === name)?.toString() ?? "";
+		let emojis = {
+			"warrior": getEmoji("GBwarrior"),
+			"druid": getEmoji("GBdruid"),
+			"paladin": getEmoji("GBpaladin"),
+			"priest": getEmoji("GBpriest"),
+			"mage": getEmoji("GBmage"),
+			"warlock": getEmoji("GBwarlock"),
+			"rogue": getEmoji("GBrogue"),
+			"hunter": getEmoji("GBhunter"),
+			"shaman": getEmoji("GBshaman"),
+			"dk": getEmoji("GBdk"),
+			"monk": getEmoji("GBmonk"),
+			"dh": getEmoji("GBdh"),
+			"evoker": getEmoji("GBevoker"),
+			"tank": getEmoji("GBtank"),
+			"healer": getEmoji("GBhealer"),
+			"dps": getEmoji("GBdps"),
+			"caster": getEmoji("GBcaster"),
+		};
 
 		let icon = 'https://goodbot.me/images/icons/' + raid.raid.toLowerCase().replace(/\s/g, "") + '.png';
 		let embed = new Discord.EmbedBuilder()
