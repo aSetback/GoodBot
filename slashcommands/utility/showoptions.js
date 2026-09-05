@@ -22,7 +22,8 @@ exports.run = async (client, interaction) => {
         returnString += 'Google Sheet ID            ' + settings.sheet + '\n'
         returnString += 'Warcraft Logs API Key      ' + settings.warcraftlogskey + '\n'
         returnString += 'Expansion                  ' + settings.expansion + '\n'
-        returnString += 'Raid Category              ' + settings.raidcategory
+        returnString += 'Raid Category              ' + settings.raidcategory + '\n'
+        returnString += 'Welcome Message            ' + settings.welcomeMessage
         returnString += '```';
         interaction.reply({content: returnString, ephemeral: true});
     });

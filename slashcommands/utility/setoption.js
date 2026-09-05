@@ -17,7 +17,8 @@ let commandData = new SlashCommandBuilder()
                 { name: 'Google Sheet ID', value: 'sheet'},
                 { name: 'Warcraft Logs API Key', value: 'warcraftlogskey'},
                 { name: 'Expansion', value: 'expansion'},
-                { name: 'Default Raid Category', value: 'raidcategory'},               
+                { name: 'Default Raid Category', value: 'raidcategory'},
+                { name: 'Welcome Message', value: 'welcomeMessage'},
             )
     )
     .addStringOption(option =>

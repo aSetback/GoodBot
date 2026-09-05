@@ -40,6 +40,10 @@ module.exports = (client, Sequelize) => {
         raidcategory: {
             type: Sequelize.STRING,
             allowNull: true
+        },
+        welcomeMessage: {
+            type: Sequelize.TEXT,
+            allowNull: true
         }
     }, {
     // options
