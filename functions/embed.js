@@ -306,10 +306,10 @@ module.exports = {
 		if (raid.softreserve) {
 			let softReserveText = "\nReserve Limit: " + ((raid.reserveLimit != null) ? raid.reserveLimit : "1") + "\n";
 			softReserveText += "To reserve an item, use the command `/reserve`\nTo view items eligible for reserving, use the command `/reserveitems`";
-			let raidHash = await client.models.raidHash.findOne({where: {memberID: raid.memberID, guildID: raid.guildID}});
-			if (raidHash) {
-				softReserveText += "\nYou can also manage your soft reserve at: http://goodbot.me/r/" + raid.id
-			}
+			// Not real access control -- the website just declines to resolve
+			// a bare raid ID, so this deters casually paging through them.
+			let reserveToken = Buffer.from(raid.id + ':' + raid.memberID).toString('base64url');
+			softReserveText += "\nYou can also manage your soft reserve at: https://goodbot.me/r/" + reserveToken;
 			embedFields.push({name: '**Soft Reserve**', value: softReserveText});
 		}
 
