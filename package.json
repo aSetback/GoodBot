@@ -11,8 +11,18 @@
     "simple-youtube-api": "^5.2.1",
     "ytdl-core-discord": "^1.3.1"
   },
-  "scripts": {
-    "test": "node --test test/"
+  "overrides": {
+    "ytdl-core-discord": {
+      "ytdl-core": "npm:@distube/ytdl-core@^4.16.12"
+    },
+    "better-sqlite3": "12.4.1"
   },
-  "type": "commonjs"
+  "scripts": {
+    "test": "node --test"
+  },
+  "type": "commonjs",
+  "allowScripts": {
+    "@discordjs/opus@0.10.0": true,
+    "better-sqlite3@12.4.1": true
+  }
 }
