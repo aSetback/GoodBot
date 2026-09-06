@@ -140,6 +140,7 @@ client.on('ready', () => {
   // Add listener for set-up channels
   client.setup.run(client);
   client.watch.run(client);
+  client.internalApi.run(client);
 });
 
 client.login(client.config.token);
