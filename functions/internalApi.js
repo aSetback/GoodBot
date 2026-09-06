@@ -45,9 +45,9 @@ async function initEmbed(client, channelID) {
 }
 
 // Mirrors slashcommands/raid/ping.js (types "raid"/"confirmed") and
-// slashcommands/reserves/noreserve.js. "unsigned" isn't covered -- it
-// compares against a second, caller-specified raid/channel (see
-// client.notify.getUnsigned), which the website has no UI for yet.
+// slashcommands/reserves/noreserve.js. "unsigned" is handled separately by
+// pingUnsigned() below, since it needs a second raid/channel to compare
+// against instead of just filtering the current raid's own signups.
 async function pingRaid(client, channelID, type) {
   const channel = await client.channels.fetch(channelID);
   const raid = await client.raid.get(client, channel);
@@ -89,6 +89,32 @@ async function pingRaid(client, channelID, type) {
   await channel.send(notifications);
 }
 
+// Mirrors slashcommands/raid/unsigned.js -- pings whoever signed up for
+// `previousChannelID`'s raid but hasn't signed up for `channelID`'s raid.
+// Used both standalone and right after a dupe (dupe.js does this same
+// comparison automatically against the raid it duped from).
+async function pingUnsigned(client, channelID, previousChannelID) {
+  const [channel, previousChannel] = await Promise.all([
+    client.channels.fetch(channelID),
+    client.channels.fetch(previousChannelID),
+  ]);
+  const [raid, previousRaid] = await Promise.all([
+    client.raid.get(client, channel),
+    client.raid.get(client, previousChannel),
+  ]);
+  if (!raid || !previousRaid) {
+    throw new Error("Could not find a raid on one of those channels.");
+  }
+
+  const names = await client.notify.getUnsigned(client, raid, previousRaid);
+  if (names.length === 0) {
+    await channel.send("No players were found.");
+    return;
+  }
+  const notifications = await client.notify.makeList(client, channel.guild, names);
+  await channel.send(notifications);
+}
+
 // Mirrors slashcommands/utility/archive.js.
 async function archiveRaid(client, channelID) {
   const channel = await client.channels.fetch(channelID);
@@ -126,6 +152,14 @@ module.exports = {
             return res.writeHead(400).end("channelID and type are required");
           }
           await pingRaid(client, body.channelID, body.type);
+          return res.writeHead(200).end("ok");
+        }
+
+        if (req.method === "POST" && req.url === "/raid/ping-unsigned") {
+          if (!body.channelID || !body.previousChannelID) {
+            return res.writeHead(400).end("channelID and previousChannelID are required");
+          }
+          await pingUnsigned(client, body.channelID, body.previousChannelID);
           return res.writeHead(200).end("ok");
         }
 
