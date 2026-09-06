@@ -20,6 +20,17 @@ client.buttons.reserves = new ButtonBuilder()
   .setLabel('Reserves')
   .setURL('https://goodbot.me/r/');
 
+// The initial sign-up message a new raid channel gets (before embed.update()
+// replaces its content) -- referenced by createRaidChannel/createRaidThread/
+// createEventChannel in functions/raid.js, but was never actually defined
+// here, and discord.js v14's channel.send() doesn't take a second
+// positional argument either way, so those calls silently sent no buttons.
+client.buttonRow = new ActionRowBuilder().addComponents(
+  client.buttons.yes,
+  client.buttons.no,
+  client.buttons.maybe
+);
+
 
 // Our music
 client.queue = {};

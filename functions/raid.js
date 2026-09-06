@@ -401,7 +401,7 @@ module.exports = {
             }
 
             let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
-            let botMsg = await channel.send(signupMessage, client.buttonRow)
+            let botMsg = await channel.send({ content: signupMessage, components: [client.buttonRow] });
             await botMsg.pin();
             client.embed.eventUpdate(client, channel);
             channel = await channel.setParent(category.id);
@@ -472,7 +472,7 @@ module.exports = {
             }
 
             let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
-            let botMsg = await channel.send(signupMessage, client.buttonRow);
+            let botMsg = await channel.send({ content: signupMessage, components: [client.buttonRow] });
             await botMsg.pin();
             client.embed.update(client, channel);
             channel = await channel.setParent(category.id);
@@ -543,7 +543,7 @@ module.exports = {
             }
 
             let signupMessage = '*If you do not see a sign-up below this message, please enable embeds on discord.*';
-            let botMsg = await channel.send(signupMessage, client.buttonRow);
+            let botMsg = await channel.send({ content: signupMessage, components: [client.buttonRow] });
             await botMsg.pin();
             client.embed.update(client, channel);
             channel = await channel.setParent(category.id);
