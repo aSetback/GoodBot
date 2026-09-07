@@ -3,30 +3,44 @@ const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
 
 module.exports = {
 	update: async (client, channel) => {
-		// Confirm we have a raid
-		let raid = await client.raid.get(client, channel);
-		let raidChannel = await client.channels.cache.find(c => c.id == raid.channelID);
-		let embed = await client.embed.updateEmbed(client, raidChannel, raid);
-		let crosspostChannel = null;
-		if (raid.crosspostID && raid.crosspostID.length) {
-			crosspostChannel = await client.channels.cache.find(c => c.id == raid.crosspostID);
-		}
+		// update() is called fire-and-forget (no await, no .catch()) from
+		// ~20 places across the codebase, so a thrown/rejected error here
+		// becomes an unhandled promise rejection -- and since nothing else
+		// ever retries a signup that already went through, that leaves the
+		// raid's embed stuck without ever updating again. Catch everything
+		// here instead of relying on every call site to do so.
+		try {
+			// Confirm we have a raid
+			let raid = await client.raid.get(client, channel);
+			let raidChannel = await client.channels.cache.find(c => c.id == raid.channelID);
+			let embed = await client.embed.updateEmbed(client, raidChannel, raid);
+			let crosspostChannel = null;
+			if (raid.crosspostID && raid.crosspostID.length) {
+				crosspostChannel = await client.channels.cache.find(c => c.id == raid.crosspostID);
+			}
 
-		// Prevent the embed from trying to refresh more than once a second.
-		if (client.embeds[raid.id] && client.embeds[raid.id].timeout) {
-			client.embeds[raid.id].embed = embed;
-		} else {
-			client.embeds[raid.id] = {
-				embed: embed,
-				timeout: setTimeout(() => {
-					embed = client.embeds[raid.id].embed;
-					client.embed.edit(client, raidChannel, embed, raid);
-					if (crosspostChannel) {
-						client.embed.edit(client, crosspostChannel, embed, raid);
-					}
-					client.embeds[raid.id].timeout = null;
-				}, 1000)
-			};
+			// Prevent the embed from trying to refresh more than once a second.
+			if (client.embeds[raid.id] && client.embeds[raid.id].timeout) {
+				client.embeds[raid.id].embed = embed;
+			} else {
+				client.embeds[raid.id] = {
+					embed: embed,
+					timeout: setTimeout(() => {
+						embed = client.embeds[raid.id].embed;
+						client.embed.edit(client, raidChannel, embed, raid).catch((error) => {
+							console.error('Failed to edit raid embed', error);
+						});
+						if (crosspostChannel) {
+							client.embed.edit(client, crosspostChannel, embed, raid).catch((error) => {
+								console.error('Failed to edit crossposted raid embed', error);
+							});
+						}
+						client.embeds[raid.id].timeout = null;
+					}, 1000)
+				};
+			}
+		} catch (error) {
+			console.error('Failed to update raid embed', error);
 		}
 	},
 	edit: async (client, channel, embed, raid) => {
@@ -205,11 +219,17 @@ module.exports = {
 		// Output our embed fields
 		sortedLineup.forEach((signup, key) => {
 
-			// If we're on a different class/role than the previous signup, we need to start a new embed field
-			if (prevSignup != null && (signup.character.role != prevSignup.character.role || signup.character.class != prevSignup.character.class)) {
+			// One field per role (not per role+class): Discord caps embeds at
+			// 25 fields total, and a raid with a wide spread of classes
+			// signed up could easily produce more than 25 role+class
+			// combinations, which throws inside addFields() below and leaves
+			// the embed stuck without ever updating again for that raid.
+			// Each signup line still shows its own class emoji, so no class
+			// info is lost -- it's just grouped under one field per role.
+			if (prevSignup != null && signup.character.role != prevSignup.character.role) {
 				if (signups.length) {
 					embeds.push({
-						'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.class), 
+						'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.role),
 						'signups': signups
 					});
 				}
@@ -244,11 +264,11 @@ module.exports = {
 			prevSignup = signup;
 		});
 
-		// If we have at least one signup, add the embed field for the last signup class/role combo
+		// If we have at least one signup, add the embed field for the last role
 		if (prevSignup) {
 			if (signups.length) {
 				embeds.push({
-					'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.class), 
+					'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.role),
 					'signups': signups
 				});
 			}
