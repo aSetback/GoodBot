@@ -186,6 +186,11 @@ module.exports = {
 
 		cleanSignups = raid.signups.filter(s => s.character != null);
 
+		// "Signup"-type raids are generic events (not tied to a real
+		// instance), so there's no meaningful class/role to group or count --
+		// just list who's coming, in sign-up order, split into two columns.
+		let isSignupType = raid.raid.toLowerCase() === 'signup';
+
 		// Sort our sign-ups by role, then class
 		let sortedLineup = cleanSignups.sort((a, b) => {
 			if (a.character.role > b.character.role) {
@@ -216,6 +221,41 @@ module.exports = {
 			'dps': 0,
 			'caster': 0
 		};
+		let roleOrClassFields;
+
+		// Signup-type raids skip class/role grouping entirely -- just list
+		// everyone who's coming, in sign-up order, split into two columns.
+		if (isSignupType) {
+			cleanSignups.forEach((signup) => {
+				if (signup.signup == 'yes') {
+					if (signup.confirmed) {
+						confirmed++;
+					}
+				} else if (signup.signup == 'maybe') {
+					otherSignups[signup.signup].push(signup.confirmed ? '**' + signup.character.name + '**' : signup.character.name);
+				} else {
+					otherSignups['no'].push(signup.confirmed ? '**' + signup.character.name + '**' : signup.character.name);
+				}
+			});
+
+			let nameList = cleanSignups
+				.filter(s => s.signup == 'yes')
+				.sort((a, b) => a.order - b.order)
+				.map((signup) => {
+					let name = signup.character.name;
+					if (raid.confirmation) {
+						name = signup.confirmed ? '**' + name + '**' : '*' + name + '*';
+					}
+					return name + ' [' + signup.order + ']';
+				});
+
+			roleOrClassFields = [];
+			if (nameList.length) {
+				let half = Math.ceil(nameList.length / 2);
+				roleOrClassFields.push({name: 'Sign-ups', signups: nameList.slice(0, half)});
+				roleOrClassFields.push({name: '​', signups: nameList.slice(half)});
+			}
+		} else {
 
 		// Output our embed fields
 		sortedLineup.forEach((signup, key) => {
@@ -286,7 +326,8 @@ module.exports = {
 		const classPadding = classFieldCount % 3 == 2 ? 1 : 0;
 		const wouldExceedFieldCap = (nonClassFieldCount + classFieldCount + classPadding + trailingFieldCount) > 25;
 
-		const roleOrClassFields = wouldExceedFieldCap ? roleFields : embeds;
+		roleOrClassFields = wouldExceedFieldCap ? roleFields : embeds;
+		}
 
 		// Add our fields
 		roleOrClassFields.forEach((embedField) => {
@@ -296,19 +337,22 @@ module.exports = {
 		});
 
 		// keep an even number of rows
-		if (roleOrClassFields.length % 3 == 2) {
+		if (!isSignupType && roleOrClassFields.length % 3 == 2) {
 			embedFields.push({name: '-', value: '-', inline: true});
 		}
 
 		let confirmedText = raid.confirmation ? '**Confirmed:** ' + confirmed + '\n' : '';
 		let maybeText = otherSignups['maybe'].length ? '**Maybe:** ' + otherSignups['maybe'].join(', ') + '\n' : '';
 		let noText = otherSignups['no'].length ? '**No:** ' + otherSignups['no'].join(', ') + '\n' : '';
-		let raidComp = emojis['tank'] + ' ' + roleCount['tank'] + '   ';
-		raidComp += emojis['healer'] + ' ' + roleCount['healer'] + '   '; 
-		raidComp += emojis['dps'] + ' ' + roleCount['dps'] + '   '; 
-		raidComp += emojis['caster'] + ' ' + roleCount['caster'] + '\n'; 
+		let raidComp = '';
+		if (!isSignupType) {
+			raidComp = emojis['tank'] + ' ' + roleCount['tank'] + '   ';
+			raidComp += emojis['healer'] + ' ' + roleCount['healer'] + '   ';
+			raidComp += emojis['dps'] + ' ' + roleCount['dps'] + '   ';
+			raidComp += emojis['caster'] + ' ' + roleCount['caster'] + '\n';
+		}
 
-		embedFields.push({name: 'Sign-ups', value: 
+		embedFields.push({name: isSignupType ? 'Totals' : 'Sign-ups', value: 
 			maybeText +
 			noText +
 			confirmedText + 
