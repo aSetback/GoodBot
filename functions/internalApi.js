@@ -115,6 +115,42 @@ async function pingUnsigned(client, channelID, previousChannelID) {
   await channel.send(notifications);
 }
 
+// The class/role emoji names embed.js looks up (client.emojis.cache.find(e
+// => e.name === "GB" + key)) -- these are custom emojis on some guild the
+// bot happens to be a member of, but discord.js's emoji cache aggregates
+// them across every guild the bot can see, so they're available bot-wide
+// regardless of which guild a given raid is in.
+const CLASS_ROLE_EMOJI_KEYS = [
+  "warrior",
+  "druid",
+  "paladin",
+  "priest",
+  "mage",
+  "warlock",
+  "rogue",
+  "hunter",
+  "shaman",
+  "dk",
+  "monk",
+  "dh",
+  "evoker",
+  "tank",
+  "healer",
+  "dps",
+  "caster",
+];
+
+function getClassRoleEmojis(client) {
+  const result = {};
+  for (const key of CLASS_ROLE_EMOJI_KEYS) {
+    const emoji = client.emojis.cache.find((e) => e.name === `GB${key}`);
+    if (emoji) {
+      result[key] = { id: emoji.id, animated: emoji.animated };
+    }
+  }
+  return result;
+}
+
 // Mirrors slashcommands/utility/archive.js.
 async function archiveRaid(client, channelID) {
   const channel = await client.channels.fetch(channelID);
@@ -134,6 +170,11 @@ module.exports = {
         }
 
         const body = req.method === "POST" ? await readJsonBody(req) : {};
+
+        if (req.method === "GET" && req.url === "/emojis") {
+          res.setHeader("Content-Type", "application/json");
+          return res.writeHead(200).end(JSON.stringify(getClassRoleEmojis(client)));
+        }
 
         if (req.method === "POST" && req.url === "/embed/refresh") {
           if (!body.channelID) return res.writeHead(400).end("channelID is required");
