@@ -206,7 +206,8 @@ module.exports = {
 		// Set up variables for holding our embed data
 		let prevSignup = null;
 		let signups = [];
-		let embeds = [];
+		let embeds = []; // one field per role+class -- the preferred, more granular breakdown
+		let roleSignups = {'tank': [], 'healer': [], 'dps': [], 'caster': []}; // one bucket per role -- the fallback grouping
 		let confirmed = 0;
 		let otherSignups = {'no': [], 'maybe': []};
 		let roleCount = {
@@ -215,27 +216,21 @@ module.exports = {
 			'dps': 0,
 			'caster': 0
 		};
-	
+
 		// Output our embed fields
 		sortedLineup.forEach((signup, key) => {
 
-			// One field per role (not per role+class): Discord caps embeds at
-			// 25 fields total, and a raid with a wide spread of classes
-			// signed up could easily produce more than 25 role+class
-			// combinations, which throws inside addFields() below and leaves
-			// the embed stuck without ever updating again for that raid.
-			// Each signup line still shows its own class emoji, so no class
-			// info is lost -- it's just grouped under one field per role.
-			if (prevSignup != null && signup.character.role != prevSignup.character.role) {
+			// If we're on a different class/role than the previous signup, we need to start a new embed field
+			if (prevSignup != null && (signup.character.role != prevSignup.character.role || signup.character.class != prevSignup.character.class)) {
 				if (signups.length) {
 					embeds.push({
-						'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.role),
+						'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.class),
 						'signups': signups
 					});
 				}
 				signups = [];
 			}
-			
+
 			// Generate our signup string
 			let signupString = emojis[signup.character.class] + ' ' + signup.character.name;
 			if (raid.confirmation) {
@@ -248,6 +243,7 @@ module.exports = {
 			// Push the signup string to an array for this class.
 			if (signup.signup == 'yes') {
 				signups.push(signupString);
+				roleSignups[signup.character.role].push(signupString);
 
 				// Update counts for confirmations & roles
 				roleCount[signup.character.role]++;
@@ -264,25 +260,43 @@ module.exports = {
 			prevSignup = signup;
 		});
 
-		// If we have at least one signup, add the embed field for the last role
+		// If we have at least one signup, add the embed field for the last signup class/role combo
 		if (prevSignup) {
 			if (signups.length) {
 				embeds.push({
-					'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.role),
+					'name': emojis[prevSignup.character.role] + ' ' + client.general.ucfirst(prevSignup.character.class),
 					'signups': signups
 				});
 			}
 		}
 
+		// One field per role instead of per role+class -- used only as a
+		// fallback below when the per-class breakdown would push the embed
+		// past Discord's 25-field cap (a raid with a wide spread of classes
+		// signed up can easily produce more than 25 role+class
+		// combinations, which throws inside addFields() and leaves the
+		// embed stuck without ever updating again for that raid).
+		const roleFields = ['tank', 'healer', 'dps', 'caster']
+			.filter(role => roleSignups[role].length > 0)
+			.map(role => ({name: emojis[role] + ' ' + client.general.ucfirst(role), signups: roleSignups[role]}));
+
+		const nonClassFieldCount = embedFields.length;
+		const trailingFieldCount = 1 + (raid.confirmation ? 1 : 0) + (raid.softreserve ? 1 : 0); // Sign-ups, Confirmation Mode, Soft Reserve
+		const classFieldCount = embeds.filter(e => e.signups.length > 0).length;
+		const classPadding = classFieldCount % 3 == 2 ? 1 : 0;
+		const wouldExceedFieldCap = (nonClassFieldCount + classFieldCount + classPadding + trailingFieldCount) > 25;
+
+		const roleOrClassFields = wouldExceedFieldCap ? roleFields : embeds;
+
 		// Add our fields
-		embeds.forEach((embedField) => {
+		roleOrClassFields.forEach((embedField) => {
 			if (embedField.signups.length > 0) {
 				embedFields.push({name: embedField.name, value: embedField.signups.join('\n'), inline: true});
 			}
 		});
 
 		// keep an even number of rows
-		if (embeds.length % 3 == 2) {
+		if (roleOrClassFields.length % 3 == 2) {
 			embedFields.push({name: '-', value: '-', inline: true});
 		}
 
