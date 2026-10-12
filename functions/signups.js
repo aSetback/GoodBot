@@ -21,22 +21,16 @@ module.exports = {
             return interaction.reply({content: roleName + ' is not a valid role.', ephemeral: true});
         }
 
-        altName = client.general.ucfirst(charName);
-        mainName = client.general.ucfirst(interaction.member.nickname ? interaction.member.nickname : interaction.user.username);
-    
-        client.models.character.findOne({where: {name: mainName, guildID: interaction.guild.id}}).then((mainCharacter) => {
-            if (!mainCharacter) {
-                return interaction.reply({content: 'Could not find main: ' + mainName, ephemeral: true});
-            }
-            client.models.character.findOne({where: {name: altName, guildID: interaction.guild.id}}).then((altCharacter) => {
-                if (mainCharacter.mainID) {
-                    client.models.character.update({mainID: null}, {where: {id: mainCharacter.id}});
-                }
-                client.models.character.update({mainID: mainCharacter.id}, {where: {id: altCharacter.id}}).then(() => {
-                    client.signups.selectAlt(client, interaction, altCharacter.id);
-                });
-            });
-        });		
+        let mainCharacter = await client.character.getMainForMember(client, interaction.member);
+        if (!mainCharacter) {
+            return interaction.reply({content: 'Please set up your main character first!', ephemeral: true});
+        }
+        if (mainCharacter.name == client.general.ucfirst(charName)) {
+            return interaction.reply({content: mainCharacter.name + ' is already your main character.', ephemeral: true});
+        }
+
+        let altCharacter = await client.character.claim(client, interaction.member, charName, {mainID: mainCharacter.id});
+        client.signups.selectAlt(client, interaction, altCharacter.id);
     },
     altModal: async (client, interaction) => {
         let altModal = new ModalBuilder()
@@ -63,8 +57,11 @@ module.exports = {
         await interaction.showModal(altModal);
     },
     selectAlt: async (client, interaction, altID) => {
-        let mainName = client.general.ucfirst(interaction.member.nickname ? interaction.member.nickname : interaction.user.username);
-        let main = await client.character.get(client, mainName, interaction.guild.id);
+        let main = await client.character.getMainForMember(client, interaction.member);
+        if (!main) {
+            return interaction.reply({content: 'Please set up your main character first!', ephemeral: true});
+        }
+        let mainName = main.name;
         let alts = await client.character.getAlts(client, main);
         let raid = await client.raid.get(client, interaction.channelId);
         let whereStatement = [{'player': mainName, 'raidID': raid.id}];
@@ -122,16 +119,13 @@ module.exports = {
     signupReply: async (client, interaction) => {
         client.embed.update(client, interaction.channel);
         
-        // Retrieve Player Name
-        let playerName = interaction.member.nickname ? interaction.member.nickname : interaction.user.username;
-        playerName = client.general.ucfirst(playerName);
-
         // Verify the player has a character
-        let main = await client.character.get(client, playerName, interaction.guild.id);
+        let main = await client.character.getForMember(client, interaction.member);
 
         if (!main) {
             return false;
         }
+        let playerName = main.name;
 
         let roleSelect = client.signups.createRoleSelect();
         await interaction.reply(roleSelect);
@@ -166,8 +160,11 @@ module.exports = {
     },
     roleChange: async function(client, interaction) {
         let role = interaction.values[0];
-        let mainName = client.general.ucfirst(interaction.member.nickname ? interaction.member.nickname : interaction.user.username);
-        let main = await client.character.get(client, mainName, interaction.guild.id);
+        let main = await client.character.getMainForMember(client, interaction.member);
+        if (!main) {
+            return interaction.reply({content: `An error has occurred, unable to change your role.`, ephemeral: true});
+        }
+        let mainName = main.name;
         let alts = await client.character.getAlts(client, main);
         let raid = await client.raid.get(client, interaction.channelId);
         let whereStatement = [{'player': mainName, 'raidID': raid.id}];

@@ -120,25 +120,22 @@ exports.modalResponse = async (client, interaction) => {
     let content = '';
     if (type == "mainName") {
         character = client.general.ucfirst(interaction.fields.getTextInputValue('mainName'));
-        await interaction.guild.members.cache.get(interaction.user.id).setNickname(client.general.ucfirst(character)).catch((e) => {
+        await client.character.claim(client, interaction.member, character, {mainID: null});
+        await interaction.member.setNickname(character).catch((e) => {
             content += "**Please Note:** Goodbot was unable to change your nickname due to permissions - You will need to change your nickname to match your character name manually.\n\n";
         });
     } else {
         character = client.general.ucfirst(interaction.fields.getTextInputValue('altName'));
 
-        // Retrieve our main
-        let mainName = interaction.member.nickname ? interaction.member.nickname : interaction.user.username;
-        let mainCharacter = await client.models.character.findOne({where: {name: mainName, guildID: interaction.guild.id}})
+        let mainCharacter = await client.character.getMainForMember(client, interaction.member);
         if (!mainCharacter) {
             return interaction.reply({content: 'Please set up your main character first!', ephemeral: true});
         }
-
-        let altCharacter = await client.models.character.findOne({where: {name: character, guildID: interaction.guild.id}})
-        if (!altCharacter) {
-            altCharacter = await client.models.character.create({name: character, guildID: interaction.guild.id, memberID: interaction.user.id });
+        if (mainCharacter.name == character) {
+            return interaction.reply({content: character + ' is already your main character.', ephemeral: true});
         }
 
-        client.models.character.update({mainID: mainCharacter.id}, {where: {id: altCharacter.id}});
+        await client.character.claim(client, interaction.member, character, {mainID: mainCharacter.id});
     }
     let input1 = new StringSelectMenuBuilder()
         .setCustomId('sc-select-set-class-' + character)

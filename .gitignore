@@ -7,3 +7,4 @@ keys/*
 signups/*
 package-lock.json
 *.code-workspace
+character-owners*.csv

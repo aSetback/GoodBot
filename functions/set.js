@@ -29,6 +29,8 @@ module.exports = {
         if (!character) {
             character = await client.models.character.create(record);
         } else {
+            // memberID is the character's owner - editing someone else's character doesn't take it over
+            delete record.memberID;
             await client.models.character.update(record, {
                 where: {
                     id: character.id
@@ -65,6 +67,8 @@ module.exports = {
         if (!character) {
             character = await client.models.character.create(record);
         } else {
+            // memberID is the character's owner - editing someone else's character doesn't take it over
+            delete record.memberID;
             await client.models.character.update(record, {
                 where: {
                     id: character.id
