@@ -1,8 +1,10 @@
 const fs = require("fs");
 
 module.exports = {
+    // Capitalizes each word and lowercases the rest, so multi-word character names (WoW Forever's
+    // "first last" names) come out as "Timmy Tuffknuckles".  Extra whitespace is collapsed.
     ucfirst: (text) => {
-        return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : '';
+        return text ? text.trim().split(/\s+/).map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ') : '';
     },
     getChannel: async (channelName, guild) => {
         if (channelName.substring(0, 2) == '<#') {

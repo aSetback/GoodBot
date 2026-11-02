@@ -8,6 +8,12 @@ test('ucfirst capitalizes the first letter and lowercases the rest', () => {
     assert.equal(general.ucfirst(''), '');
 });
 
+test('ucfirst capitalizes every word of multi-word names', () => {
+    assert.equal(general.ucfirst('timmy tuffknuckles'), 'Timmy Tuffknuckles');
+    assert.equal(general.ucfirst('Timmy tuffknuckles'), 'Timmy Tuffknuckles');
+    assert.equal(general.ucfirst('  TIMMY   TUFFKNUCKLES '), 'Timmy Tuffknuckles');
+});
+
 test('parseTime parses 12-hour clock strings into HH:MM:00', () => {
     assert.equal(general.parseTime('7:30pm'), '19:30:00');
     assert.equal(general.parseTime('7:30 PM'), '19:30:00');
