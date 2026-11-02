@@ -46,15 +46,16 @@ const targets = [
 
             let skipped = [];
             if (table == 'characters') {
-                // Exact (case-sensitive) names per guild, so we can spot names that differ only by case.
+                // Characters per guild keyed by their fixed name, so we can spot names that differ
+                // only by case or spacing.
                 let existing = new Map();
                 rows.forEach(row => {
-                    let key = row.guildID + ':' + String(row.value).toLowerCase();
+                    let key = String(row.guildID) + ':' + ucfirst(String(row.value)).toLowerCase();
                     if (!existing.has(key)) existing.set(key, []);
                     existing.get(key).push(row);
                 });
                 changes = changes.filter(change => {
-                    let others = existing.get(change.guildID + ':' + change.to.toLowerCase()).filter(row => row.id != change.id);
+                    let others = existing.get(change.guildID + ':' + change.to.toLowerCase()).filter(row => String(row.id) != String(change.id));
                     if (others.length) {
                         skipped.push(change);
                         return false;
@@ -66,7 +67,7 @@ const targets = [
             console.log(`\n${table}.${column}: ${changes.length} to update` + (skipped.length ? `, ${skipped.length} skipped (duplicate character in guild)` : ''));
             changes.slice(0, 50).forEach(c => console.log(`  [${c.id}] guild ${c.guildID}: "${c.from}" -> "${c.to}"`));
             if (changes.length > 50) console.log(`  ... and ${changes.length - 50} more`);
-            skipped.forEach(c => console.log(`  SKIPPED [${c.id}] guild ${c.guildID}: "${c.from}" (another character already uses "${c.to}")`));
+            skipped.forEach(c => console.log(`  SKIPPED [${c.id}] guild ${c.guildID}: "${c.from}" (another character in the guild is also "${c.to}")`));
             plan.push({ table, column, changes });
         }
 
